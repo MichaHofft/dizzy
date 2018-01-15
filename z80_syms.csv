@@ -1,0 +1,71 @@
+				
+	Registers for LD			
+r	A	111		
+r	B	000		
+r	C	001		
+r	D	010		
+r	E	011		
+r	H	100		
+r	L	101		
+				
+s	A	111		
+s	B	000		
+s	C	001		
+s	D	010		
+s	E	011		
+s	H	100		
+s	L	101		
+				
+	16bit Registers for LD			
+RR	BC	00		
+RR	DE	01		
+RR	HL	10		
+RR	SP	11		
+				
+	16bit Registers for PUSH			
+QQ	BC	00		
+QQ	DE	01		
+QQ	HL	10		
+QQ	AF	11		
+				
+	16bit Registers for ADD IX			
+PP	BC	00		
+PP	DE	01		
+PP	IX	10		
+PP	AF	11		
+				
+	16bit Registers for ADD IY			
+OO	BC	00		
+OO	DE	01		
+OO	IY	10		
+OO	AF	11		
+				
+	Bits for BIT, SET			
+b	0	000		
+b	1	001		
+b	2	010		
+b	3	011		
+b	4	100		
+b	5	101		
+b	6	110		
+b	7	111		
+				
+	Condition Bits for JUMPS..			
+cc	NZ	000	Z	Non-Zero
+cc	Z	001	Z	Zero
+cc	NC	010	C	No Carry
+cc	C	011	C	Carry
+cc	PO	100	P/V	Parity Odd
+cc	PE	101	P/V	Parity Even
+cc	P	110	S	Sign Positive
+cc	M	111	S	Sign Negative
+				
+	Call targets for RST			
+tt	00h	000		
+tt	08h	001		
+tt	10h	010		
+tt	18h	011		
+tt	20h	100		
+tt	28h	101		
+tt	30h	110		
+tt	38h	111		

@@ -1,0 +1,116 @@
+||  DiZZy v0.1, dead slow Z80 assembler tools, (c) 2017 Michael Hoffmeister
+||  Loading tables z80_isa.csv, z80_syms.csv..
+||  Assembling mini.asm..
+||  Starting assemble stage 1 for: mini.asm..
+*MARK*
+||  Stage 1 completed.
+||  Starting assemble stage 2 ..
+0000:         |;------------------------------
+0000:         |ENTRY   EQU     5               ;entry point for the cp/m bdos.
+0000:         |TFCA    EQU     5CH             ;default file control block.
+0000:         |TFCB    EQU     TFCA+1
+0000:         |;------------------------------
+0000:         |        ORG 100h
+0100:         |        ;
+0100: 78      |hallo:  LD A,B                                                  |r ← s
+0101: 23      |        INC HL                                                  |RR ← RR + 1
+0102: cb16    |        RL (HL)                                                 |CY ← (HL)[0], (HL) ← ROR( (HL) ,1)
+0104: 3e5d    |        LD A,TFCB                                               |r ← n
+0106: 212312  |        LD HL,1223H                                             |Register pair ← nn
+0109:*012c01  |        LD BC, buf                                              |Register pair ← nn
+*MARK*
+010c: 18f2    |        JR hallo                                                |PC ← PC + ee
+010e: c30001  |        JP hallo                                                |PC ← nn
+0111:         |
+0111:         |TFCC    EQU     $
+0111:         |TFCD    EQU     $+20
+0111:         |
+0111:         |hallo2:
+0111: 7e      |        LD A,(HL)                                               |r ← (HL)
+0112: 02      |        LD (BC),A                                               |(BC) ← A
+0113: 320500  |        LD (5),A                                                |(nn) ← A
+0116: dd7e05  |        LD A,(IX+5h)                                            |r ← (IX+d)
+0119: fd770c  |        LD (IY+12),A                                            |(IY+d) ← r
+011c:*ed4b2c01|        LD BC,(buf)                                             |RRh ← (nn+1), RRl ← (nn)
+0120:*213001  |        LD HL,buf2                                              |Register pair ← nn
+0123:         |;
+0123:         |;   Routine to convert (A) into upper case ascii. Only letters
+0123:         |; are affected.
+0123:         |;
+0123: fe61    |UPPER:  CP      'a'             ;check for letters in the range…|Z ←  A = n
+0127:         |                                                  of 'a' to 'z'.
+0125: d8      |        RET     C                                               |IF cc true, PCl ← (SP), PCh ← (SP), SP ← SP + 2
+0126: fe7b    |        CP      '{'                                             |Z ←  A = n
+0128: d0      |        RET     NC                                              |IF cc true, PCl ← (SP), PCh ← (SP), SP ← SP + 2
+0129: e65f    |        AND     5FH             ;convert it if found.           |A ← A & n
+012b: c9      |        RET                                                     |PCl ← (SP), PCh ← (SP), SP ← SP + 2
+012c:         |
+012c: 01020304|buf:    DB 1,2,3,4,
+0130: 05060708|buf2:   DB 5,6,7,8,9,10
+0134: 090a    |                                                                
+0136:         |
+0136:         |buf3:    ; arithmetic test suite ... see http://benryves.com/bin/brass/manual.htm#labels
+0136: ffff    |        DEFW    -1                      ; $ffff
+0138: feff    |        DEFW    -2                      ; $feff
+013a: 1600    |        DEFW    17+5                    ; $16
+013c: 0c00    |        DEFW    17-5                    ; $0c
+013e: 5500    |        DEFW    17*5                    ; $55
+0140: 0300    |        DEFW    17/5                    ; $03
+0142: 0200    |        DEFW    17%5                    ; $02
+0144: 0700    |        DEFW    15&7                    ; $07
+0146: 0700    |        DEFW    4|3                     ; $07
+0148: 0c00    |        DEFW    3^15                    ; $0c
+014a: 0000    |        DEFW    !1                      ; $00
+014c: 0100    |        DEFW    !0                      ; $01
+014e: feff    |        DEFW    ~1                      ; $feff
+0150: 0100    |        DEFW    1 && 1                  ; $01
+0152: 0000    |        DEFW    1 && 0                  ; $00
+0154: 0100    |        DEFW    1 || 0                  ; $01
+0156: 0001    |        DEFW    1 << 8                  ; $0001
+0158: 0200    |        DEFW    8 >> 2                  ; $02
+015a: 0600    |        DEFW    5 +  1                  ; $04
+015c: 0100    |        DEFW    8 == 4*2                ; $01
+015e: 0000    |        DEFW    1+2 != 2+1              ; $00
+0160: 0100    |        DEFW    7 < 15                  ; $01
+0162: 0000    |        DEFW    15 < 7                  ; $00
+0164: 0000    |        DEFW    7 > 15                  ; $00
+0166: 0100    |        DEFW    15 > -15                ; $01
+0168: 0100    |        DEFW    4 <= 4                  ; $01
+016a: 0100    |        DEFW    -4 <= -4                ; $01
+016c: 46      |        DEFB    33*2+4                  ; $46
+016d: 09      |        DEFB    2*(36-(2*2))/ 17 *3     ; $03
+016e: 01020304|        DEFB    1,2,3,4,5,6,7
+0172: 050607  |                                                                
+0175: 48616c6c|        DEFB    'Hallo \n\\\xaa\x55\r world!'
+0179: 6f200a5c|                                                                
+017d: aa550d20|                                                                
+0181: 776f726c|                                                                
+0185: 6421    |                                                                
+0187:         |
+0187:         |buf5:   EQU 2000h
+0187: 22564c6f|        DEFB    34,56h,"Long term evolution\0\0"
+018b: 6e672074|                                                                
+018f: 65726d20|                                                                
+0193: 65766f6c|                                                                
+0197: 7574696f|                                                                
+019b: 6e0000  |                                                                
+||  Stage 2 completed. 55 errors, 0 invalid bytes remaining!
+
+; +++ global symbols +++
+
+BUF5     = $2000 =  8192 is Equ         ; expr = 2000h
+ENTRY    = $0005 =     5 is Equ         ; expr = 5
+TFCA     = $005c =    92 is Equ         ; expr = 5CH
+TFCB     = $005d =    93 is Equ         ; expr = TFCA+1
+TFCC     = $0111 =   273 is Equ         ; expr = $
+TFCD     = $0014 =    20 is Equ         ; expr = $+20
+BUF      = $012c =   300 is Label       
+BUF2     = $0130 =   304 is Label       
+BUF3     = $0136 =   310 is Label       
+HALLO    = $0100 =   256 is Label       
+HALLO2   = $0111 =   273 is Label       
+UPPER    = $0123 =   291 is Label       
+||  Writing binary bytes to: mini.rom
+||  Found minimal org pos to be $100 = 256, last byte to be $19d = 413
+*MARK*
+||  Writing completed. 158 bytes written

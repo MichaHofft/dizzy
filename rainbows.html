@@ -1,0 +1,2316 @@
+<!doctype html>
+<html lang=en>
+<style>table, th, td { border: 1px solid black; border-collapse: collapse; }</style>
+<h1>Table: Primary, 0, $</h1>
+<table>
+  <tr>
+    <th> / </th>
+    <th> $_0 </th>
+    <th> $_1 </th>
+    <th> $_2 </th>
+    <th> $_3 </th>
+    <th> $_4 </th>
+    <th> $_5 </th>
+    <th> $_6 </th>
+    <th> $_7 </th>
+    <th> $_8 </th>
+    <th> $_9 </th>
+    <th> $_a </th>
+    <th> $_b </th>
+    <th> $_c </th>
+    <th> $_d </th>
+    <th> $_e </th>
+    <th> $_f </th>
+  </tr>
+  <tr>
+    <td> $0_ </td>
+    <td>NOP </td>
+    <td>LD BC,{nn}</td>
+    <td>LD (BC),A</td>
+    <td>INC BC</td>
+    <td>INC B</td>
+    <td>DEC B</td>
+    <td>LD B,{n}</td>
+    <td>RLCA </td>
+    <td>EX AF,AF’</td>
+    <td>ADD HL,BC</td>
+    <td>LD A,(BC)</td>
+    <td>DEC BC</td>
+    <td>INC C</td>
+    <td>DEC C</td>
+    <td>LD C,{n}</td>
+    <td>RRCA </td>
+  </tr>
+  <tr>
+    <td> $1_ </td>
+    <td>DJNZ {ee}</td>
+    <td>LD DE,{nn}</td>
+    <td>LD (DE),A</td>
+    <td>INC DE</td>
+    <td>INC D</td>
+    <td>DEC D</td>
+    <td>LD D,{n}</td>
+    <td>RLA </td>
+    <td>JR {ee}</td>
+    <td>ADD HL,DE</td>
+    <td>LD A,(DE)</td>
+    <td>DEC DE</td>
+    <td>INC E</td>
+    <td>DEC E</td>
+    <td>LD E,{n}</td>
+    <td>RRA </td>
+  </tr>
+  <tr>
+    <td> $2_ </td>
+    <td>JR NZ,{ee}</td>
+    <td>LD HL,{nn}</td>
+    <td>LD ({nn}),HL</td>
+    <td>INC HL</td>
+    <td>INC H</td>
+    <td>DEC H</td>
+    <td>LD H,{n}</td>
+    <td>DAA </td>
+    <td>JR Z,{ee}</td>
+    <td>ADD HL,HL</td>
+    <td>LD HL,({nn})</td>
+    <td>DEC HL</td>
+    <td>INC L</td>
+    <td>DEC L</td>
+    <td>LD L,{n}</td>
+    <td>CPL </td>
+  </tr>
+  <tr>
+    <td> $3_ </td>
+    <td>JR NC,{ee}</td>
+    <td>LD SP,{nn}</td>
+    <td>LD ({nn}),A</td>
+    <td>INC SP</td>
+    <td>INC (HL)</td>
+    <td>DEC (HL)</td>
+    <td>LD (HL),{n}</td>
+    <td>SCF </td>
+    <td>JR C,{ee}</td>
+    <td>ADD HL,SP</td>
+    <td>LD A,({nn})</td>
+    <td>DEC SP</td>
+    <td>INC A</td>
+    <td>DEC A</td>
+    <td>LD A,{n}</td>
+    <td>CCF </td>
+  </tr>
+  <tr>
+    <td> $4_ </td>
+    <td>LD B,B</td>
+    <td>LD B,C</td>
+    <td>LD B,D</td>
+    <td>LD B,E</td>
+    <td>LD B,H</td>
+    <td>LD B,L</td>
+    <td>LD B,(HL)</td>
+    <td>LD B,A</td>
+    <td>LD C,B</td>
+    <td>LD C,C</td>
+    <td>LD C,D</td>
+    <td>LD C,E</td>
+    <td>LD C,H</td>
+    <td>LD C,L</td>
+    <td>LD C,(HL)</td>
+    <td>LD C,A</td>
+  </tr>
+  <tr>
+    <td> $5_ </td>
+    <td>LD D,B</td>
+    <td>LD D,C</td>
+    <td>LD D,D</td>
+    <td>LD D,E</td>
+    <td>LD D,H</td>
+    <td>LD D,L</td>
+    <td>LD D,(HL)</td>
+    <td>LD D,A</td>
+    <td>LD E,B</td>
+    <td>LD E,C</td>
+    <td>LD E,D</td>
+    <td>LD E,E</td>
+    <td>LD E,H</td>
+    <td>LD E,L</td>
+    <td>LD E,(HL)</td>
+    <td>LD E,A</td>
+  </tr>
+  <tr>
+    <td> $6_ </td>
+    <td>LD H,B</td>
+    <td>LD H,C</td>
+    <td>LD H,D</td>
+    <td>LD H,E</td>
+    <td>LD H,H</td>
+    <td>LD H,L</td>
+    <td>LD H,(HL)</td>
+    <td>LD H,A</td>
+    <td>LD L,B</td>
+    <td>LD L,C</td>
+    <td>LD L,D</td>
+    <td>LD L,E</td>
+    <td>LD L,H</td>
+    <td>LD L,L</td>
+    <td>LD L,(HL)</td>
+    <td>LD L,A</td>
+  </tr>
+  <tr>
+    <td> $7_ </td>
+    <td>LD (HL),B</td>
+    <td>LD (HL),C</td>
+    <td>LD (HL),D</td>
+    <td>LD (HL),E</td>
+    <td>LD (HL),H</td>
+    <td>LD (HL),L</td>
+    <td>HALT </td>
+    <td>LD (HL),A</td>
+    <td>LD A,B</td>
+    <td>LD A,C</td>
+    <td>LD A,D</td>
+    <td>LD A,E</td>
+    <td>LD A,H</td>
+    <td>LD A,L</td>
+    <td>LD A,(HL)</td>
+    <td>LD A,A</td>
+  </tr>
+  <tr>
+    <td> $8_ </td>
+    <td>ADD A,B</td>
+    <td>ADD A,C</td>
+    <td>ADD A,D</td>
+    <td>ADD A,E</td>
+    <td>ADD A,H</td>
+    <td>ADD A,L</td>
+    <td>ADD A,(HL)</td>
+    <td>ADD A,A</td>
+    <td>ADC A,B</td>
+    <td>ADC A,C</td>
+    <td>ADC A,D</td>
+    <td>ADC A,E</td>
+    <td>ADC A,H</td>
+    <td>ADC A,L</td>
+    <td>ADC A,(HL)</td>
+    <td>ADC A,A</td>
+  </tr>
+  <tr>
+    <td> $9_ </td>
+    <td>SUB B</td>
+    <td>SUB C</td>
+    <td>SUB D</td>
+    <td>SUB E</td>
+    <td>SUB H</td>
+    <td>SUB L</td>
+    <td>SUB (HL)</td>
+    <td>SUB A</td>
+    <td>SBC A,B</td>
+    <td>SBC A,C</td>
+    <td>SBC A,D</td>
+    <td>SBC A,E</td>
+    <td>SBC A,H</td>
+    <td>SBC A,L</td>
+    <td>SBC A,(HL)</td>
+    <td>SBC A,A</td>
+  </tr>
+  <tr>
+    <td> $a_ </td>
+    <td>AND B</td>
+    <td>AND C</td>
+    <td>AND D</td>
+    <td>AND E</td>
+    <td>AND H</td>
+    <td>AND L</td>
+    <td>AND (HL)</td>
+    <td>AND A</td>
+    <td>XOR B</td>
+    <td>XOR C</td>
+    <td>XOR D</td>
+    <td>XOR E</td>
+    <td>XOR H</td>
+    <td>XOR L</td>
+    <td>XOR (HL)</td>
+    <td>XOR A</td>
+  </tr>
+  <tr>
+    <td> $b_ </td>
+    <td>OR B</td>
+    <td>OR C</td>
+    <td>OR D</td>
+    <td>OR E</td>
+    <td>OR H</td>
+    <td>OR L</td>
+    <td>OR (HL)</td>
+    <td>OR A</td>
+    <td>CP B</td>
+    <td>CP C</td>
+    <td>CP D</td>
+    <td>CP E</td>
+    <td>CP H</td>
+    <td>CP L</td>
+    <td>CP (HL)</td>
+    <td>CP A</td>
+  </tr>
+  <tr>
+    <td> $c_ </td>
+    <td>RET NZ</td>
+    <td>POP BC</td>
+    <td>JP NZ,{nn}</td>
+    <td>JP {nn}</td>
+    <td>CALL NZ,{nn}</td>
+    <td>PUSH BC</td>
+    <td>ADD A,{n}</td>
+    <td>RST 00h</td>
+    <td>RET Z</td>
+    <td>RET </td>
+    <td>JP Z,{nn}</td>
+    <td>>> xxBITxx, 1, $cb</td>
+    <td>CALL Z,{nn}</td>
+    <td>CALL {nn}</td>
+    <td>ADC A,{n}</td>
+    <td>RST 08h</td>
+  </tr>
+  <tr>
+    <td> $d_ </td>
+    <td>RET NC</td>
+    <td>POP DE</td>
+    <td>JP NC,{nn}</td>
+    <td>OUT ({n}),A</td>
+    <td>CALL NC,{nn}</td>
+    <td>PUSH DE</td>
+    <td>SUB {n}</td>
+    <td>RST 10h</td>
+    <td>RET C</td>
+    <td>EXX </td>
+    <td>JP C,{nn}</td>
+    <td>IN A,({n})</td>
+    <td>CALL C,{nn}</td>
+    <td>>> xxIXxx, 1, $dd</td>
+    <td>SBC A,{n}</td>
+    <td>RST 18h</td>
+  </tr>
+  <tr>
+    <td> $e_ </td>
+    <td>RET PO</td>
+    <td>POP HL</td>
+    <td>JP PO,{nn}</td>
+    <td>EX (SP),HL</td>
+    <td>CALL PO,{nn}</td>
+    <td>PUSH HL</td>
+    <td>AND {n}</td>
+    <td>RST 20h</td>
+    <td>RET PE</td>
+    <td>JP (HL)</td>
+    <td>JP PE,{nn}</td>
+    <td>EX DE,HL</td>
+    <td>CALL PE,{nn}</td>
+    <td>>> xx80xx, 1, $ed</td>
+    <td>XOR {n}</td>
+    <td>RST 28h</td>
+  </tr>
+  <tr>
+    <td> $f_ </td>
+    <td>RET P</td>
+    <td>POP AF</td>
+    <td>JP P,{nn}</td>
+    <td>DI </td>
+    <td>CALL P,{nn}</td>
+    <td>PUSH AF</td>
+    <td>OR {n}</td>
+    <td>RST 30h</td>
+    <td>RET M</td>
+    <td>LD SP,HL</td>
+    <td>JP M,{nn}</td>
+    <td>EI </td>
+    <td>CALL M,{nn}</td>
+    <td>>> xxIYxx, 1, $fd</td>
+    <td>CP {n}</td>
+    <td>RST 38h</td>
+  </tr>
+</table>
+<p><a href="http://z80-heaven.wikidot.com/opcode-reference-chart">Compare</a></p>
+</html>
+<!doctype html>
+<html lang=en>
+<style>table, th, td { border: 1px solid black; border-collapse: collapse; }</style>
+<h1>Table: xxBITxx, 1, $cb</h1>
+<table>
+  <tr>
+    <th> / </th>
+    <th> $_0 </th>
+    <th> $_1 </th>
+    <th> $_2 </th>
+    <th> $_3 </th>
+    <th> $_4 </th>
+    <th> $_5 </th>
+    <th> $_6 </th>
+    <th> $_7 </th>
+    <th> $_8 </th>
+    <th> $_9 </th>
+    <th> $_a </th>
+    <th> $_b </th>
+    <th> $_c </th>
+    <th> $_d </th>
+    <th> $_e </th>
+    <th> $_f </th>
+  </tr>
+  <tr>
+    <td> $0_ </td>
+    <td>RLC B</td>
+    <td>RLC C</td>
+    <td>RLC D</td>
+    <td>RLC E</td>
+    <td>RLC H</td>
+    <td>RLC L</td>
+    <td>RLC (HL)</td>
+    <td>RLC A</td>
+    <td>RRC B</td>
+    <td>RRC C</td>
+    <td>RRC D</td>
+    <td>RRC E</td>
+    <td>RRC H</td>
+    <td>RRC L</td>
+    <td>RRC (HL)</td>
+    <td>RRC A</td>
+  </tr>
+  <tr>
+    <td> $1_ </td>
+    <td>RL B</td>
+    <td>RL C</td>
+    <td>RL D</td>
+    <td>RL E</td>
+    <td>RL H</td>
+    <td>RL L</td>
+    <td>RL (HL)</td>
+    <td>RL A</td>
+    <td>RR B</td>
+    <td>RR C</td>
+    <td>RR D</td>
+    <td>RR E</td>
+    <td>RR H</td>
+    <td>RR L</td>
+    <td>RR (HL)</td>
+    <td>RR A</td>
+  </tr>
+  <tr>
+    <td> $2_ </td>
+    <td>SLA B</td>
+    <td>SLA C</td>
+    <td>SLA D</td>
+    <td>SLA E</td>
+    <td>SLA H</td>
+    <td>SLA L</td>
+    <td>SLA (HL)</td>
+    <td>SLA A</td>
+    <td>SRA B</td>
+    <td>SRA C</td>
+    <td>SRA D</td>
+    <td>SRA E</td>
+    <td>SRA H</td>
+    <td>SRA L</td>
+    <td>SRA (HL)</td>
+    <td>SRA A</td>
+  </tr>
+  <tr>
+    <td> $3_ </td>
+    <td>SLL B</td>
+    <td>SLL C</td>
+    <td>SLL D</td>
+    <td>SLL E</td>
+    <td>SLL H</td>
+    <td>SLL L</td>
+    <td>SLL (HL)</td>
+    <td>SLL A</td>
+    <td>SRL B</td>
+    <td>SRL C</td>
+    <td>SRL D</td>
+    <td>SRL E</td>
+    <td>SRL H</td>
+    <td>SRL L</td>
+    <td>SRL (HL)</td>
+    <td>SRL A</td>
+  </tr>
+  <tr>
+    <td> $4_ </td>
+    <td>BIT 0,B</td>
+    <td>BIT 0,C</td>
+    <td>BIT 0,D</td>
+    <td>BIT 0,E</td>
+    <td>BIT 0,H</td>
+    <td>BIT 0,L</td>
+    <td>BIT 0,(HL)</td>
+    <td>BIT 0,A</td>
+    <td>BIT 1,B</td>
+    <td>BIT 1,C</td>
+    <td>BIT 1,D</td>
+    <td>BIT 1,E</td>
+    <td>BIT 1,H</td>
+    <td>BIT 1,L</td>
+    <td>BIT 1,(HL)</td>
+    <td>BIT 1,A</td>
+  </tr>
+  <tr>
+    <td> $5_ </td>
+    <td>BIT 2,B</td>
+    <td>BIT 2,C</td>
+    <td>BIT 2,D</td>
+    <td>BIT 2,E</td>
+    <td>BIT 2,H</td>
+    <td>BIT 2,L</td>
+    <td>BIT 2,(HL)</td>
+    <td>BIT 2,A</td>
+    <td>BIT 3,B</td>
+    <td>BIT 3,C</td>
+    <td>BIT 3,D</td>
+    <td>BIT 3,E</td>
+    <td>BIT 3,H</td>
+    <td>BIT 3,L</td>
+    <td>BIT 3,(HL)</td>
+    <td>BIT 3,A</td>
+  </tr>
+  <tr>
+    <td> $6_ </td>
+    <td>BIT 4,B</td>
+    <td>BIT 4,C</td>
+    <td>BIT 4,D</td>
+    <td>BIT 4,E</td>
+    <td>BIT 4,H</td>
+    <td>BIT 4,L</td>
+    <td>BIT 4,(HL)</td>
+    <td>BIT 4,A</td>
+    <td>BIT 5,B</td>
+    <td>BIT 5,C</td>
+    <td>BIT 5,D</td>
+    <td>BIT 5,E</td>
+    <td>BIT 5,H</td>
+    <td>BIT 5,L</td>
+    <td>BIT 5,(HL)</td>
+    <td>BIT 5,A</td>
+  </tr>
+  <tr>
+    <td> $7_ </td>
+    <td>BIT 6,B</td>
+    <td>BIT 6,C</td>
+    <td>BIT 6,D</td>
+    <td>BIT 6,E</td>
+    <td>BIT 6,H</td>
+    <td>BIT 6,L</td>
+    <td>BIT 6,(HL)</td>
+    <td>BIT 6,A</td>
+    <td>BIT 7,B</td>
+    <td>BIT 7,C</td>
+    <td>BIT 7,D</td>
+    <td>BIT 7,E</td>
+    <td>BIT 7,H</td>
+    <td>BIT 7,L</td>
+    <td>BIT 7,(HL)</td>
+    <td>BIT 7,A</td>
+  </tr>
+  <tr>
+    <td> $8_ </td>
+    <td>RES 0,B</td>
+    <td>RES 0,C</td>
+    <td>RES 0,D</td>
+    <td>RES 0,E</td>
+    <td>RES 0,H</td>
+    <td>RES 0,L</td>
+    <td>RES 0,(HL)</td>
+    <td>RES 0,A</td>
+    <td>RES 1,B</td>
+    <td>RES 1,C</td>
+    <td>RES 1,D</td>
+    <td>RES 1,E</td>
+    <td>RES 1,H</td>
+    <td>RES 1,L</td>
+    <td>RES 1,(HL)</td>
+    <td>RES 1,A</td>
+  </tr>
+  <tr>
+    <td> $9_ </td>
+    <td>RES 2,B</td>
+    <td>RES 2,C</td>
+    <td>RES 2,D</td>
+    <td>RES 2,E</td>
+    <td>RES 2,H</td>
+    <td>RES 2,L</td>
+    <td>RES 2,(HL)</td>
+    <td>RES 2,A</td>
+    <td>RES 3,B</td>
+    <td>RES 3,C</td>
+    <td>RES 3,D</td>
+    <td>RES 3,E</td>
+    <td>RES 3,H</td>
+    <td>RES 3,L</td>
+    <td>RES 3,(HL)</td>
+    <td>RES 3,A</td>
+  </tr>
+  <tr>
+    <td> $a_ </td>
+    <td>RES 4,B</td>
+    <td>RES 4,C</td>
+    <td>RES 4,D</td>
+    <td>RES 4,E</td>
+    <td>RES 4,H</td>
+    <td>RES 4,L</td>
+    <td>RES 4,(HL)</td>
+    <td>RES 4,A</td>
+    <td>RES 5,B</td>
+    <td>RES 5,C</td>
+    <td>RES 5,D</td>
+    <td>RES 5,E</td>
+    <td>RES 5,H</td>
+    <td>RES 5,L</td>
+    <td>RES 5,(HL)</td>
+    <td>RES 5,A</td>
+  </tr>
+  <tr>
+    <td> $b_ </td>
+    <td>RES 6,B</td>
+    <td>RES 6,C</td>
+    <td>RES 6,D</td>
+    <td>RES 6,E</td>
+    <td>RES 6,H</td>
+    <td>RES 6,L</td>
+    <td>RES 6,(HL)</td>
+    <td>RES 6,A</td>
+    <td>RES 7,B</td>
+    <td>RES 7,C</td>
+    <td>RES 7,D</td>
+    <td>RES 7,E</td>
+    <td>RES 7,H</td>
+    <td>RES 7,L</td>
+    <td>RES 7,(HL)</td>
+    <td>RES 7,A</td>
+  </tr>
+  <tr>
+    <td> $c_ </td>
+    <td>SET 0,B</td>
+    <td>SET 0,C</td>
+    <td>SET 0,D</td>
+    <td>SET 0,E</td>
+    <td>SET 0,H</td>
+    <td>SET 0,L</td>
+    <td>SET 0,(HL)</td>
+    <td>SET 0,A</td>
+    <td>SET 1,B</td>
+    <td>SET 1,C</td>
+    <td>SET 1,D</td>
+    <td>SET 1,E</td>
+    <td>SET 1,H</td>
+    <td>SET 1,L</td>
+    <td>SET 1,(HL)</td>
+    <td>SET 1,A</td>
+  </tr>
+  <tr>
+    <td> $d_ </td>
+    <td>SET 2,B</td>
+    <td>SET 2,C</td>
+    <td>SET 2,D</td>
+    <td>SET 2,E</td>
+    <td>SET 2,H</td>
+    <td>SET 2,L</td>
+    <td>SET 2,(HL)</td>
+    <td>SET 2,A</td>
+    <td>SET 3,B</td>
+    <td>SET 3,C</td>
+    <td>SET 3,D</td>
+    <td>SET 3,E</td>
+    <td>SET 3,H</td>
+    <td>SET 3,L</td>
+    <td>SET 3,(HL)</td>
+    <td>SET 3,A</td>
+  </tr>
+  <tr>
+    <td> $e_ </td>
+    <td>SET 4,B</td>
+    <td>SET 4,C</td>
+    <td>SET 4,D</td>
+    <td>SET 4,E</td>
+    <td>SET 4,H</td>
+    <td>SET 4,L</td>
+    <td>SET 4,(HL)</td>
+    <td>SET 4,A</td>
+    <td>SET 5,B</td>
+    <td>SET 5,C</td>
+    <td>SET 5,D</td>
+    <td>SET 5,E</td>
+    <td>SET 5,H</td>
+    <td>SET 5,L</td>
+    <td>SET 5,(HL)</td>
+    <td>SET 5,A</td>
+  </tr>
+  <tr>
+    <td> $f_ </td>
+    <td>SET 6,B</td>
+    <td>SET 6,C</td>
+    <td>SET 6,D</td>
+    <td>SET 6,E</td>
+    <td>SET 6,H</td>
+    <td>SET 6,L</td>
+    <td>SET 6,(HL)</td>
+    <td>SET 6,A</td>
+    <td>SET 7,B</td>
+    <td>SET 7,C</td>
+    <td>SET 7,D</td>
+    <td>SET 7,E</td>
+    <td>SET 7,H</td>
+    <td>SET 7,L</td>
+    <td>SET 7,(HL)</td>
+    <td>SET 7,A</td>
+  </tr>
+</table>
+<p><a href="http://z80-heaven.wikidot.com/opcode-reference-chart">Compare</a></p>
+</html>
+<!doctype html>
+<html lang=en>
+<style>table, th, td { border: 1px solid black; border-collapse: collapse; }</style>
+<h1>Table: xxIXxx, 1, $dd</h1>
+<table>
+  <tr>
+    <th> / </th>
+    <th> $_0 </th>
+    <th> $_1 </th>
+    <th> $_2 </th>
+    <th> $_3 </th>
+    <th> $_4 </th>
+    <th> $_5 </th>
+    <th> $_6 </th>
+    <th> $_7 </th>
+    <th> $_8 </th>
+    <th> $_9 </th>
+    <th> $_a </th>
+    <th> $_b </th>
+    <th> $_c </th>
+    <th> $_d </th>
+    <th> $_e </th>
+    <th> $_f </th>
+  </tr>
+  <tr>
+    <td> $0_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>ADD IX,BC</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $1_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>ADD IX,DE</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $2_ </td>
+    <td></td>
+    <td>LD IX,{nn}</td>
+    <td>LD ({nn}),IX</td>
+    <td>INC IX</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>ADD IX,IX</td>
+    <td>LD IX,({nn})</td>
+    <td>DEC IX</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $3_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>INC (IX+{d})</td>
+    <td>DEC (IX+{d})</td>
+    <td>LD (IX+{d}),{n}</td>
+    <td></td>
+    <td></td>
+    <td>ADD IX,AF</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $4_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD B,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD C,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $5_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD D,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD E,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $6_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD H,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD L,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $7_ </td>
+    <td>LD (IX+{d}),B</td>
+    <td>LD (IX+{d}),C</td>
+    <td>LD (IX+{d}),D</td>
+    <td>LD (IX+{d}),E</td>
+    <td>LD (IX+{d}),H</td>
+    <td>LD (IX+{d}),L</td>
+    <td></td>
+    <td>LD (IX+{d}),A</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD A,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $8_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>ADC A,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $9_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SUB (IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SBC A,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $a_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>AND (IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>XOR (IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $b_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>OR (IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>CP (IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $c_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>>> , 3, $dd cb 100</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $d_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $e_ </td>
+    <td></td>
+    <td>POP IX</td>
+    <td></td>
+    <td>EX (SP),IX</td>
+    <td></td>
+    <td>PUSH IX</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>JP (IX)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $f_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD SP,IX</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+<p><a href="http://z80-heaven.wikidot.com/opcode-reference-chart">Compare</a></p>
+</html>
+<!doctype html>
+<html lang=en>
+<style>table, th, td { border: 1px solid black; border-collapse: collapse; }</style>
+<h1>Table: xx80xx, 1, $ed</h1>
+<table>
+  <tr>
+    <th> / </th>
+    <th> $_0 </th>
+    <th> $_1 </th>
+    <th> $_2 </th>
+    <th> $_3 </th>
+    <th> $_4 </th>
+    <th> $_5 </th>
+    <th> $_6 </th>
+    <th> $_7 </th>
+    <th> $_8 </th>
+    <th> $_9 </th>
+    <th> $_a </th>
+    <th> $_b </th>
+    <th> $_c </th>
+    <th> $_d </th>
+    <th> $_e </th>
+    <th> $_f </th>
+  </tr>
+  <tr>
+    <td> $0_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $1_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $2_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $3_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $4_ </td>
+    <td>IN B,(C)</td>
+    <td>OUT (C),B</td>
+    <td>SBC HL,BC</td>
+    <td>LD ({nn}),BC</td>
+    <td>NEG </td>
+    <td>RETN </td>
+    <td>IM 0</td>
+    <td>LD I,A</td>
+    <td>IN C,(C)</td>
+    <td>OUT (C),C</td>
+    <td>ADC HL,BC</td>
+    <td>LD BC,({nn})</td>
+    <td></td>
+    <td>RETI </td>
+    <td></td>
+    <td>LD R,A</td>
+  </tr>
+  <tr>
+    <td> $5_ </td>
+    <td>IN D,(C)</td>
+    <td>OUT (C),D</td>
+    <td>SBC HL,DE</td>
+    <td>LD ({nn}),DE</td>
+    <td></td>
+    <td></td>
+    <td>IM 1</td>
+    <td>LD A,I</td>
+    <td>IN E,(C)</td>
+    <td>OUT (C),E</td>
+    <td>ADC HL,DE</td>
+    <td>LD DE,({nn})</td>
+    <td></td>
+    <td></td>
+    <td>IM 2</td>
+    <td>LD A,R</td>
+  </tr>
+  <tr>
+    <td> $6_ </td>
+    <td>IN H,(C)</td>
+    <td>OUT (C),H</td>
+    <td>SBC HL,HL</td>
+    <td>LD ({nn}),HL</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RRD </td>
+    <td>IN L,(C)</td>
+    <td>OUT (C),L</td>
+    <td>ADC HL,HL</td>
+    <td>LD HL,({nn})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RLD </td>
+  </tr>
+  <tr>
+    <td> $7_ </td>
+    <td></td>
+    <td></td>
+    <td>SBC HL,SP</td>
+    <td>LD ({nn}),SP</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>IN A,(C)</td>
+    <td>OUT (C),A</td>
+    <td>ADC HL,SP</td>
+    <td>LD SP,({nn})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $8_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $9_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $a_ </td>
+    <td>LDI </td>
+    <td>CPI </td>
+    <td>INI </td>
+    <td>OUTI </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LDD </td>
+    <td>CPD </td>
+    <td>IND </td>
+    <td>OUTD </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $b_ </td>
+    <td>LDIR </td>
+    <td>CPIR </td>
+    <td>INIR </td>
+    <td>OTIR </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LDDR </td>
+    <td>CPDR </td>
+    <td>INDR </td>
+    <td>OTDR </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $c_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $d_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $e_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $f_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+<p><a href="http://z80-heaven.wikidot.com/opcode-reference-chart">Compare</a></p>
+</html>
+<!doctype html>
+<html lang=en>
+<style>table, th, td { border: 1px solid black; border-collapse: collapse; }</style>
+<h1>Table: xxIYxx, 1, $fd</h1>
+<table>
+  <tr>
+    <th> / </th>
+    <th> $_0 </th>
+    <th> $_1 </th>
+    <th> $_2 </th>
+    <th> $_3 </th>
+    <th> $_4 </th>
+    <th> $_5 </th>
+    <th> $_6 </th>
+    <th> $_7 </th>
+    <th> $_8 </th>
+    <th> $_9 </th>
+    <th> $_a </th>
+    <th> $_b </th>
+    <th> $_c </th>
+    <th> $_d </th>
+    <th> $_e </th>
+    <th> $_f </th>
+  </tr>
+  <tr>
+    <td> $0_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>ADD IY,BC</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $1_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>ADD IY,DE</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $2_ </td>
+    <td></td>
+    <td>LD IY,{nn}</td>
+    <td>LD ({nn}),IY</td>
+    <td>INC IY</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>ADD IY,IY</td>
+    <td>LD IY,({nn})</td>
+    <td>DEC IY</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $3_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>INC (IY+{d})</td>
+    <td>DEC (IY+{d})</td>
+    <td>LD (IY+{d}),{n}</td>
+    <td></td>
+    <td></td>
+    <td>ADD IY,AF</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $4_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD B,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD C,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $5_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD D,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD E,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $6_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD H,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD L,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $7_ </td>
+    <td>LD (IY+{d}),B</td>
+    <td>LD (IY+{d}),C</td>
+    <td>LD (IY+{d}),D</td>
+    <td>LD (IY+{d}),E</td>
+    <td>LD (IY+{d}),H</td>
+    <td>LD (IY+{d}),L</td>
+    <td></td>
+    <td>LD (IY+{d}),A</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD A,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $8_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>ADD A,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>ADC A,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $9_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SUB (IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SBC A,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $a_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>AND (IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>XOR (IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $b_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>OR (IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>CP (IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $c_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>>> , 3, $fd cb 100</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $d_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $e_ </td>
+    <td></td>
+    <td>POP IY</td>
+    <td></td>
+    <td>EX (SP),IY</td>
+    <td></td>
+    <td>PUSH IY</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>JP (IY)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $f_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>LD SP,IY</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+<p><a href="http://z80-heaven.wikidot.com/opcode-reference-chart">Compare</a></p>
+</html>
+<!doctype html>
+<html lang=en>
+<style>table, th, td { border: 1px solid black; border-collapse: collapse; }</style>
+<h1>Table: , 3, $dd cb 100</h1>
+<table>
+  <tr>
+    <th> / </th>
+    <th> $_0 </th>
+    <th> $_1 </th>
+    <th> $_2 </th>
+    <th> $_3 </th>
+    <th> $_4 </th>
+    <th> $_5 </th>
+    <th> $_6 </th>
+    <th> $_7 </th>
+    <th> $_8 </th>
+    <th> $_9 </th>
+    <th> $_a </th>
+    <th> $_b </th>
+    <th> $_c </th>
+    <th> $_d </th>
+    <th> $_e </th>
+    <th> $_f </th>
+  </tr>
+  <tr>
+    <td> $0_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RLC (IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RRC (IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $1_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RL (IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RR (IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $2_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SLA (IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SRA (IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $3_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SLL (IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SRL (IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $4_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 0,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 1,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $5_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 2,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 3,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $6_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 4,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 5,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $7_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 6,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 7,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $8_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 0,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 1,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $9_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 2,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 3,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $a_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 4,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 5,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $b_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 6,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 7,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $c_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 0,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 1,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $d_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 2,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 3,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $e_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 4,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 5,(IX+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $f_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 6,(IX+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 7,(IX+{d})</td>
+    <td></td>
+  </tr>
+</table>
+<p><a href="http://z80-heaven.wikidot.com/opcode-reference-chart">Compare</a></p>
+</html>
+<!doctype html>
+<html lang=en>
+<style>table, th, td { border: 1px solid black; border-collapse: collapse; }</style>
+<h1>Table: , 3, $fd cb 100</h1>
+<table>
+  <tr>
+    <th> / </th>
+    <th> $_0 </th>
+    <th> $_1 </th>
+    <th> $_2 </th>
+    <th> $_3 </th>
+    <th> $_4 </th>
+    <th> $_5 </th>
+    <th> $_6 </th>
+    <th> $_7 </th>
+    <th> $_8 </th>
+    <th> $_9 </th>
+    <th> $_a </th>
+    <th> $_b </th>
+    <th> $_c </th>
+    <th> $_d </th>
+    <th> $_e </th>
+    <th> $_f </th>
+  </tr>
+  <tr>
+    <td> $0_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RLC (IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RRC (IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $1_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RL (IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RR (IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $2_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SLA (IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SRA (IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $3_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SLL (IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SRL (IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $4_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 0,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 1,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $5_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 2,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 3,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $6_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 4,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 5,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $7_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 6,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>BIT 7,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $8_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 0,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 1,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $9_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 2,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 3,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $a_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 4,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 5,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $b_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 6,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>RES 7,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $c_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 0,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 1,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $d_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 2,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 3,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $e_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 4,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 5,(IY+{d})</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td> $f_ </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 6,(IY+{d})</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>SET 7,(IY+{d})</td>
+    <td></td>
+  </tr>
+</table>
+<p><a href="http://z80-heaven.wikidot.com/opcode-reference-chart">Compare</a></p>
