@@ -1,7 +1,7 @@
 # dizzy
 Dizzy is a dead slow Z80 emulation environment in Python.
 
-Long term goal is to have a Z80 and a minimal environment hosted in a FPGA. Preferably, this would be an ICE40 or so, which would be enabled for a full Linux/ opens ource tool chain.
+Long term goal is to have a Z80 and a minimal environment hosted in a FPGA. Preferably, this would be an ICE40 or so, which would be enabled for a full Linux/ open source tool chain.
 
 The roadmap is:
 
