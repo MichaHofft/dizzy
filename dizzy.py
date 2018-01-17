@@ -2,6 +2,7 @@
 # pylint: disable=C0103
 # pylint: disable=C0301
 
+from enum import Enum
 import copy
 import sys
 import string
@@ -215,6 +216,7 @@ class OpCodeDef:
         self.am2 = ""
         self.bitPattern = []
         self.operation = ""
+        self.mtstate = map(lambda k: "", range(5*5))
 
 class OpCodeDefList:
     """ List of opcode definitios; holds the whole table, unsorted """
@@ -252,8 +254,8 @@ class OpCodeDefList:
         with open(fn) as tsvfile:
             tsvreader = csv.reader(tsvfile, delimiter="\t")
             for line in tsvreader:
-                # make sure we have 20 cols
-                while len(line) < 21:
+                # make sure we have enough cols
+                while len(line) < 21+5*5:
                     line.append("")
 
                 # continue reading a already created opcode by extending its bitpattern
@@ -287,6 +289,7 @@ class OpCodeDefList:
                 bp = "".join(line[7:15])
                 opc.bitPattern.append(bp)
                 opc.operation = line[19].strip()
+                opc.mtstate = line[21:21+5*5]                
 
                 # add opcode to the collection
                 self.add(opc)
@@ -2669,6 +2672,60 @@ class DisAssemble:
         # Done
         OPTIONS.debug(1, "Disassembling completed.")
 
+    def softExecuteBinary(self, fn: str, orgstart: int, orgend: int):
+        """ Soft execute binary. Decode every single instruction (like dis-asm) and 
+        call soft CPU for the respective bytes. """
+
+        # read into byte array
+        OPTIONS.debug(1, "Soft-executing binary file: ", fn)
+        try:
+            fh = open(fn, 'rb')
+            ba = bytearray(fh.read())
+        except Exception as e:
+            OPTIONS.error(113, "Error accessing %s gave %s" % (fn, str(e)))
+
+        pos = 0
+        potdata = []
+
+        # simply loop        
+        while pos < len(ba):
+
+            # did we pass org-end?
+            if orgend >= 0 and (pos+orgstart) >= orgend:
+                OPTIONS.debug(2, "ORG-END detected. Quitting.")
+                break
+
+            # the largest instruction is about 4 bytes
+            buf = []
+            for i in range(4):
+                if pos+i < len(ba):
+                    buf.append(ba[pos+i])
+
+            # test decode
+            OPTIONS.debug(2, "Test decode pos %d" % pos)
+            (nobytes, assyrec) = self.sr.decodeBytes(buf)
+
+            # success?
+            if nobytes < 1:
+                OPTIONS.error(122, "Error decoding instruction at %x .. Aborting!")
+                break
+
+            # decode instruction
+            OPTIONS.debugObject(2, "AssyRec = ", assyrec)
+
+            # put the raw bytes in
+            assyrec.orgpos = orgstart + pos
+            assyrec.bytes = bytearray(buf[0:nobytes])
+
+            # try to soft-cpu the bytes
+
+            # advance
+            self.assyrecs.add(assyrec)
+            pos += nobytes
+
+        # Done
+        OPTIONS.debug(1, "Disassembling completed.")
+
     def listSynthesis(self, listLabels=True):
         """ Listing synthesized information """
 
@@ -2714,6 +2771,113 @@ class DisAssemble:
         OPTIONS.debug(1, "Writing %d records completed." % len(self.assyrecs))
 
 #
+# Soft CPU
+#
+
+
+class SoftRegister:
+    """ Approach: have a iterable register bank with minimal OO features
+    per register. """
+
+    class Function(Enum):
+        NONE = 1
+        PURE_INC = 2
+        PURE_DEC = 3
+        ADD = 4
+        ADC = 5
+        SUB = 6
+        SBC = 7
+        INC = 8
+        DEC = 9
+        AND = 10
+        OR = 11
+        XOR = 12
+        CP = 13
+        RL = 14
+        RLC = 15
+        RR = 16
+        RRC = 17
+        SLA = 18
+        SRA = 19
+        SLL = 20
+        SRL = 21
+        RRD = 22
+
+    def __init__(self, name: str, compositeLow=None, compositeHi=None, latchNum=1, function=Function.NONE):
+        self.name = name
+        self.latchNum = 1
+        self.value = 0
+        if self.latchNum > 1:
+            self.value = map(lambda k: 0, range(latchNum))
+        self.function = SoftRegister.NONE
+        self.compositeLow = compositeLow
+        self.compositeHi = compositeHi
+
+    def latch(self, value: int, latchIdx=0):
+        if self.latchNum <= 1:
+            # mode A: single value, but may be composed
+            self.value = value
+            if self.compositeLow is not Null:
+                self.compositeLow.value = value & 0x00ff
+            if self.compositeHi is not Null:
+                self.compositeHi.value = (value & 0xff00) >> 8
+        else:
+            # mode B: multiple values, but not composed
+            if latchIdx < 0 or latchIdx >= self.latchNum:
+                return
+            self.value[latchIdx] = value
+
+    def output():
+        # src
+        v = self.value
+        if self.compositeLow is not Null:
+            v = self.compositeLow.value
+        if self.compositeHi is not Null:
+            v = v + (self.compositeHi.value) << 8
+        return v
+            
+
+class SoftCPU:
+    """ Software emulated CPU. Pre-stage towards FPGA-CPU, therefore this emulation
+    strives to do the things much hardware-alike """
+    
+    def __init__(self):
+        # allocated register bank
+        self.registers = {}
+        self.registers.append(SoftRegister('A'))
+        self.registers.append(SoftRegister('B'))
+        self.registers.append(SoftRegister('C'))
+        self.registers.append(SoftRegister('D'))
+        self.registers.append(SoftRegister('E'))
+        self.registers.append(SoftRegister('H'))
+        self.registers.append(SoftRegister('L'))
+        self.registers.append(SoftRegister('BC', self.registers['C'], self.registers['B']))
+        self.registers.append(SoftRegister('DE', self.registers['E'], self.registers['D']))
+        self.registers.append(SoftRegister('HL', self.registers['L'], self.registers['H']))
+        self.registers.append(SoftRegister('INSTR'))
+        self.registers.append(SoftRegister('I'))
+        self.registers.append(SoftRegister('R'))
+        self.registers.append(SoftRegister('PC'))
+        self.registers.append(SoftRegister('SP'))
+        self.registers.append(SoftRegister('IX'))
+        self.registers.append(SoftRegister('IY'))
+        self.registers.append(SoftRegister('DISP', function=Function.ADD))
+        self.registers.append(SoftRegister('ABUF'))
+        self.registers.append(SoftRegister('CBUF'))
+        self.registers.append(SoftRegister('DBUF'))
+        self.registers.append(SoftRegister('ABUS'))
+        self.registers.append(SoftRegister('DBUS'))
+
+    def performCycle(self, operations: str):
+        """ Performs one HW emulation cycle. `operations` contains a comma divided list of 
+        operation labels, such as `DBUF.L.IN`, which would be: "latch data bus buffer inward enabled" """
+
+        # split operations
+        ops = map(lambda k: k.trim().upper(), operations.split(sep=','))
+
+        # this level of emulation is pretty simple, nearly stupid
+
+#
 # MAIN
 #
 
@@ -2737,6 +2901,7 @@ def dizzy():
     parser.add_argument("-os", "--org-start", help="assume start address of binary", action="store")
     parser.add_argument("-oe", "--org-end", help="proposes address, where code ends and data only starts", action="store")
     parser.add_argument("-ds", "--data-section", help="(multiple) pair of start,end address", action="append")
+    parser.add_argument("-e", "--soft-execute", help="read binary file and feed to soft CPU", action="store")
     args = parser.parse_args()
 
     # verbosity
@@ -2857,6 +3022,38 @@ def dizzy():
         # output
         if args.out_file is not None:
             d.outputDisAssembly(args.out_file)
+
+    # soft execute
+    if args.soft_execute is not None:
+
+        # disasm
+        OPTIONS.debug(1, "Soft executing " + args.soft_execute + "..")
+
+        # tables
+        sr = SetOfRainbows(opcodes, syms)
+        sr.prepare()
+
+        # debug?
+        if args.list_tables:
+            sr.outputRainbowTablesAsHtml()
+
+        # org?
+        orgstart = 0
+        if args.org_start is not None:
+            n = labels.checkForImmediateExpression(args.org_start, 0, 65535, targetBits=16, orgpos=0)
+            if n is not None:
+                orgstart = n
+        orgend = -1
+        if args.org_end is not None:
+            n = labels.checkForImmediateExpression(args.org_end, 0, 65535, targetBits=16, orgpos=0)
+            if n is not None:
+                orgend = n
+        OPTIONS.debug(1,"Assuming org-start $%04x, org-end $%04x .." % (orgstart, orgend))
+
+        # try
+        d = DisAssemble(opcodes, syms, labels, sr)
+        d.softExecuteBinary(args.soft_execute, orgstart, orgend)
+
 
 if __name__ == "__main__":
 
