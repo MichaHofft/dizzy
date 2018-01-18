@@ -2774,108 +2774,214 @@ class DisAssemble:
 # Soft CPU
 #
 
+class SoftFunction(Enum):
+    NONE = 1
+    PURE_INC = 2
+    PURE_DEC = 3
+    ADD = 4
+    ADC = 5
+    SUB = 6
+    SBC = 7
+    INC = 8
+    DEC = 9
+    AND = 10
+    OR = 11
+    XOR = 12
+    CP = 13
+    RL = 14
+    RLC = 15
+    RR = 16
+    RRC = 17
+    SLA = 18
+    SRA = 19
+    SLL = 20
+    SRL = 21
+    RRD = 22
 
 class SoftRegister:
     """ Approach: have a iterable register bank with minimal OO features
     per register. """
 
-    class Function(Enum):
-        NONE = 1
-        PURE_INC = 2
-        PURE_DEC = 3
-        ADD = 4
-        ADC = 5
-        SUB = 6
-        SBC = 7
-        INC = 8
-        DEC = 9
-        AND = 10
-        OR = 11
-        XOR = 12
-        CP = 13
-        RL = 14
-        RLC = 15
-        RR = 16
-        RRC = 17
-        SLA = 18
-        SRA = 19
-        SLL = 20
-        SRL = 21
-        RRD = 22
-
-    def __init__(self, name: str, compositeLow=None, compositeHi=None, latchNum=1, function=Function.NONE):
+    def __init__(self, name: str, compositeLow=None, compositeHi=None, latchNum=1, function=SoftFunction.NONE, bits=8):
         self.name = name
         self.latchNum = 1
-        self.value = 0
+        self.theValue = 0
         if self.latchNum > 1:
             self.value = map(lambda k: 0, range(latchNum))
-        self.function = SoftRegister.NONE
+        self.function = function
         self.compositeLow = compositeLow
         self.compositeHi = compositeHi
+        self.bits = bits 
 
     def latch(self, value: int, latchIdx=0):
         if self.latchNum <= 1:
             # mode A: single value, but may be composed
-            self.value = value
-            if self.compositeLow is not Null:
-                self.compositeLow.value = value & 0x00ff
-            if self.compositeHi is not Null:
-                self.compositeHi.value = (value & 0xff00) >> 8
+            self.theValue = value
+            if self.compositeLow is not None:
+                self.compositeLow.theValue = value & 0x00ff
+            if self.compositeHi is not None:
+                self.compositeHi.theValue = (value & 0xff00) >> 8
         else:
             # mode B: multiple values, but not composed
             if latchIdx < 0 or latchIdx >= self.latchNum:
                 return
-            self.value[latchIdx] = value
+            self.theValue[latchIdx] = value
 
-    def output():
-        # src
-        v = self.value
-        if self.compositeLow is not Null:
-            v = self.compositeLow.value
-        if self.compositeHi is not Null:
-            v = v + (self.compositeHi.value) << 8
-        return v
-            
+    def performFunction(self, function: SoftFunction, value):
+        # unary or binary?
+        if self.latchNum <= 1:
+            # unary
+            if function == SoftFunction.NONE:
+                return value
+            if function == SoftFunction.PURE_INC:
+                return value + 1
+            if function == SoftFunction.PURE_DEC:
+                return value - 1
+        else:
+            # binary
+            if function == SoftFunction.NONE:
+                return value[0]
+            if function == SoftFunction.ADD:
+                return value[0] + value[1]
+
+    def output(self):
+        # calculation and HI/LO are mutually exclusive
+        if self.function ==SoftFunction.NONE:
+            # register behaviour and 16bit special case
+            v = self.theValue
+            if self.compositeLow is not None:
+                v = self.compositeLow.theValue
+            if self.compositeHi is not None:
+                v = v + (self.compositeHi.theValue) << 8
+            return v
+        else:
+            # ALU / INCer
+            v = self.performFunction(self.function, self.theValue)
+            return v
+
+    def setFunction(self, function: SoftFunction):
+        self.function = function
+
+    @property
+    def value(self):
+        return self.output()
+
+    @value.setter
+    def value(self, newval):
+        self.latch(newval)
 
 class SoftCPU:
     """ Software emulated CPU. Pre-stage towards FPGA-CPU, therefore this emulation
     strives to do the things much hardware-alike """
+
+    def addRegister(self, r: SoftRegister):
+        self.registers[r.name] = r
+
+    def registerInfo(self):
+        """ Short debug string """
+        # keys = list(self.registers.keys())
+        # keys.sort()
+        keys = "PC A B C D E F H L BC DE HL IX IY DISP SP INC2 ABUS DBUS ABUF DBUF".split(sep=' ')
+        res = ""
+        for k in keys:
+            r = self.registers[k]
+            res += "" + r.name + " {num:{fill}{width}x} ".format(num=r.value, fill='0', width=int(r.bits/4))
+        return res
     
     def __init__(self):
         # allocated register bank
         self.registers = {}
-        self.registers.append(SoftRegister('A'))
-        self.registers.append(SoftRegister('B'))
-        self.registers.append(SoftRegister('C'))
-        self.registers.append(SoftRegister('D'))
-        self.registers.append(SoftRegister('E'))
-        self.registers.append(SoftRegister('H'))
-        self.registers.append(SoftRegister('L'))
-        self.registers.append(SoftRegister('BC', self.registers['C'], self.registers['B']))
-        self.registers.append(SoftRegister('DE', self.registers['E'], self.registers['D']))
-        self.registers.append(SoftRegister('HL', self.registers['L'], self.registers['H']))
-        self.registers.append(SoftRegister('INSTR'))
-        self.registers.append(SoftRegister('I'))
-        self.registers.append(SoftRegister('R'))
-        self.registers.append(SoftRegister('PC'))
-        self.registers.append(SoftRegister('SP'))
-        self.registers.append(SoftRegister('IX'))
-        self.registers.append(SoftRegister('IY'))
-        self.registers.append(SoftRegister('DISP', function=Function.ADD))
-        self.registers.append(SoftRegister('ABUF'))
-        self.registers.append(SoftRegister('CBUF'))
-        self.registers.append(SoftRegister('DBUF'))
-        self.registers.append(SoftRegister('ABUS'))
-        self.registers.append(SoftRegister('DBUS'))
+        self.addRegister(SoftRegister('A'))
+        self.addRegister(SoftRegister('F'))
+        self.addRegister(SoftRegister('B'))
+        self.addRegister(SoftRegister('C'))
+        self.addRegister(SoftRegister('D'))
+        self.addRegister(SoftRegister('E'))
+        self.addRegister(SoftRegister('H'))
+        self.addRegister(SoftRegister('L'))
+        self.addRegister(SoftRegister('BC', self.registers['C'], self.registers['B'], bits=16))
+        self.addRegister(SoftRegister('DE', self.registers['E'], self.registers['D'], bits=16))
+        self.addRegister(SoftRegister('HL', self.registers['L'], self.registers['H'], bits=16))
+        self.addRegister(SoftRegister('INSTR'))
+        self.addRegister(SoftRegister('I'))
+        self.addRegister(SoftRegister('R'))
+        self.addRegister(SoftRegister('PC', bits=16))
+        self.addRegister(SoftRegister('SP', bits=16))
+        self.addRegister(SoftRegister('IX', bits=16))
+        self.addRegister(SoftRegister('IY', bits=16))
+        self.addRegister(SoftRegister('DISP', function=SoftFunction.ADD, bits=16))
+        self.addRegister(SoftRegister('INC2', function=SoftFunction.PURE_INC, bits=16))
+        self.addRegister(SoftRegister('ABUF', bits=16))
+        self.addRegister(SoftRegister('CBUF'))
+        self.addRegister(SoftRegister('DBUF'))
+        self.addRegister(SoftRegister('ABUS', bits=16))
+        self.addRegister(SoftRegister('DBUS'))
 
     def performCycle(self, operations: str):
         """ Performs one HW emulation cycle. `operations` contains a comma divided list of 
         operation labels, such as `DBUF.L.IN`, which would be: "latch data bus buffer inward enabled" """
 
+        OPTIONS.debug(2, "performCycle for operations %s" % operations)
+
         # split operations
-        ops = map(lambda k: k.trim().upper(), operations.split(sep=','))
+        ops = map(lambda k: k.strip().upper(), operations.split(sep=','))
+
+        # shortcut
+        r = self.registers
 
         # this level of emulation is pretty simple, nearly stupid
+        # there is an implicit execution order, which is 
+        # basically: address bus, data bus in, data bus out
+
+        for op in ops:
+
+            if op == "BC.OE":
+                r['ABUS'].value = r['BC'].value
+
+            if op == "DE.OE":
+                r['ABUS'].value = r['DE'].value
+
+            if op == "HL.OE":
+                r['ABUS'].value = r['HL'].value
+
+            if op == "PC.OE":
+                r['ABUS'].value = r['PC'].value
+
+            if op == "SP.OE":
+                r['ABUS'].value = r['SP'].value
+
+            if op == "INC2.P":
+                r['INC2'].setFunction(SoftFunction.PURE_INC)
+
+            if op == "INC2.N":
+                r['INC2'].setFunction(SoftFunction.PURE_DEC)
+
+            if op == "INC2.L":
+                r['INC2'].value = r['ABUS'].value
+
+            if op == "INC2.OE":
+                r['ABUS'].value = r['INC2'].value
+
+            if op == "DISP.L.X":
+                r['DISP'].latch(r['IX'].value, latchIdx=0)
+
+            if op == "DISP.L.X":
+                r['DISP'].latch(r['IX'].value, latchIdx=0)
+
+            if op == "DISP.L.Y":
+                r['DISP'].latch(r['IY'].value, latchIdx=0)
+
+            if op == "DISP.L.DBUS":
+                r['DISP'].latch(r['DBUS'].value, latchIdx=1)
+
+            if op == "DISP.OE":
+                r['ABUS'].value = r['DISP'].value
+            
+            if op == 'ABUF.L':
+                OPTIONS.debug(2, "External adress bus: $%x" % r['ABUF'].value)
+
+        # Done
+        OPTIONS.debug(2, "End of cycle. Registers: %s" % self.registerInfo())
 
 #
 # MAIN
@@ -3052,6 +3158,11 @@ def dizzy():
 
         # try
         d = DisAssemble(opcodes, syms, labels, sr)
+        cpu = SoftCPU()
+        cpu.registers['PC'].value = 0x100
+        cpu.performCycle("PC.OE, ABUF.L, INC2.P")
+        cpu.performCycle("INC2.P, INC2.L, INC2.OE, DBUF.IN")
+        cpu.performCycle("INC2.P, INC2.OE, PC.L.INC2, DBUF.IN, INSTR.L")
         d.softExecuteBinary(args.soft_execute, orgstart, orgend)
 
 
