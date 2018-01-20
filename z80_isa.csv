@@ -3,14 +3,14 @@ Regs: A, (B,C), (D,E), (H,L), PC, SP, IX, IY, F { C, N, P/V, H, Z, S }, I=Interr
 AM: I=Immediate, IE=Immediate Extended, MPZA=Modified Page Zero, L=Relative Jump, E=Extended, EJ=Extended Jump, EP=Extended Port, X=Indexed, R=Register, M=Implied, RI=Register Indirect, B=Bit																																													
 																					M1					M2					M3					M4					M5				
 OP Code	ASM	OP1	OP2	AM1	AM2	Offset	Bit pattern for offset									M Cycles	T States	Flags affect	Operation	Notes	T1	T2	T3	T4	T5	T1	T2	T3	T4	T5	T1	T2	T3	T4	T5	T1	T2	T3	T4	T5	T1	T2	T3	T4	T5
-LD	LD r,s	{r}	{s}	R	R	0	0	1	r	r	r	s	s	s		1	4		r ← s		PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, IREG.L	{s}.OE, TMP.L	TMP.OE.DBUS, {r}.L																				
+LD	LD r,s	{r}	{s}	R	R	0	0	1	r	r	r	s	s	s		1	4		r ← s		PC.OE, ABUF.L, INC2.P	INC2.P, INC2.L, INC2.OE, DBUF.IN	INC2.P, INC2.OE, PC.L.INC2, DBUF.IN, INSTR.L	{s}.OE, TMP.L	TMP.OE.DBUS, {r}.L																				
 																																													
-LD	LD r,n	{r}	{n}	R	I	0	0	0	r	r	r	1	1	0		2	7 (4,3)		r ← n		PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, IREG.L	X	-	PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, {r}.L																	
+LD	LD r,n	{r}	{n}	R	I	0	0	0	r	r	r	1	1	0		2	7 (4,3)		r ← n		PC.OE, ABUF.L, INC2.P	INC2.P, INC2.L, INC2.OE, DBUF.IN	INC2.P, INC2.OE, PC.L.INC2, DBUF.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, {r}.L																	
 						1	n	n	n	n	n	n	n	n																															
 																																													
-LD	LD r,(HL)	{r}	(HL)	R	RI	0	0	1	r	r	r	1	1	0		2	7 (4,3)		r ← (HL)	(HL) == 110 register!	PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, IREG.L	X	-	HL.OE, ABUF.L	DBUF.IN	DBUF.IN, {r}.L																	
+LD	LD r,(HL)	{r}	(HL)	R	RI	0	0	1	r	r	r	1	1	0		2	7 (4,3)		r ← (HL)	(HL) == 110 register!	PC.OE, ABUF.L, INC2.P	INC2.P, INC2.L, INC2.OE, DBUF.IN	INC2.P, INC2.OE, PC.L.INC2, DBUF.IN, INSTR.L	X	-	HL.OE, ABUF.L	DBUF.IN	DBUF.IN, {r}.L																	
 																																													
-LD	LD r,(IX+d)	{r}	(IX+{d})	R	X	0	1	1	0	1	1	1	0	1	DD	5	19 (4,4,3,5,3)		r ← (IX+d)	This bit seems to indicate X/Y	PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, IREG.L	X	-	PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, IREG.L	X	-	PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, TMP.L	-	-	TMP.OE.DBUS, DISP.L.X	DISP.OE, ABUF.L	DBUF.IN	DBUF.IN, {r}.L						
+LD	LD r,(IX+d)	{r}	(IX+{d})	R	X	0	1	1	0	1	1	1	0	1	DD	5	19 (4,4,3,5,3)		r ← (IX+d)	This bit seems to indicate X/Y	PC.OE, ABUF.L, INC2.P	INC2.P, INC2.L, INC2.OE, DBUF.IN	INC2.P, INC2.OE, PC.L.INC2, DBUF.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, TMP.L	-	-	TMP.OE.DBUS, DISP.L.X	DISP.OE, ABUF.L	DBUF.IN	DBUF.IN, {r}.L						
 						1	0	1	r	r	r	1	1	0																															
 						2	d	d	d	d	d	d	d	d																															
 																																													
