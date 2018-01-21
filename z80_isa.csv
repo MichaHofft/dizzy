@@ -3,49 +3,49 @@ Regs: A, (B,C), (D,E), (H,L), PC, SP, IX, IY, F { C, N, P/V, H, Z, S }, I=Interr
 AM: I=Immediate, IE=Immediate Extended, MPZA=Modified Page Zero, L=Relative Jump, E=Extended, EJ=Extended Jump, EP=Extended Port, X=Indexed, R=Register, M=Implied, RI=Register Indirect, B=Bit																																													
 																					M1					M2					M3					M4					M5				
 OP Code	ASM	OP1	OP2	AM1	AM2	Offset	Bit pattern for offset									M Cycles	T States	Flags affect	Operation	Notes	T1	T2	T3	T4	T5	T1	T2	T3	T4	T5	T1	T2	T3	T4	T5	T1	T2	T3	T4	T5	T1	T2	T3	T4	T5
-LD	LD r,s	{r}	{s}	R	R	0	0	1	r	r	r	s	s	s		1	4		r ← s		PC.OE, ABUF.L, INC2.P	INC2.P, INC2.L, INC2.OE, DBUF.IN	INC2.P, INC2.OE, PC.L.INC2, DBUF.IN, INSTR.L	{s}.OE, TMP.L	TMP.OE.DBUS, {r}.L																				
+LD	LD r,s	{r}	{s}	R	R	0	0	1	r	r	r	s	s	s		1	4		r ← s		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	{s}.OE, TMP.L	TMP.OE.DBUS, {r}.L																				
 																																													
-LD	LD r,n	{r}	{n}	R	I	0	0	0	r	r	r	1	1	0		2	7 (4,3)		r ← n		PC.OE, ABUF.L, INC2.P	INC2.P, INC2.L, INC2.OE, DBUF.IN	INC2.P, INC2.OE, PC.L.INC2, DBUF.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, {r}.L																	
+LD	LD r,n	{r}	{n}	R	I	0	0	0	r	r	r	1	1	0		2	7 (4,3)		r ← n		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, {r}.L																	
 						1	n	n	n	n	n	n	n	n																															
 																																													
-LD	LD r,(HL)	{r}	(HL)	R	RI	0	0	1	r	r	r	1	1	0		2	7 (4,3)		r ← (HL)	(HL) == 110 register!	PC.OE, ABUF.L, INC2.P	INC2.P, INC2.L, INC2.OE, DBUF.IN	INC2.P, INC2.OE, PC.L.INC2, DBUF.IN, INSTR.L	X	-	HL.OE, ABUF.L	DBUF.IN	DBUF.IN, {r}.L																	
+LD	LD r,(HL)	{r}	(HL)	R	RI	0	0	1	r	r	r	1	1	0		2	7 (4,3)		r ← (HL)	(HL) == 110 register!	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	HL.OE, ABUF.L	DBUF.L.IN	DBUF.L.IN, {r}.L																	
 																																													
-LD	LD r,(IX+d)	{r}	(IX+{d})	R	X	0	1	1	0	1	1	1	0	1	DD	5	19 (4,4,3,5,3)		r ← (IX+d)	This bit seems to indicate X/Y	PC.OE, ABUF.L, INC2.P	INC2.P, INC2.L, INC2.OE, DBUF.IN	INC2.P, INC2.OE, PC.L.INC2, DBUF.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P	INC2.P, PC.L.INC2, DBUF.IN	DBUF.IN, TMP.L	-	-	TMP.OE.DBUS, DISP.L.X	DISP.OE, ABUF.L	DBUF.IN	DBUF.IN, {r}.L						
+LD	LD r,(IX+d)	{r}	(IX+{d})	R	X	0	1	1	0	1	1	1	0	1	DD	5	19 (4,4,3,5,3)		r ← (IX+d)	This bit seems to indicate X/Y	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, TMP.L	-	-	TMP.OE.DBUS, DISP.L.X, DISP.L.DBUS	DISP.OE, ABUF.L	DBUF.L.IN	DBUF.L.IN, {r}.L						
 						1	0	1	r	r	r	1	1	0																															
 						2	d	d	d	d	d	d	d	d																															
 																																													
-LD	LD r,(IY+d)	{r}	(IY+{d})	R	X	0	1	1	1	1	1	1	0	1	FD	5	19 (4,4,3,5,3)		r ← (IY+d)																										
+LD	LD r,(IY+d)	{r}	(IY+{d})	R	X	0	1	1	1	1	1	1	0	1	FD	5	19 (4,4,3,5,3)		r ← (IY+d)		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, TMP.L	-	-	TMP.OE.DBUS, DISP.L.Y	DISP.OE, ABUF.L	DBUF.L.IN	DBUF.L.IN, {r}.L						
 						1	0	1	r	r	r	1	1	0																															
 						2	d	d	d	d	d	d	d	d																															
 																																													
-LD	LD (HL),r	(HL)	{r}	RI	R	0	0	1	1	1	0	r	r	r		2	7 (4,3)		(HL) ← r																										
+LD	LD (HL),r	(HL)	{r}	RI	R	0	0	1	1	1	0	r	r	r		2	7 (4,3)		(HL) ← r		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	HL.OE, ABUF.L	{r}.OE, DBUF.L.OUT	{r}.OE																	
 																																													
-LD	LD (IX+d),r	(IX+{d})	{r}	X	R	0	1	1	0	1	1	1	0	1	DD	5	19 (4,4,3,5,3)		(IX+d) ← r																										
+LD	LD (IX+d),r	(IX+{d})	{r}	X	R	0	1	1	0	1	1	1	0	1	DD	5	19 (4,4,3,5,3)		(IX+d) ← r		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, TMP.L	-	-	TMP.OE.DBUS, DISP.L.X, DISP.L.DBUS	DISP.OE, ABUF.L, {r}.OE	{r}.OE, DBUF.L.OUT	{r}.OE						
 						1	0	1	1	1	0	r	r	r						The 110 is a reverse reg index?																									
 						2	d	d	d	d	d	d	d	d																															
 																																													
-LD	LD (IY+d),r	(IY+{d})	{r}	X	R	0	1	1	1	1	1	1	0	1	FD	5	19 (4,4,3,5,3)		(IY+d) ← r																										
+LD	LD (IY+d),r	(IY+{d})	{r}	X	R	0	1	1	1	1	1	1	0	1	FD	5	19 (4,4,3,5,3)		(IY+d) ← r		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, TMP.L	-	-	TMP.OE.DBUS, DISP.L.Y, DISP.L.DBUS	DISP.OE, ABUF.L, {r}.OE	{r}.OE, DBUF.L.OUT	{r}.OE						
 						1	0	1	1	1	0	r	r	r																															
 						2	d	d	d	d	d	d	d	d																															
 																																													
-LD	LD (HL),n	(HL)	{n}	RI	I	0	0	0	1	1	0	1	1	0	36	3	10 (4,3,3)		(HL) ← n	(HL) == 110 register!																									
+LD	LD (HL),n	(HL)	{n}	RI	I	0	0	0	1	1	0	1	1	0	36	3	10 (4,3,3)		(HL) ← n	(HL) == 110 register!	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, TMP.L	-	-	TMP.OE.DBUS, HL.OE, ABUF.L	TMP.OE.DBUS, DBUF.L.OUT	TMP.OE.DBUS	-											
 							n	n	n	n	n	n	n	n																															
 																																													
-LD	LD (IX+d),n	(IX+{d})	{n}	X	I	0	1	1	0	1	1	1	0	1	DD	5	19 (4,4,3,5,3)		(IX+d) ← n																										
+LD	LD (IX+d),n	(IX+{d})	{n}	X	I	0	1	1	0	1	1	1	0	1	DD	5	19 (4,4,3,5,3)		(IX+d) ← n		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, DISP.L.DBUS, DISP.L.X	-	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, TMP.L	-	-	TMP.OE.DBUS, DISP.OE, ABUF.L	TMP.OE.DBUS, DBUF.L.OUT	TMP.OE.DBUS	-	-
 						1	0	0	1	1	0	1	1	0	36																														
 						2	d	d	d	d	d	d	d	d																															
 						3	n	n	n	n	n	n	n	n																															
 																																													
-LD	LD (IY+d),n	(IY+{d})	{n}	X	I	0	1	1	1	1	1	1	0	1	FD	5	19 (4,4,3,5,3)		(IY+d) ← n																										
+LD	LD (IY+d),n	(IY+{d})	{n}	X	I	0	1	1	1	1	1	1	0	1	FD	5	19 (4,4,3,5,3)		(IY+d) ← n		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, DISP.L.DBUS, DISP.L.Y	-	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, TMP.L	-	-	TMP.OE.DBUS, DISP.OE, ABUF.L	TMP.OE.DBUS, DBUF.L.OUT	TMP.OE.DBUS	-	-
 						1	0	0	1	1	0	1	1	0	36																														
 						2	d	d	d	d	d	d	d	d																															
 						3	n	n	n	n	n	n	n	n																															
 																																													
-LD	LD A,(BC)	A	(BC)	R	RI	0	0	0	0	0	1	0	1	0	0A	2	7 (4,3)		A ← (BC)	(BC) or (DE) ?																									
+LD	LD A,(BC)	A	(BC)	R	RI	0	0	0	0	0	1	0	1	0	0A	2	7 (4,3)		A ← (BC)	(BC) or (DE) ?	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	BC.OE, ABUF.L	DBUF.L.IN	DBUF.L.IN, A.L	-	-															
 																																													
-LD	LD A,(DE)	A	(DE)	R	RI	0	0	0	0	1	1	0	1	0	1A	2	7 (4,3)		A ← (DE)	Register source or dest?																									
+LD	LD A,(DE)	A	(DE)	R	RI	0	0	0	0	1	1	0	1	0	1A	2	7 (4,3)		A ← (DE)	Register source or dest?	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	DE.OE, ABUF.L	DBUF.L.IN	DBUF.L.IN, A.L	-	-															
 																																													
-LD	LD A,(nn)	A	({nn})	R	E	0	0	0	1	1	1	0	1	0	3A	4	13 (4,3,3,3)		A ← (nn)																										
+LD	LD A,(nn)	A	({nn})	R	E	0	0	0	1	1	1	0	1	0	3A	4	13 (4,3,3,3)		A ← (nn)		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, TMP.L	-	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, ABUS.H.L.DBUS	-	-	TMP.OE, ABUS.L.L.DBUS	ABUF.L	DBUF.L.IN	DBUF.L.IN, A.L	-					
 						1	n	n	n	n	n	n	n	n																															
 						2	n	n	n	n	n	n	n	n																															
 																																													
@@ -69,11 +69,11 @@ LD	LD I,A	I	A	R	R	0	1	1	1	0	1	1	0	1	ED	2	9 (4,5)		Interrupt vector reg ← A
 LD	LD R,A	R	A	R	R	0	1	1	1	0	1	1	0	1	ED	2	9 (4,5)		Memory refresh reg ← A																										
 						1	0	1	0	0	1	1	1	1	4F																														
 																																													
-LD	LD RR,nn	{RR}	{nn}	R	IE	0	0	0	R	R	0	0	0	1		2	10 (4,3,3)		Register pair ← nn																										
+LD	LD RR,nn	{RR}	{nn}	R	IE	0	0	0	R	R	0	0	0	1		2	10 (4,3,3)		Register pair ← nn		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, {RR}.L.L	-	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, {RR}.H.L	-	-				-	-					
 						1	n	n	n	n	n	n	n	n																															
 						2	n	n	n	n	n	n	n	n																															
 																																													
-LD	LD IX,nn	IX	{nn}	R	IE	0	1	1	0	1	1	1	0	1	DD	4	14 (4,4,3,3)		IX ← nn																										
+LD	LD IX,nn	IX	{nn}	R	IE	0	1	1	0	1	1	1	0	1	DD	4	14 (4,4,3,3)		IX ← nn		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, IX.L.L	-	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, IX.H.L	-	-					
 						1	0	0	1	0	0	0	0	1	21																														
 						2	n	n	n	n	n	n	n	n																															
 						3	n	n	n	n	n	n	n	n																															

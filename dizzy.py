@@ -819,12 +819,11 @@ class Labels:
                 OPTIONS.indentTo(6)
                 res = self.evaluateParsedExpression(l, targetBits=targetBits, recurseDepth=recurseDepth+1)
                 if res is not None:
-                    # bring it to target bits
-                    res &= (1 << targetBits) - 1
                     OPTIONS.debug(2, ".. eval parsed list gave %d!" % res)
                     # to be square, also constrain to limits
                     if res >= lowerLimit and res <= upperLimit:
-                        return res
+                        # TWO'S complement
+                        return Helper.toTwosComplement(res, targetBits=8)
                 return None
 
         # no :-(
@@ -2425,6 +2424,7 @@ class SoftFunction(Enum):
     SLL = 20
     SRL = 21
     RRD = 22
+    ADD_TWO_COMPL_OP2 = 23
 
 class SoftRegister:
     """ Approach: have a iterable register bank with minimal OO features
@@ -2432,10 +2432,10 @@ class SoftRegister:
 
     def __init__(self, name: str, compositeLow=None, compositeHi=None, latchNum=1, function=SoftFunction.NONE, bits=8):
         self.name = name
-        self.latchNum = 1
+        self.latchNum = latchNum
         self.theValue = 0
         if self.latchNum > 1:
-            self.value = map(lambda k: 0, range(latchNum))
+            self.theValue = list(map(lambda k: 0, range(latchNum)))
         self.function = function
         self.compositeLow = compositeLow
         self.compositeHi = compositeHi
@@ -2445,9 +2445,10 @@ class SoftRegister:
         if self.latchNum <= 1:
             # mode A: single value, but may be composed
             if byteIdx == 0:
-                self.theValue = (self.theValue & 0xff00) or (value & 0x00ff)
+                self.theValue = (self.theValue & 0xff00) | (value & 0x00ff)
             elif byteIdx == 1 and self.bits > 8:
-                self.theValue = (self.theValue & 0x00ff) or (value & 0xff00)
+                self.theValue = (self.theValue & 0x00ff) | ((value & 0x00ff) << 8)
+                print(self.theValue)
             else:
                 self.theValue = value
                 if self.compositeLow is not None:
@@ -2476,6 +2477,8 @@ class SoftRegister:
                 return value[0]
             if function == SoftFunction.ADD:
                 return value[0] + value[1]
+            if function == SoftFunction.ADD_TWO_COMPL_OP2:
+                return value[0] + Helper.fromTwosComplement(value[1])
 
     def output(self):
         # calculation and HI/LO are mutually exclusive
@@ -2485,7 +2488,7 @@ class SoftRegister:
             if self.compositeLow is not None:
                 v = self.compositeLow.theValue
             if self.compositeHi is not None:
-                v = v + (self.compositeHi.theValue) << 8
+                v = v + (self.compositeHi.theValue << 8)
             return v
         else:
             # ALU / INCer
@@ -2514,7 +2517,7 @@ class SoftCPU:
         """ Short debug string """
         # keys = list(self.registers.keys())
         # keys.sort()
-        keys = "PC A B C D E F H L BC DE HL IX IY ACT TMP ALU DISP SP INC2 ABUS DBUS ABUF DBUF".split(sep=' ')
+        keys = "PC INSTR A B C D E F H L BC DE HL IX IY ACT TMP ALU DISP SP INC2 ABUS DBUS ABUF DBUF".split(sep=' ')
         res = ""
         for k in keys:
             r = self.registers[k]
@@ -2526,6 +2529,7 @@ class SoftCPU:
     
     def __init__(self):
         # allocated register bank
+        # endianness: https://stackoverflow.com/questions/21639597/z80-register-endianness
         self.registers = {}
         self.addRegister(SoftRegister('A'))
         self.addRegister(SoftRegister('F'))
@@ -2548,14 +2552,14 @@ class SoftCPU:
         self.addRegister(SoftRegister('ACT'))
         self.addRegister(SoftRegister('TMP'))
         self.addRegister(SoftRegister('ALU', latchNum=2, function=SoftFunction.NONE))
-        self.addRegister(SoftRegister('DISP', latchNum=2, function=SoftFunction.ADD, bits=16))
+        self.addRegister(SoftRegister('DISP', latchNum=2, function=SoftFunction.ADD_TWO_COMPL_OP2, bits=16))
         self.addRegister(SoftRegister('INC2', function=SoftFunction.PURE_INC, bits=16))
         self.addRegister(SoftRegister('ABUF', bits=16))
         self.addRegister(SoftRegister('CBUF'))
         self.addRegister(SoftRegister('DBUF'))
         self.addRegister(SoftRegister('ABUS', bits=16))
         self.addRegister(SoftRegister('DBUS'))
-
+        self.totalCycleCount = 0
         self.memory = bytearray()
 
     def setMemory(self, orgstart: int, ba: bytearray):
@@ -2572,11 +2576,31 @@ class SoftCPU:
                 else:
                     self.memory.append(ba[i])
 
+    def memoryRead(self, adr: int):
+        """ Read byte """
+        if adr < 0 or adr >= len(self.memory):
+            OPTIONS.debug(1, "Invalid memory read access to %04x" % adr)
+            return 0
+        else:
+            return self.memory[adr]
+
+    def memoryWrite(self, adr: int, value: int):
+        """ Write byte """
+        if adr < 0 or adr >= len(self.memory):
+            OPTIONS.debug(1, "Invalid memory write access to %04x" % adr)
+        else:
+            self.memory[adr] = value & 0x00ff
+
     def performCycle(self, operations: str):
         """ Performs one HW emulation cycle. `operations` contains a comma divided list of 
         operation labels, such as `DBUF.L.IN`, which would be: "latch data bus buffer inward enabled" """
 
-        OPTIONS.debug(2, "performCycle for operations %s" % operations)
+        self.totalCycleCount += 1
+        OPTIONS.debug(2, "performCycle (%d) for operations %s" % (self.totalCycleCount, operations))
+
+        if OPTIONS.markAtLineNo is not None:
+            if self.totalCycleCount == OPTIONS.markAtLineNo:
+                print("*MARK*")
 
         # split operations
         if isinstance(operations, str):
@@ -2600,138 +2624,160 @@ class SoftCPU:
             if op == "BC.OE":
                 r['ABUS'].value = r['BC'].value
 
-            if op == "DE.OE":
+            elif op == "DE.OE":
                 r['ABUS'].value = r['DE'].value
 
-            if op == "HL.OE":
+            elif op == "HL.OE":
                 r['ABUS'].value = r['HL'].value
 
-            if op == "PC.OE":
+            elif op == "PC.OE":
                 r['ABUS'].value = r['PC'].value
 
-            if op == "SP.OE":
+            elif op == "SP.OE":
                 r['ABUS'].value = r['SP'].value
 
-            if op == "INC2.P":
+            elif op == "INC2.P":
                 r['INC2'].setFunction(SoftFunction.PURE_INC)
 
-            if op == "INC2.N":
+            elif op == "INC2.N":
                 r['INC2'].setFunction(SoftFunction.PURE_DEC)
 
-            if op == "INC2.L":
+            elif op == "INC2.L":
                 r['INC2'].value = r['ABUS'].value
 
-            if op == "INC2.OE":
+            elif op == "INC2.OE":
                 r['ABUS'].value = r['INC2'].value
 
-            if op == "DISP.L.X":
+            elif op == "DISP.L.X":
                 r['DISP'].latch(r['IX'].value, latchIdx=0)
 
-            if op == "DISP.L.X":
+            elif op == "DISP.L.X":
                 r['DISP'].latch(r['IX'].value, latchIdx=0)
 
-            if op == "DISP.L.Y":
+            elif op == "DISP.L.Y":
                 r['DISP'].latch(r['IY'].value, latchIdx=0)
 
-            if op == "DISP.L.DBUS":
+            elif op == "DISP.L.DBUS":
                 r['DISP'].latch(r['DBUS'].value, latchIdx=1)
 
-            if op == "DISP.OE":
+            elif op == "DISP.OE":
                 r['ABUS'].value = r['DISP'].value
             
-            if op == 'ABUF.L':
-                OPTIONS.debug(2, "External adress bus: $%x" % r['ABUF'].value)
+            elif op == 'ABUF.L':
+                OPTIONS.debug(2, ".. set external adress bus: $%x" % r['ABUS'].value)
+                r['ABUF'].value = r['ABUS'].value
 
-            # data bus in
+            # data bus in?
+            # TODO: check, if "ignoring" DBUS.value is right approach
+
+            elif op == 'DBUF.L.IN':
+                data = self.memoryRead(r['ABUF'].value)
+                OPTIONS.debug(2, ".. perform read memory $%04x will be: $%02x" % (r['ABUF'].value, data))
+                r['DBUF'].value = data
+                r['DBUS'].value = data
 
             # register file
 
-            if op == "ACT.L":
+            elif op == "INSTR.L":
+                r['INSTR'].value = r['DBUS'].value
+
+            elif op == "ACT.L":
                 r['ACT'].value = r['DBUS'].value
 
-            if op == "TMP.L":
+            elif op == "TMP.L":
                 r['TMP'].value = r['DBUS'].value
 
-            if op == "A.L":
+            elif op == "A.L":
                 r['A'].value = r['DBUS'].value
 
-            if op == "B.L":
+            elif op == "B.L" or op == "BC.H.L":
                 r['B'].value = r['DBUS'].value
 
-            if op == "C.L":
+            elif op == "C.L" or op == "BC.L.L":
                 r['C'].value = r['DBUS'].value
 
-            if op == "D.L":
+            elif op == "D.L" or op == "DE.H.L":
                 r['D'].value = r['DBUS'].value
 
-            if op == "E.L":
+            elif op == "E.L" or op == "DE.L.L":
                 r['E'].value = r['DBUS'].value
 
-            if op == "H.L":
+            elif op == "H.L" or op == "HL.H.L":
                 r['H'].value = r['DBUS'].value
 
-            if op == "L.L":
+            elif op == "L.L" or op == "HL.L.L":
                 r['L'].value = r['DBUS'].value
 
-            if op == "IX.L.L":
+            elif op == "IX.L.L":
                 r['IX'].latch(r['DBUS'].value, byteIdx=0)
 
-            if op == "IX.H.L":
+            elif op == "IX.H.L":
                 r['IX'].latch(r['DBUS'].value, byteIdx=1)
 
-            if op == "IY.L.L":
+            elif op == "IY.L.L":
                 r['IY'].latch(r['DBUS'].value, byteIdx=0)
 
-            if op == "IY.H.L":
+            elif op == "IY.H.L":
                 r['IY'].latch(r['DBUS'].value, byteIdx=1)
 
-            if op == "SP.L.L":
+            elif op == "SP.L.L":
                 r['SP'].latch(r['DBUS'].value, byteIdx=0)
 
-            if op == "SP.H.L":
+            elif op == "SP.H.L":
                 r['SP'].latch(r['DBUS'].value, byteIdx=1)
 
-            if op == "PC.L.DBUS":
+            elif op == "PC.L.DBUS":
                 r['PC'].value = r['INC2'].value
 
-            if op == "PC.L.INC2":
+            elif op == "PC.L.INC2":
                 r['PC'].value = r['INC2'].value
 
             # data bus out
 
-            if op == "TMP.OE.DBUS":
+            elif op == "TMP.OE.DBUS":
                 r['DBUS'].value = r['TMP'].value
 
-            if op == "TMP.OE.ALU":
+            elif op == "TMP.OE.ALU":
                 r['ALU'].latch(r['TMP'].value, latchIdx=1)
 
-            if op == "ACT.OE":
+            elif op == "ACT.OE":
                 r['ALU'].latch(r['ACT'].value, latchIdx=0)
 
-            if op == "ALU.OE":
+            elif op == "ALU.OE":
                 r['DBUS'].value = r['ALU'].value
 
-            if op == "A.OE":
+            elif op == "A.OE":
                 r['DBUS'].value = r['A'].value
 
-            if op == "B.OE":
+            elif op == "B.OE":
                 r['DBUS'].value = r['B'].value
 
-            if op == "C.OE":
+            elif op == "C.OE":
                 r['DBUS'].value = r['C'].value
 
-            if op == "D.OE":
+            elif op == "D.OE":
                 r['DBUS'].value = r['D'].value
 
-            if op == "E.OE":
+            elif op == "E.OE":
                 r['DBUS'].value = r['E'].value
 
-            if op == "H.OE":
+            elif op == "H.OE":
                 r['DBUS'].value = r['H'].value
 
-            if op == "L.OE":
+            elif op == "L.OE":
                 r['DBUS'].value = r['L'].value
 
+            # memory out
+
+            elif op == 'DBUF.L.OUT':
+                data = r['DBUS'].value
+                OPTIONS.debug(2, ".. perform write memory $%04x will be: $%02x" % (r['ABUF'].value, data))
+                r['DBUF'].value = data
+                self.memoryWrite(r['ABUF'].value, data)
+
+            # not found?!
+            else:
+                OPTIONS.error(123, "MT operation %s not found at PC $%04x" % (op, r['PC'].value))
 
         # Done
         OPTIONS.debug(2, "End of cycle. Registers: %s" % self.registerInfo())
@@ -2802,9 +2848,6 @@ class DisAssemble:
             if lb.directValue is None or lb.kind != 'L':
                 continue
             OPTIONS.debug(2,"Place label %s at $%x" % (lb.tag, lb.directValue))            
-
-            if lb.directValue == 0xe3ee:
-                print("MARK")
 
             # find an assy rec enclosing it
             ar = self.assyrecs.binarySearchEnclosingAssyRec(lb.directValue, idx)
@@ -3080,6 +3123,10 @@ class DisAssemble:
 
             # try to soft-cpu the bytes
             if cpu is not None:
+                # enforce correct PC
+                cpu.registers['PC'].value = orgstart + pos
+
+                # play cycles on the CPU
                 for i in range(len(assyrec.mtstatelit)):
                     mts = assyrec.mtstatelit[i].strip()
                     OPTIONS.debug(2, "MT state (%d) is %s" % (i, mts))
@@ -3157,7 +3204,7 @@ def dizzy():
     parser.add_argument("-se", "--skip-errors", help="skip encountered errors", action="store_true")
     parser.add_argument("-tw", "--tab-width", help="tab width for expanding lines", action="store")
     parser.add_argument("-cb", "--compare-bin", help="compare assembly listing with external binary file", action="store")
-    parser.add_argument("-ml", "--mark-at-line", help="send MARK to console when reaching line number", action="store")
+    parser.add_argument("-ml", "--mark-at-line", help="send MARK to console when reaching line number or total cycle count", action="store")
     parser.add_argument("-t", "--tables", help="specify TWO! Z80 ISA tables as following", nargs='*', action="store")
     parser.add_argument("-a", "--assemble", help="assemble the source file following", action="store")
     parser.add_argument("-o", "--out-file", help="output file to following file name", action="store")
