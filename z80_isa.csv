@@ -45,15 +45,15 @@ LD	LD A,(BC)	A	(BC)	R	RI	0	0	0	0	0	1	0	1	0	0A	2	7 (4,3)		A ← (BC)	(BC) or (DE)
 																																													
 LD	LD A,(DE)	A	(DE)	R	RI	0	0	0	0	1	1	0	1	0	1A	2	7 (4,3)		A ← (DE)	Register source or dest?	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	DE.OE, ABUF.L	DBUF.L.IN	DBUF.L.IN, A.L	-	-															
 																																													
-LD	LD A,(nn)	A	({nn})	R	E	0	0	0	1	1	1	0	1	0	3A	4	13 (4,3,3,3)		A ← (nn)		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, TMP.L	-	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, ABUS.H.L.DBUS	-	-	TMP.OE, ABUS.L.L.DBUS	ABUF.L	DBUF.L.IN	DBUF.L.IN, A.L	-					
+LD	LD A,(nn)	A	({nn})	R	E	0	0	0	1	1	1	0	1	0	3A	4	13 (4,3,3,3)		A ← (nn)		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, TMP.L	-	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, ABUS.H.L.DBUS	-	-	TMP.OE.DBUS, ABUS.L.L.DBUS	ABUF.L	DBUF.L.IN	DBUF.L.IN, A.L	-					
 						1	n	n	n	n	n	n	n	n																															
 						2	n	n	n	n	n	n	n	n																															
 																																													
-LD	LD (BC),A	(BC)	A	RI	R	0	0	0	0	0	0	0	1	0	02	2	7 (4,3)		(BC) ← A																										
+LD	LD (BC),A	(BC)	A	RI	R	0	0	0	0	0	0	0	1	0	02	2	7 (4,3)		(BC) ← A		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	BC.OE, ABUF.L	A.OE, DBUF.L.OUT	A.OE	-	-															
 																																													
-LD	LD (DE),A	(DE)	A	RI	R	0	0	0	0	1	0	0	1	0	12	2	7 (4,3)		(DE) ← A																										
+LD	LD (DE),A	(DE)	A	RI	R	0	0	0	0	1	0	0	1	0	12	2	7 (4,3)		(DE) ← A		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	DE.OE, ABUF.L	A.OE, DBUF.L.OUT	A.OE	-	-															
 																																													
-LD	LD (nn),A	({nn})	A	E	R	0	0	0	1	1	0	0	1	0	32	4	13 (4,3,3,3)		(nn) ← A																										
+LD	LD (nn),A	({nn})	A	E	R	0	0	0	1	1	0	0	1	0	32	4	13 (4,3,3,3)		(nn) ← A		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	X	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, TMP.L	-	-	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, ABUS.H.L.DBUS	-	-	TMP.OE.DBUS, ABUS.L.L.DBUS	ABUF.L	A.OE, DBUF.L.OUT	A.OE	-					
 						1	n	n	n	n	n	n	n	n																															
 						2	n	n	n	n	n	n	n	n																															
 																																													

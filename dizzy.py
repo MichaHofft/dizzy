@@ -2732,6 +2732,14 @@ class SoftCPU:
             elif op == "PC.L.INC2":
                 r['PC'].value = r['INC2'].value
 
+            # data bus -> address bus .. later that the ...IOError
+
+            elif op == "ABUS.L.L.DBUS":
+                r['ABUS'].latch(r['DBUS'].value, byteIdx=0)
+
+            elif op == "ABUS.H.L.DBUS":
+                r['ABUS'].latch(r['DBUS'].value, byteIdx=1)
+
             # data bus out
 
             elif op == "TMP.OE.DBUS":
