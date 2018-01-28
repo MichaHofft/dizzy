@@ -216,7 +216,7 @@ class OpCodeDef:
         self.am2 = ""
         self.bitPattern = []
         self.operation = ""
-        self.mtstate = map(lambda k: "", range(5*5))
+        self.mtstate = map(lambda k: "", range(6*5))
 
 class OpCodeDefList:
     """ List of opcode definitios; holds the whole table, unsorted """
@@ -255,7 +255,7 @@ class OpCodeDefList:
             tsvreader = csv.reader(tsvfile, delimiter="\t")
             for line in tsvreader:
                 # make sure we have enough cols
-                while len(line) < 21+5*5:
+                while len(line) < 21+6*5:
                     line.append("")
 
                 # continue reading a already created opcode by extending its bitpattern
@@ -289,7 +289,7 @@ class OpCodeDefList:
                 bp = "".join(line[7:15])
                 opc.bitPattern.append(bp)
                 opc.operation = line[19].strip()
-                opc.mtstate = line[21:21+5*5]                
+                opc.mtstate = line[21:21+6*5]                
 
                 # add opcode to the collection
                 self.add(opc)
@@ -1570,7 +1570,14 @@ class Assemble:
             results = self.matchOCDwithOperands(ocd, mne, op1, op2)
             if results is not None:
                 # successful match, build a score (less is better)
-                score = len(ocd.bitPattern)
+                # number of instr bytes is very important
+                score = 100 * len(ocd.bitPattern)
+                # we favour less substitutions over more substituatios
+                for i in (0,1):
+                    if results[i] is not True:
+                        # found a bit pattern tuple
+                        score += 10
+                # now, take the best
                 if score < assyrec.score:
                     assyrec.score = score
                     assyrec.opcodedef = ocd
@@ -1982,6 +1989,10 @@ class Assemble:
         # make a blob accordingly
         blob = bytearray()
         blob.extend(b' ' * (1 + maxadr - minadr))
+
+        # zero it!
+        for i in range(len(blob)):
+            blob[i] = 0x00
 
         # simply overwrite bytes
         for assyrec in self.assyrecs:
@@ -2480,7 +2491,7 @@ class SoftRegister:
             if function == SoftFunction.ADD_TWO_COMPL_OP2:
                 return value[0] + Helper.fromTwosComplement(value[1])
 
-    def output(self):
+    def output(self, byteIdx=-1):
         # calculation and HI/LO are mutually exclusive
         if self.function == SoftFunction.NONE:
             # register behaviour and 16bit special case
@@ -2489,11 +2500,17 @@ class SoftRegister:
                 v = self.compositeLow.theValue
             if self.compositeHi is not None:
                 v = v + (self.compositeHi.theValue << 8)
-            return v
         else:
             # ALU / INCer
             v = self.performFunction(self.function, self.theValue)
-            return v
+        # byte selector?
+        if byteIdx == 0:
+            return v & 0x00ff
+        elif byteIdx == 1:
+            return (v & 0xff00) >> 8        
+        return v
+
+        
 
     def setFunction(self, function: SoftFunction):
         self.function = function
@@ -2517,7 +2534,7 @@ class SoftCPU:
         """ Short debug string """
         # keys = list(self.registers.keys())
         # keys.sort()
-        keys = "PC INSTR A B C D E F H L BC DE HL IX IY ACT TMP ALU DISP SP INC2 ABUS DBUS ABUF DBUF".split(sep=' ')
+        keys = "PC INSTR A B C D E F H L BC DE HL IX IY ACT TMP I R ALU DISP SP INC2 ABUS DBUS ABUF DBUF".split(sep=' ')
         res = ""
         for k in keys:
             r = self.registers[k]
@@ -2732,6 +2749,12 @@ class SoftCPU:
             elif op == "PC.L.INC2":
                 r['PC'].value = r['INC2'].value
 
+            elif op == "I.L":
+                r['I'].value = r['DBUS'].value
+
+            elif op == "R.L":
+                r['R'].value = r['DBUS'].value
+
             # data bus -> address bus .. later that the ...IOError
 
             elif op == "ABUS.L.L.DBUS":
@@ -2757,23 +2780,47 @@ class SoftCPU:
             elif op == "A.OE":
                 r['DBUS'].value = r['A'].value
 
-            elif op == "B.OE":
+            elif op == "B.OE" or op == "BC.H.OE":
                 r['DBUS'].value = r['B'].value
 
-            elif op == "C.OE":
+            elif op == "C.OE" or op == "BC.L.OE":
                 r['DBUS'].value = r['C'].value
 
-            elif op == "D.OE":
+            elif op == "D.OE" or op == "DE.H.OE":
                 r['DBUS'].value = r['D'].value
 
-            elif op == "E.OE":
+            elif op == "E.OE" or op == "DE.L.OE":
                 r['DBUS'].value = r['E'].value
 
-            elif op == "H.OE":
+            elif op == "H.OE" or op == "HL.H.OE":
                 r['DBUS'].value = r['H'].value
 
-            elif op == "L.OE":
+            elif op == "L.OE" or op == "HL.L.OE":
                 r['DBUS'].value = r['L'].value
+
+            elif op == "SP.H.OE":
+                r['DBUS'].value = r['SP'].output(byteIdx=1)
+
+            elif op == "SP.L.OE":
+                r['DBUS'].value = r['SP'].output(byteIdx=0)
+
+            elif op == "IX.H.OE":
+                r['DBUS'].value = r['IX'].output(byteIdx=1)
+
+            elif op == "IX.L.OE":
+                r['DBUS'].value = r['IX'].output(byteIdx=0)
+
+            elif op == "IY.H.OE":
+                r['DBUS'].value = r['IY'].output(byteIdx=1)
+
+            elif op == "IY.L.OE":
+                r['DBUS'].value = r['IY'].output(byteIdx=0)
+
+            elif op == "I.OE":
+                r['DBUS'].value = r['I'].value
+
+            elif op == "R.OE":
+                r['DBUS'].value = r['R'].value
 
             # memory out
 
