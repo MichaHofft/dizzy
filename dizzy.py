@@ -2596,7 +2596,7 @@ class SoftCPU:
     def memoryRead(self, adr: int):
         """ Read byte """
         if adr < 0 or adr >= len(self.memory):
-            OPTIONS.debug(1, "Invalid memory read access to %04x" % adr)
+            OPTIONS.debug(1, "Invalid memory read access to $%04x" % adr)
             return 0
         else:
             return self.memory[adr]
@@ -2604,7 +2604,7 @@ class SoftCPU:
     def memoryWrite(self, adr: int, value: int):
         """ Write byte """
         if adr < 0 or adr >= len(self.memory):
-            OPTIONS.debug(1, "Invalid memory write access to %04x" % adr)
+            OPTIONS.debug(1, "Invalid memory write access to $%04x" % adr)
         else:
             self.memory[adr] = value & 0x00ff
 
@@ -2749,6 +2749,9 @@ class SoftCPU:
             elif op == "PC.L.INC2":
                 r['PC'].value = r['INC2'].value
 
+            elif op == "SP.L.INC2":
+                r['SP'].value = r['INC2'].value
+
             elif op == "I.L":
                 r['I'].value = r['DBUS'].value
 
@@ -2777,8 +2780,11 @@ class SoftCPU:
             elif op == "ALU.OE":
                 r['DBUS'].value = r['ALU'].value
 
-            elif op == "A.OE":
+            elif op == "A.OE" or op == "AF.H.OE":
                 r['DBUS'].value = r['A'].value
+
+            elif op == "F.OE" or op == "AF.L.OE":
+                r['DBUS'].value = r['F'].value
 
             elif op == "B.OE" or op == "BC.H.OE":
                 r['DBUS'].value = r['B'].value

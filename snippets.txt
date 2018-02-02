@@ -1,0 +1,7 @@
+sed -n '/^START=A$/,/^END$/p' data
+cp dizzy.py save/dizzy.ba24; chmod a-w save/*
+./dizzy.py -v -se -ml 227 -a cpm22.asm -cb zasm/cpm22.rom -o cpm22.rom  2>&1 | less
+./dizzy.py -se -v -v -v -d cpm22.rom -lt  2>&1 | less
+./dizzy.py -se -v -v -d cpm22.rom -lt  | sed -n '/^----HTML start/,/^----HTML stops/p' | tail -n +2 | head -n -2 > rainbows.html
+./dizzy.py -se -v -d cpm22.rom -os dc00h -ds dc06h,dc8bh -ds df10h,df2dh -ds dfc1h,dfceh -ds dff0h,dff7h -ds e152h,e15ch -ds e207h,e20fh -ds e282h,e28eh -ds e37ah,e382h -ds e39bh,e405h -ds e409h,e410h -ds e447h,e498h -ds e4bah,e4e4h -ds e70ah,e746h  -ds f1ach,f1ffh -ls -ll 2>&1 > cpm22.out
+./dizzy.py -v -v -os $100 -oe $112 -ml 64 -e mini.rom 2>&1 | less -pMARK
