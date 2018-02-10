@@ -7,6 +7,10 @@ TFCB	EQU	TFCA+1
         ;
 hallo:  LD      A,42
         LD      B,A
+        ADD     A,B             ; 84, kein Carry
+        LD      C,230
+        ADD     A,C             ; 84 + 230 -> 58, Carry!
+        NOP
         LD      IX,buf
         LD      C,(IX+1)
         LD      HL,buf2
@@ -56,6 +60,8 @@ hallo:  LD      A,42
         PUSH    AF
         PUSH    IX
         PUSH    IY
+        POP     BC
+        POP     IX
         NOP
         INC HL
         RL (HL)

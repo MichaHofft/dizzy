@@ -1,0 +1,160 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ADC	../dizzy.py	/^    ADC = 5$/;"	kind:variable	line:2782
+ADD	../dizzy.py	/^    ADD = 4$/;"	kind:variable	line:2781
+AND	../dizzy.py	/^    AND = 10$/;"	kind:variable	line:2787
+Assemble	../dizzy.py	/^class Assemble:$/;"	kind:class	line:1162
+AssembleRecord	../dizzy.py	/^class AssembleRecord:$/;"	kind:class	line:848
+CP	../dizzy.py	/^    CP = 13$/;"	kind:variable	line:2790
+DEC	../dizzy.py	/^    DEC = 9$/;"	kind:variable	line:2786
+DisAssemble	../dizzy.py	/^class DisAssemble:$/;"	kind:class	line:2387
+Helper	../dizzy.py	/^class Helper:$/;"	kind:class	line:95
+INC	../dizzy.py	/^    INC = 8$/;"	kind:variable	line:2785
+Label	../dizzy.py	/^class Label:$/;"	kind:class	line:364
+LabelParseException	../dizzy.py	/^class LabelParseException(Exception):$/;"	kind:class	line:359
+Labels	../dizzy.py	/^class Labels:$/;"	kind:class	line:372
+ListOfAssembleRecords	../dizzy.py	/^class ListOfAssembleRecords(list):$/;"	kind:class	line:1104
+NONE	../dizzy.py	/^    NONE = 1$/;"	kind:variable	line:2778
+OPTIONS	../dizzy.py	/^class OPTIONS:$/;"	kind:class	line:20
+OR	../dizzy.py	/^    OR = 11$/;"	kind:variable	line:2788
+OpCodeDef	../dizzy.py	/^class OpCodeDef:$/;"	kind:class	line:208
+OpCodeDefList	../dizzy.py	/^class OpCodeDefList:$/;"	kind:class	line:221
+PURE_DEC	../dizzy.py	/^    PURE_DEC = 3$/;"	kind:variable	line:2780
+PURE_INC	../dizzy.py	/^    PURE_INC = 2$/;"	kind:variable	line:2779
+RL	../dizzy.py	/^    RL = 14$/;"	kind:variable	line:2791
+RLC	../dizzy.py	/^    RLC = 15$/;"	kind:variable	line:2792
+RR	../dizzy.py	/^    RR = 16$/;"	kind:variable	line:2793
+RRC	../dizzy.py	/^    RRC = 17$/;"	kind:variable	line:2794
+RRD	../dizzy.py	/^    RRD = 22$/;"	kind:variable	line:2799
+RainbowEntry	../dizzy.py	/^class RainbowEntry:$/;"	kind:class	line:2006
+RainbowTable	../dizzy.py	/^class RainbowTable:$/;"	kind:class	line:2014
+SBC	../dizzy.py	/^    SBC = 7$/;"	kind:variable	line:2784
+SLA	../dizzy.py	/^    SLA = 18$/;"	kind:variable	line:2795
+SLL	../dizzy.py	/^    SLL = 20$/;"	kind:variable	line:2797
+SRA	../dizzy.py	/^    SRA = 19$/;"	kind:variable	line:2796
+SRL	../dizzy.py	/^    SRL = 21$/;"	kind:variable	line:2798
+SUB	../dizzy.py	/^    SUB = 6$/;"	kind:variable	line:2783
+SetOfRainbows	../dizzy.py	/^class SetOfRainbows:$/;"	kind:class	line:2040
+SoftCPU	../dizzy.py	/^class SoftCPU:$/;"	kind:class	line:2850
+SoftFunction	../dizzy.py	/^class SoftFunction(Enum):$/;"	kind:class	line:2777
+SoftRegister	../dizzy.py	/^class SoftRegister:$/;"	kind:class	line:2801
+SymDict	../dizzy.py	/^class SymDict:$/;"	kind:class	line:308
+XOR	../dizzy.py	/^    XOR = 12$/;"	kind:variable	line:2789
+__checkForImmediateExpression	../dizzy.py	/^            recurse=True, recurseDepth=0, targetBits=16, orgpos=0):$/;"	kind:member	line:728
+__init__	../dizzy.py	/^    def __init__(self):$/;"	kind:member	line:210
+__init__	../dizzy.py	/^    def __init__(self):$/;"	kind:member	line:223
+__init__	../dizzy.py	/^    def __init__(self):$/;"	kind:member	line:2868
+__init__	../dizzy.py	/^    def __init__(self):$/;"	kind:member	line:311
+__init__	../dizzy.py	/^    def __init__(self):$/;"	kind:member	line:33
+__init__	../dizzy.py	/^    def __init__(self):$/;"	kind:member	line:376
+__init__	../dizzy.py	/^    def __init__(self, *args):$/;"	kind:member	line:1106
+__init__	../dizzy.py	/^    def __init__(self, name: str, compositeLow=None, compositeHi=None, latchNum=1, function=SoftFunction.NONE, bits=8):$/;"	kind:member	line:2805
+__init__	../dizzy.py	/^    def __init__(self, ocd):$/;"	kind:member	line:2008
+__init__	../dizzy.py	/^    def __init__(self, opcodes: OpCodeDefList, syms: SymDict):$/;"	kind:member	line:2042
+__init__	../dizzy.py	/^    def __init__(self, opcodes: OpCodeDefList, syms: SymDict, labels: Labels):$/;"	kind:member	line:1164
+__init__	../dizzy.py	/^    def __init__(self, opcodes: OpCodeDefList, syms: SymDict, labels: Labels, sr: SetOfRainbows):$/;"	kind:member	line:2389
+__init__	../dizzy.py	/^    def __init__(self, orgpos=0, line="", lineno=0, instrParts=None):$/;"	kind:member	line:852
+__init__	../dizzy.py	/^    def __init__(self, rank=0, rootbytes=[]):$/;"	kind:member	line:2017
+__init__	../dizzy.py	/^    def __init__(self, tag: str, kind: str, expression=None, directValue=None):$/;"	kind:member	line:366
+abstract	../dizzy.py	/^    def abstract(self):$/;"	kind:member	line:872
+add	../dizzy.py	/^    def add(self, ar: AssembleRecord):$/;"	kind:member	line:1110
+add	../dizzy.py	/^    def add(self, key, symbol, bitpattern):$/;"	kind:member	line:317
+add	../dizzy.py	/^    def add(self, key: int, assyrec: AssembleRecord):$/;"	kind:member	line:2023
+add	../dizzy.py	/^    def add(self, ocd):$/;"	kind:member	line:231
+addDefBytes	../dizzy.py	/^    def addDefBytes(self, orgpos: int, bytes, bytesPerLine=16):$/;"	kind:member	line:2403
+addOrSet	../dizzy.py	/^    def addOrSet(self, label: Label):$/;"	kind:member	line:383
+addRegister	../dizzy.py	/^    def addRegister(self, r: SoftRegister):$/;"	kind:member	line:2854
+addTable	../dizzy.py	/^    def addTable(self, key: int, rb):$/;"	kind:member	line:2028
+asDirective	../dizzy.py	/^    def asDirective(self, directive, mne, op1, label=""):$/;"	kind:member	line:866
+assembleStage1	../dizzy.py	/^    def assembleStage1(self, fn):$/;"	kind:member	line:1711
+assembleStage2	../dizzy.py	/^    def assembleStage2(self):$/;"	kind:member	line:1836
+assignLabelsToAssyRecs	../dizzy.py	/^    def assignLabelsToAssyRecs(self, createNewOrgs=False):$/;"	kind:member	line:2436
+binarySearchEnclosingAssyRec	../dizzy.py	/^    def binarySearchEnclosingAssyRec(self, adr: int, l: list, ll=None, ul=None):$/;"	kind:member	line:1133
+bytesToStringCommaSep	../dizzy.py	/^    def bytesToStringCommaSep(self, bytes):$/;"	kind:member	line:2396
+bytesize	../dizzy.py	/^    def bytesize(self):$/;"	kind:member	line:884
+checkForImmediateExpression	../dizzy.py	/^            lowerLimit=-sys.maxsize, upperLimit=sys.maxsize, targetBits=16, orgpos=0):$/;"	kind:member	line:827
+checkParsedExpression	../dizzy.py	/^    def checkParsedExpression(self, l: list):$/;"	kind:member	line:537
+clear	../dizzy.py	/^    def clear(self):$/;"	kind:member	line:1176
+clear	../dizzy.py	/^    def clear(self):$/;"	kind:member	line:227
+clear	../dizzy.py	/^    def clear(self):$/;"	kind:member	line:314
+clear	../dizzy.py	/^    def clear(self):$/;"	kind:member	line:380
+compareWithBin	../dizzy.py	/^    def compareWithBin(self, fn):$/;"	kind:member	line:1930
+compareWithBytes	../dizzy.py	/^    def compareWithBytes(self, compareWithBytes=None, shiftCompare=0):$/;"	kind:member	line:1088
+currFn	../dizzy.py	/^    currFn = ""$/;"	kind:variable	line:27
+currLn	../dizzy.py	/^    currLn = 0$/;"	kind:variable	line:28
+debug	../dizzy.py	/^    def debug(level, msg, *args):$/;"	kind:member	line:38
+debugObject	../dizzy.py	/^    def debugObject(level, msg, obj):$/;"	kind:member	line:48
+decodeBytes	../dizzy.py	/^    def decodeBytes(self, input: list):$/;"	kind:member	line:2252
+disassemble	../dizzy.py	/^    def disassemble(self, fn: str, orgstart: int, orgend: int, datasections=None, reuseLabels=True):$/;"	kind:member	line:2529
+dizzy	../dizzy.py	/^def dizzy():$/;"	kind:function	line:2967
+dizzy.py	../dizzy.py	1;"	kind:file	line:1
+error	../dizzy.py	/^    def error(number, msg, *args):$/;"	kind:member	line:57
+evalBoundariesOfAssyRecs	../dizzy.py	/^    def evalBoundariesOfAssyRecs(self):$/;"	kind:member	line:1907
+evaluateParsedExpression	../dizzy.py	/^    def evaluateParsedExpression(self, l: list, targetBits=16, recurseDepth=0):$/;"	kind:member	line:584
+expandTabs	../dizzy.py	/^    def expandTabs(line: str, tw=8):$/;"	kind:member	line:154
+findBestOpCodeDefinition	../dizzy.py	/^    def findBestOpCodeDefinition(self, assyrec: AssembleRecord, mne, op1, op2):$/;"	kind:member	line:1535
+findCluster	../dizzy.py	/^    def findCluster(self, key):$/;"	kind:member	line:241
+findDirectValue	../dizzy.py	/^    def findDirectValue(self, dv: int):$/;"	kind:member	line:396
+findOrgPos	../dizzy.py	/^    def findOrgPos(self, orgpos: int):$/;"	kind:member	line:1116
+fromTwosComplement	../dizzy.py	/^    def fromTwosComplement(n: int, targetBits=8):$/;"	kind:member	line:182
+generateTagName	../dizzy.py	/^    def generateTagName(self, prefix="L"):$/;"	kind:member	line:390
+get	../dizzy.py	/^    def get(self, key):$/;"	kind:member	line:321
+get	../dizzy.py	/^    def get(self, key: int):$/;"	kind:member	line:2033
+get	../dizzy.py	/^    def get(self, rootbytes=None, title=None):$/;"	kind:member	line:2070
+getOrCreateRainbow	../dizzy.py	/^    def getOrCreateRainbow(self, rootbytes):$/;"	kind:member	line:2047
+hexdump	../dizzy.py	/^    def hexdump(l: list):$/;"	kind:member	line:169
+indent	../dizzy.py	/^    indent = 0$/;"	kind:variable	line:24
+indentDec	../dizzy.py	/^    def indentDec():$/;"	kind:member	line:74
+indentInc	../dizzy.py	/^    def indentInc():$/;"	kind:member	line:69
+indentTo	../dizzy.py	/^    def indentTo(level: int):$/;"	kind:member	line:79
+investigateForSpecialDirective	../dizzy.py	/^    def investigateForSpecialDirective(self, assyrec: AssembleRecord, labeltag, mne, op1, op2, rest, stage=1):$/;"	kind:member	line:1381
+latch	../dizzy.py	/^    def latch(self, value: int, latchIdx=0):$/;"	kind:member	line:2816
+listStage1	../dizzy.py	/^    listStage1 = True$/;"	kind:variable	line:29
+listStage2	../dizzy.py	/^    listStage2 = True$/;"	kind:variable	line:30
+listSynthesis	../dizzy.py	/^    def listSynthesis(self, listLabels=True):$/;"	kind:member	line:2729
+listing	../dizzy.py	/^                    shopOperation=True, indicator=' ', compareWithBytes=None, shiftCompare=0):$/;"	kind:member	line:952
+listing	../dizzy.py	/^    def listing(self, labelWidth=8, digitsPerHexAdress=4, digitsPerDeciAdress=5, kinds=" L E "):$/;"	kind:member	line:418
+makeBitPatternString	../dizzy.py	/^    def makeBitPatternString(self, n: int, bplen: int, twoComplement=False):$/;"	kind:member	line:1363
+markAtLineNo	../dizzy.py	/^    markAtLineNo = None$/;"	kind:variable	line:31
+matchOCDwithOperands	../dizzy.py	/^    def matchOCDwithOperands(self, ocd: OpCodeDef, mne, op1, op2):$/;"	kind:member	line:1301
+matchSingleOpcodeDef	../dizzy.py	/^    def matchSingleOpcodeDef(self, optemplate, am, opis):$/;"	kind:member	line:1181
+maxRecurseDepth	../dizzy.py	/^    maxRecurseDepth = 32$/;"	kind:variable	line:25
+output	../dizzy.py	/^    def output(self):$/;"	kind:member	line:2830
+outputDisAssembly	../dizzy.py	/^    def outputDisAssembly(self, fn):$/;"	kind:member	line:2753
+outputRainbowTablesAsHtml	../dizzy.py	/^    def outputRainbowTablesAsHtml(self):$/;"	kind:member	line:2341
+outputToBin	../dizzy.py	/^    def outputToBin(self, fn):$/;"	kind:member	line:1966
+performCycle	../dizzy.py	/^    def performCycle(self, operations: str):$/;"	kind:member	line:2897
+performSymbolicInstructionSubstitution	../dizzy.py	/^    def performSymbolicInstructionSubstitution (self, mne, op1, op2):$/;"	kind:member	line:1704
+popIfExist	../dizzy.py	/^    def popIfExist(self, tag: str):$/;"	kind:member	line:386
+prepare	../dizzy.py	/^    def prepare(self):$/;"	kind:member	line:2131
+prepareSingleOpSubstTuples	../dizzy.py	/^    def prepareSingleOpSubstTuples(self, ops, ams):$/;"	kind:member	line:2094
+readTSV	../dizzy.py	/^    def readTSV(self, fn):$/;"	kind:member	line:249
+readTSV	../dizzy.py	/^    def readTSV(self, fn):$/;"	kind:member	line:328
+registerInfo	../dizzy.py	/^    def registerInfo(self):$/;"	kind:member	line:2857
+replace	../dizzy.py	/^        def replace(m):$/;"	kind:function	line:101
+replace	../dizzy.py	/^        def replace(m):$/;"	kind:function	line:129
+reuseLabelForDirectValueOrGenerateNew	../dizzy.py	/^    def reuseLabelForDirectValueOrGenerateNew(self, dv: int, prefix="L", reuseLabels=True):$/;"	kind:member	line:404
+setFilename	../dizzy.py	/^    def setFilename(fn):$/;"	kind:member	line:84
+setFunction	../dizzy.py	/^    def setFunction(self, function: SoftFunction):$/;"	kind:member	line:2839
+setLabel	../dizzy.py	/^    def setLabel(self, lb: str):$/;"	kind:member	line:880
+setLineNo	../dizzy.py	/^    def setLineNo(n):$/;"	kind:member	line:88
+skipErrors	../dizzy.py	/^    skipErrors = True$/;"	kind:variable	line:23
+softExecuteBinary	../dizzy.py	/^    def softExecuteBinary(self, fn: str, orgstart: int, orgend: int):$/;"	kind:member	line:2675
+sortedListOfIndexAssyRec	../dizzy.py	/^    def sortedListOfIndexAssyRec(self):$/;"	kind:member	line:1122
+splitLineIntoLabelInstrComment	../dizzy.py	/^    def splitLineIntoLabelInstrComment(self, line=""):$/;"	kind:member	line:1659
+substituteExpressionsWithBitPatterns	../dizzy.py	/^    def substituteExpressionsWithBitPatterns(self, assyrec: AssembleRecord, stage=1):$/;"	kind:member	line:1584
+synthesis	../dizzy.py	/^    def synthesis(self, digitsPerHexAdress=4, dumpBytesPerLine=4, indicator=' ', tabWidth=8, justOutput=False):$/;"	kind:member	line:1027
+tabWidth	../dizzy.py	/^    tabWidth = 8$/;"	kind:variable	line:26
+toTwosComplement	../dizzy.py	/^    def toTwosComplement(n: int, targetBits=8):$/;"	kind:member	line:174
+translateBitPatternsIntoBytes	../dizzy.py	/^    def translateBitPatternsIntoBytes(self):$/;"	kind:member	line:889
+tryParseExpression	../dizzy.py	/^    def tryParseExpression(self, text: str):$/;"	kind:member	line:461
+twosComplementTestCases	../dizzy.py	/^    def twosComplementTestCases():$/;"	kind:member	line:189
+unescape	../dizzy.py	/^    def unescape(text):$/;"	kind:member	line:99
+unescapeBinary	../dizzy.py	/^    def unescapeBinary(text):$/;"	kind:member	line:126
+value	../dizzy.py	/^    def value(self):$/;"	kind:member	line:2843
+value	../dizzy.py	/^    def value(self, newval):$/;"	kind:member	line:2847
+verbose	../dizzy.py	/^    verbose = 0$/;"	kind:variable	line:22

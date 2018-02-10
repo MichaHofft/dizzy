@@ -2693,13 +2693,24 @@ class SoftCPU:
                 r['DBUF'].value = data
                 r['DBUS'].value = data
 
+            # ALU might also generate data for the dbus
+
+            elif op == "ALU.OP.ADD":
+                pass
+
+            elif op == "ALU.OE":
+                r['DBUS'].value = r['ALU'].value
+
             # register file
 
             elif op == "INSTR.L":
                 r['INSTR'].value = r['DBUS'].value
 
-            elif op == "ACT.L":
+            elif op == "ACT.L.DBUS":
                 r['ACT'].value = r['DBUS'].value
+
+            elif op == "ACT.L.A":
+                r['ACT'].value = r['A'].value
 
             elif op == "TMP.L":
                 r['TMP'].value = r['DBUS'].value
@@ -2777,11 +2788,11 @@ class SoftCPU:
             elif op == "ACT.OE":
                 r['ALU'].latch(r['ACT'].value, latchIdx=0)
 
-            elif op == "ALU.OE":
-                r['DBUS'].value = r['ALU'].value
-
-            elif op == "A.OE" or op == "AF.H.OE":
+            elif op == "A.OE" or op == "A.OE.DBUS" or op == "AF.H.OE.DBUS":
                 r['DBUS'].value = r['A'].value
+
+            elif op == "A.OE.ACT":
+                r['ACT'].value = r['A'].value
 
             elif op == "F.OE" or op == "AF.L.OE":
                 r['DBUS'].value = r['F'].value
