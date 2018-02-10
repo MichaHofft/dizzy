@@ -213,14 +213,14 @@ ADC	ADC A,(IY+d)	A	(IY+{d})	R	X	0	1	1	1	1	1	1	0	1	FD	5	19 (4,4,3,5,3)	S,Z,H,P/V,
 						1	1	0	0	0	1	1	1	0	8E																																			
 						2	d	d	d	d	d	d	d	d																																				
 																																																		
-SUB	SUB r	{r}		R		0	1	0	0	1	0	r	r	r		1	4	S,Z,H,P/V,N,C	A ← A + r	Change to block ADD																														
+SUB	SUB r	{r}		R		0	1	0	0	1	0	r	r	r		1	4	S,Z,H,P/V,N,C	A ← A - r	Change to block ADD	PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	{r}.OE, TMP.L, A.OE, ACT.L.A	TMP.OE.ALU, ACT.OE, ALU.OP.SUB, ALU.OE, A.L																									
 																																																		
-SUB	SUB n	{n}		I		0	1	1	0	1	0	1	1	0	D6	2	7 (4,3)	S,Z,H,P/V,N,C	A ← A + n	Set for immediate??																														
+SUB	SUB n	{n}		I		0	1	1	0	1	0	1	1	0	D6	2	7 (4,3)	S,Z,H,P/V,N,C	A ← A - n	Set for immediate??																														
 						1	n	n	n	n	n	n	n	n																																				
 																																																		
-SUB	SUB (HL)	(HL)		RI		0	1	0	0	1	0	1	1	0	96	2	7 (4,3)	S,Z,H,P/V,N,C	A ← A + (HL)	(HL) == 110 register!																														
+SUB	SUB (HL)	(HL)		RI		0	1	0	0	1	0	1	1	0	96	2	7 (4,3)	S,Z,H,P/V,N,C	A ← A - (HL)	(HL) == 110 register!																														
 																																																		
-SUB	SUB (IX+d)	(IX+{d})		X		0	1	1	0	1	1	1	0	1	DD	5	19 (4,4,3,5,3)	S,Z,H,P/V,N,C	A ← A + (IX+d)	This bit seems to indicate X/Y																														
+SUB	SUB (IX+d)	(IX+{d})		X		0	1	1	0	1	1	1	0	1	DD	5	19 (4,4,3,5,3)	S,Z,H,P/V,N,C	A ← A - (IX+d)	This bit seems to indicate X/Y																														
 						1	1	0	0	1	0	1	1	0	96																																			
 						2	d	d	d	d	d	d	d	d																																				
 																																																		

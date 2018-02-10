@@ -2437,6 +2437,15 @@ class SoftFunction(Enum):
     RRD = 22
     ADD_TWO_COMPL_OP2 = 23
 
+class SoftFlag:
+    NONE = 0
+    CARRY = 1
+    ADDSUB = 2
+    PARITYOVER = 4
+    HALFCARRY = 8
+    ZERO = 16
+    SIGN = 32
+
 class SoftRegister:
     """ Approach: have a iterable register bank with minimal OO features
     per register. """
@@ -2451,6 +2460,7 @@ class SoftRegister:
         self.compositeLow = compositeLow
         self.compositeHi = compositeHi
         self.bits = bits 
+        self.flags = SoftFlag.NONE
 
     def latch(self, value: int, latchIdx=0, byteIdx=-1):
         if self.latchNum <= 1:
@@ -2472,24 +2482,54 @@ class SoftRegister:
                 return
             self.theValue[latchIdx] = value
 
-    def performFunction(self, function: SoftFunction, value):
+    def performFunction(self):
+        # binary mask
+        andMask = (1 << self.bits) - 1
         # unary or binary?
         if self.latchNum <= 1:
             # unary
-            if function == SoftFunction.NONE:
-                return value
-            if function == SoftFunction.PURE_INC:
-                return value + 1
-            if function == SoftFunction.PURE_DEC:
-                return value - 1
+            if self.function == SoftFunction.NONE:
+                return self.theValue
+            if self.function == SoftFunction.PURE_INC:
+                return (self.theValue + 1) & andMask
+            if self.function == SoftFunction.PURE_DEC:
+                return (self.theValue - 1) & andMask
         else:
             # binary
-            if function == SoftFunction.NONE:
-                return value[0]
-            if function == SoftFunction.ADD:
-                return value[0] + value[1]
-            if function == SoftFunction.ADD_TWO_COMPL_OP2:
-                return value[0] + Helper.fromTwosComplement(value[1])
+            if self.function == SoftFunction.NONE:
+                return self.theValue[0]
+            if self.function == SoftFunction.ADD:
+                # process values as unsigned positive bytes/ words
+                v = (self.theValue[0] & andMask) + (self.theValue[1] & andMask) 
+                self.flags = SoftFlag.NONE
+                if v > 255:
+                    self.flags = self.flags | SoftFlag.CARRY
+                if v > 127 or v < -128:
+                    self.flags = self.flags | SoftFlag.PARITYOVER
+                if v & 0x16 > 0:
+                    self.flags = self.flags | SoftFlag.HALFCARRY
+                if v == 0:
+                    self.flags = self.flags | SoftFlag.ZERO
+                if v & 0x80 > 0:
+                    self.flags = self.flags | SoftFlag.SIGN
+                return v & andMask
+            if self.function == SoftFunction.SUB:
+                # process values as unsigned positive bytes/ words
+                v = (self.theValue[0] & andMask) - (self.theValue[1] & andMask) 
+                self.flags = SoftFlag.ADDSUB
+                if v < 0:
+                    self.flags = self.flags | SoftFlag.CARRY
+                if v > 127 or v < -128:
+                    self.flags = self.flags | SoftFlag.PARITYOVER
+                if v & 0x16 > 0:
+                    self.flags = self.flags | SoftFlag.HALFCARRY
+                if v == 0:
+                    self.flags = self.flags | SoftFlag.ZERO
+                if v & 0x80 > 0:
+                    self.flags = self.flags | SoftFlag.SIGN
+                return v & andMask
+            if self.function == SoftFunction.ADD_TWO_COMPL_OP2:
+                return self.theValue[0] + Helper.fromTwosComplement(self.theValue[1])
 
     def output(self, byteIdx=-1):
         # calculation and HI/LO are mutually exclusive
@@ -2502,7 +2542,7 @@ class SoftRegister:
                 v = v + (self.compositeHi.theValue << 8)
         else:
             # ALU / INCer
-            v = self.performFunction(self.function, self.theValue)
+            v = self.performFunction()
         # byte selector?
         if byteIdx == 0:
             return v & 0x00ff
@@ -2532,11 +2572,20 @@ class SoftCPU:
         """ Short debug string """
         # keys = list(self.registers.keys())
         # keys.sort()
-        keys = "PC INSTR A B C D E F H L BC DE HL IX IY ACT TMP I R ALU DISP SP INC2 ABUS DBUS ABUF DBUF".split(sep=' ')
+        keys = "PC INSTR A F B C D E H L BC DE HL IX IY ACT TMP I R ALU DISP SP INC2 ABUS DBUS ABUF DBUF".split(sep=' ')
         res = ""
         for k in keys:
             r = self.registers[k]
-            if r.value is not None and isinstance(r.value, int):
+            if r.name == 'F':
+                res += " F "
+                res += 'C' if ( r.value & SoftFlag.CARRY > 0 ) else '-'
+                res += 'N' if ( r.value & SoftFlag.ADDSUB > 0 ) else '-'
+                res += 'PV' if ( r.value & SoftFlag.PARITYOVER > 0 ) else '--'
+                res += 'H' if ( r.value & SoftFlag.HALFCARRY > 0 ) else '-'
+                res += 'Z' if ( r.value & SoftFlag.ZERO > 0 ) else '-'
+                res += 'S' if ( r.value & SoftFlag.SIGN > 0 ) else '-'
+                res += " "
+            elif r.value is not None and isinstance(r.value, int):
                 res += "" + r.name + " {num:{fill}{width}x} ".format(num=r.value, fill='0', width=int(r.bits/4))
             else:
                 res += "" + r.name + " ?? "
@@ -2702,8 +2751,12 @@ class SoftCPU:
             elif op == "ALU.OP.ADD":
                 r['ALU'].setFunction(SoftFunction.ADD)
 
+            elif op == "ALU.OP.SUB":
+                r['ALU'].setFunction(SoftFunction.SUB)
+
             elif op == "ALU.OE":
                 r['DBUS'].value = r['ALU'].value
+                r['F'].value = r['ALU'].flags
 
             # register file
 

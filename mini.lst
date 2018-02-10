@@ -3,7 +3,7 @@
 ||  Assembling mini.asm..
 ||  Starting assemble stage 1 for: mini.asm..
 *MARK*
-In mini.asm(71) E0119: Jump target to far away for RELATIVE jump! Skipping!
+In mini.asm(73) E0119: Jump target to far away for RELATIVE jump! Skipping!
 ||  Stage 1 completed.
 ||  Starting assemble stage 2 ..
 0000:         |;------------------------------
@@ -18,95 +18,97 @@ In mini.asm(71) E0119: Jump target to far away for RELATIVE jump! Skipping!
 0103: 80      |        ADD     A,B             ; 84, kein Carry                |A ← A + r
 0104: 0ee6    |        LD      C,230                                           |r ← n
 0106: 81      |        ADD     A,C             ; 84 + 230 -> 58, Carry!        |A ← A + r
-0107: 00      |        NOP                                                     |--
-0108:*dd210002|        LD      IX,buf                                          |IX ← nn
-010c: dd4e01  |        LD      C,(IX+1)                                        |r ← (IX+d)
-010f:*210402  |        LD      HL,buf2                                         |Register pair ← nn
-0112: 71      |        LD      (HL),C                                          |(HL) ← r
-0113: 56      |        LD      D,(HL)                                          |r ← (HL)
-0114: dd72fe  |        LD      (IX+-2),D                                       |(IX+d) ← r
-0117: 365a    |        LD      (HL),$5a                                        |(HL) ← n
-0119: dd36fca5|        LD      (IX+-4),$a5                                     |(IX+d) ← n
-011d: 0a      |        LD      A,(BC)                                          |A ← (BC)
-011e: 3e0b    |        LD      A,11                                            |r ← n
-0120:*3a0702  |        LD      A,(buf2+3)                                      |A ← (nn)
-0123: 3e55    |        LD      A,$55                                           |r ← n
-0125:*010002  |        LD      BC,buf                                          |Register pair ← nn
-0128: 02      |        LD      (BC),A                                          |(BC) ← A
-0129: 3e77    |        LD      A,$77                                           |r ← n
-012b:*110002  |        LD      DE,buf                                          |Register pair ← nn
-012e: 12      |        LD      (DE),A                                          |(DE) ← A
-012f: 3e99    |        LD      A,$99                                           |r ← n
-0131:*320002  |        LD      (buf),A                                         |(nn) ← A
+0107: 163a    |        LD      D,58                                            |r ← n
+0109: 92      |        SUB     D               ; shall be 0, Sign              |A ← A + r
+010a: 00      |        NOP                                                     |--
+010b:*dd210002|        LD      IX,buf                                          |IX ← nn
+010f: dd4e01  |        LD      C,(IX+1)                                        |r ← (IX+d)
+0112:*210402  |        LD      HL,buf2                                         |Register pair ← nn
+0115: 71      |        LD      (HL),C                                          |(HL) ← r
+0116: 56      |        LD      D,(HL)                                          |r ← (HL)
+0117: dd72fe  |        LD      (IX+-2),D                                       |(IX+d) ← r
+011a: 365a    |        LD      (HL),$5a                                        |(HL) ← n
+011c: dd36fca5|        LD      (IX+-4),$a5                                     |(IX+d) ← n
+0120: 0a      |        LD      A,(BC)                                          |A ← (BC)
+0121: 3e0b    |        LD      A,11                                            |r ← n
+0123:*3a0702  |        LD      A,(buf2+3)                                      |A ← (nn)
+0126: 3e55    |        LD      A,$55                                           |r ← n
+0128:*010002  |        LD      BC,buf                                          |Register pair ← nn
+012b: 02      |        LD      (BC),A                                          |(BC) ← A
+012c: 3e77    |        LD      A,$77                                           |r ← n
+012e:*110002  |        LD      DE,buf                                          |Register pair ← nn
+0131: 12      |        LD      (DE),A                                          |(DE) ← A
 *MARK*
-0134: 3e32    |        LD      A,$32                                           |r ← n
-0136: ed47    |        LD      I,A                                             |Interrupt vector reg ← A
-0138: 3e43    |        LD      A,$43                                           |r ← n
-013a: ed4f    |        LD      R,A                                             |Memory refresh reg ← A
-013c: ed57    |        LD      A,I                     ; A to be $32           |A ← Interrupt vector reg
-013e: ed5f    |        LD      A,R                     ; A to be $43           |A ← Memory refresh reg
-0140:*dd210002|        LD      IX,buf                                          |IX ← nn
-0144: fd21aa55|        LD      IY,$55aa                                        |IY ← nn
-0148:*2a0a02  |        LD      HL,(buf4)               ; HL to be $200         |H ← (nn+1), L ← (nn)
-014b:*ed4b0002|        LD      BC,(buf)                ; BC to be $0201        |RRh ← (nn+1), RRl ← (nn)
-014f:*ed5b0102|        LD      DE,(buf+1)              ; DE to be $0302        |RRh ← (nn+1), RRl ← (nn)
-0153:*ed7b0202|        LD      SP,(buf+2)              ; SP to be $0403        |RRh ← (nn+1), RRl ← (nn)
-0157:*dd2a0302|        LD      IX,(buf+3)              ; SP to be $0504        |IXh ← (nn+1), IXl ← (nn)
-015b:*fd2a0402|        LD      IY,(buf+4)              ; SP to be $0605        |IYh ← (nn+1), IYl ← (nn)
-015f:*220c02  |        LD      (buf6),HL                                       |(nn+1) ← H, (nn) ← L
-0162:*ed430102|        LD      (buf+1),BC                                      |(nn+1) ← RRh, (nn) ←RRl
-0166:*ed530202|        LD      (buf+2),DE                                      |(nn+1) ← RRh, (nn) ←RRl
-016a:*ed730302|        LD      (buf+3),SP                                      |(nn+1) ← RRh, (nn) ←RRl
-016e:*dd220402|        LD      (buf+4),IX                                      |(nn+1) ← IXh, (nn) ←IXl
-0172:*fd220502|        LD      (buf+5),IY                                      |(nn+1) ← IYh, (nn) ←IYl
-0176: f9      |        LD      SP,HL                                           |SP ← HL
-0177: ddf9    |        LD      SP,IX                                           |SP ← IX
-0179: fdf9    |        LD      SP,IY                                           |SP ← IY
-017b:*314006  |        LD      SP,spend                                        |Register pair ← nn
-017e: c5      |        PUSH    BC                                              |(SP-1) ← QQh, (SP-2) ← QQl, SP ← SP - 2
-017f: d5      |        PUSH    DE                                              |(SP-1) ← QQh, (SP-2) ← QQl, SP ← SP - 2
-0180: e5      |        PUSH    HL                                              |(SP-1) ← QQh, (SP-2) ← QQl, SP ← SP - 2
-0181: f5      |        PUSH    AF                                              |(SP-1) ← QQh, (SP-2) ← QQl, SP ← SP - 2
-0182: dde5    |        PUSH    IX                                              |(SP-1) ← IXh, (SP-2) ← IXl, SP ← SP - 2
-0184: fde5    |        PUSH    IY                                              |(SP-1) ← IYh, (SP-2) ← IYl, SP ← SP - 2
-0186: c1      |        POP     BC                                              |QQl ← (SP), QQh ← (SP+1), SP ← SP + 2
-0187: dde1    |        POP     IX                                              |IXl ← (SP), IXh ← (SP+2), SP ← SP + 2
-0189: 00      |        NOP                                                     |--
-018a: 23      |        INC HL                                                  |RR ← RR + 1
-018b: cb16    |        RL (HL)                                                 |CY ← (HL)[0], (HL) ← ROR( (HL) ,1)
-018d: 3e5d    |        LD A,TFCB                                               |r ← n
-018f: 212312  |        LD HL,1223H                                             |Register pair ← nn
-0192:*010002  |        LD BC, buf                                              |Register pair ← nn
-In mini.asm(71) E0119: Jump target to far away for RELATIVE jump! Skipping!
-0195:         |        JR hallo                                                |PC ← PC + ee
-0195: c30001  |        JP hallo                                                |PC ← nn
-0198:         |
-0198:         |TFCC    EQU     $
-0198:         |TFCD    EQU     $+20
-0198:         |
-0198:         |hallo2:
-0198: 7e      |        LD A,(HL)                                               |r ← (HL)
-0199: 02      |        LD (BC),A                                               |(BC) ← A
-019a: 320500  |        LD (5),A                                                |(nn) ← A
-In mini.asm(81) E0114: Unable to finally evaluate expression IX+5h ! Skipping!
-019d:*3a????  |        LD A,(IX+5h)                                            |A ← (nn)
-In mini.asm(82) E0114: Unable to finally evaluate expression IY+12 ! Skipping!
-01a0:*32????  |        LD (IY+12),A                                            |(nn) ← A
-01a3:*ed4b0002|        LD BC,(buf)                                             |RRh ← (nn+1), RRl ← (nn)
-01a7:*210402  |        LD HL,buf2                                              |Register pair ← nn
-01aa:         |;
-01aa:         |;   Routine to convert (A) into upper case ascii. Only letters
-01aa:         |; are affected.
-01aa:         |;
-01aa: fe61    |UPPER:  CP      'a'             ;check for letters in the range…|Z ←  A = n
-01ae:         |                                                  of 'a' to 'z'.
-01ac: d8      |        RET     C                                               |IF cc true, PCl ← (SP), PCh ← (SP), SP ← SP + 2
-01ad: fe7b    |        CP      '{'                                             |Z ←  A = n
-01af: d0      |        RET     NC                                              |IF cc true, PCl ← (SP), PCh ← (SP), SP ← SP + 2
-01b0: e65f    |        AND     5FH             ;convert it if found.           |A ← A & n
-01b2: c9      |        RET                                                     |PCl ← (SP), PCh ← (SP), SP ← SP + 2
-01b3:         |
-01b3:         |        ORG $200
+0132: 3e99    |        LD      A,$99                                           |r ← n
+0134:*320002  |        LD      (buf),A                                         |(nn) ← A
+0137: 3e32    |        LD      A,$32                                           |r ← n
+0139: ed47    |        LD      I,A                                             |Interrupt vector reg ← A
+013b: 3e43    |        LD      A,$43                                           |r ← n
+013d: ed4f    |        LD      R,A                                             |Memory refresh reg ← A
+013f: ed57    |        LD      A,I                     ; A to be $32           |A ← Interrupt vector reg
+0141: ed5f    |        LD      A,R                     ; A to be $43           |A ← Memory refresh reg
+0143:*dd210002|        LD      IX,buf                                          |IX ← nn
+0147: fd21aa55|        LD      IY,$55aa                                        |IY ← nn
+014b:*2a0a02  |        LD      HL,(buf4)               ; HL to be $200         |H ← (nn+1), L ← (nn)
+014e:*ed4b0002|        LD      BC,(buf)                ; BC to be $0201        |RRh ← (nn+1), RRl ← (nn)
+0152:*ed5b0102|        LD      DE,(buf+1)              ; DE to be $0302        |RRh ← (nn+1), RRl ← (nn)
+0156:*ed7b0202|        LD      SP,(buf+2)              ; SP to be $0403        |RRh ← (nn+1), RRl ← (nn)
+015a:*dd2a0302|        LD      IX,(buf+3)              ; SP to be $0504        |IXh ← (nn+1), IXl ← (nn)
+015e:*fd2a0402|        LD      IY,(buf+4)              ; SP to be $0605        |IYh ← (nn+1), IYl ← (nn)
+0162:*220c02  |        LD      (buf6),HL                                       |(nn+1) ← H, (nn) ← L
+0165:*ed430102|        LD      (buf+1),BC                                      |(nn+1) ← RRh, (nn) ←RRl
+0169:*ed530202|        LD      (buf+2),DE                                      |(nn+1) ← RRh, (nn) ←RRl
+016d:*ed730302|        LD      (buf+3),SP                                      |(nn+1) ← RRh, (nn) ←RRl
+0171:*dd220402|        LD      (buf+4),IX                                      |(nn+1) ← IXh, (nn) ←IXl
+0175:*fd220502|        LD      (buf+5),IY                                      |(nn+1) ← IYh, (nn) ←IYl
+0179: f9      |        LD      SP,HL                                           |SP ← HL
+017a: ddf9    |        LD      SP,IX                                           |SP ← IX
+017c: fdf9    |        LD      SP,IY                                           |SP ← IY
+017e:*314006  |        LD      SP,spend                                        |Register pair ← nn
+0181: c5      |        PUSH    BC                                              |(SP-1) ← QQh, (SP-2) ← QQl, SP ← SP - 2
+0182: d5      |        PUSH    DE                                              |(SP-1) ← QQh, (SP-2) ← QQl, SP ← SP - 2
+0183: e5      |        PUSH    HL                                              |(SP-1) ← QQh, (SP-2) ← QQl, SP ← SP - 2
+0184: f5      |        PUSH    AF                                              |(SP-1) ← QQh, (SP-2) ← QQl, SP ← SP - 2
+0185: dde5    |        PUSH    IX                                              |(SP-1) ← IXh, (SP-2) ← IXl, SP ← SP - 2
+0187: fde5    |        PUSH    IY                                              |(SP-1) ← IYh, (SP-2) ← IYl, SP ← SP - 2
+0189: c1      |        POP     BC                                              |QQl ← (SP), QQh ← (SP+1), SP ← SP + 2
+018a: dde1    |        POP     IX                                              |IXl ← (SP), IXh ← (SP+2), SP ← SP + 2
+018c: 00      |        NOP                                                     |--
+018d: 23      |        INC HL                                                  |RR ← RR + 1
+018e: cb16    |        RL (HL)                                                 |CY ← (HL)[0], (HL) ← ROR( (HL) ,1)
+0190: 3e5d    |        LD A,TFCB                                               |r ← n
+0192: 212312  |        LD HL,1223H                                             |Register pair ← nn
+0195:*010002  |        LD BC, buf                                              |Register pair ← nn
+In mini.asm(73) E0119: Jump target to far away for RELATIVE jump! Skipping!
+0198:         |        JR hallo                                                |PC ← PC + ee
+0198: c30001  |        JP hallo                                                |PC ← nn
+019b:         |
+019b:         |TFCC    EQU     $
+019b:         |TFCD    EQU     $+20
+019b:         |
+019b:         |hallo2:
+019b: 7e      |        LD A,(HL)                                               |r ← (HL)
+019c: 02      |        LD (BC),A                                               |(BC) ← A
+019d: 320500  |        LD (5),A                                                |(nn) ← A
+In mini.asm(83) E0114: Unable to finally evaluate expression IX+5h ! Skipping!
+01a0:*3a????  |        LD A,(IX+5h)                                            |A ← (nn)
+In mini.asm(84) E0114: Unable to finally evaluate expression IY+12 ! Skipping!
+01a3:*32????  |        LD (IY+12),A                                            |(nn) ← A
+01a6:*ed4b0002|        LD BC,(buf)                                             |RRh ← (nn+1), RRl ← (nn)
+01aa:*210402  |        LD HL,buf2                                              |Register pair ← nn
+01ad:         |;
+01ad:         |;   Routine to convert (A) into upper case ascii. Only letters
+01ad:         |; are affected.
+01ad:         |;
+01ad: fe61    |UPPER:  CP      'a'             ;check for letters in the range…|Z ←  A = n
+01b1:         |                                                  of 'a' to 'z'.
+01af: d8      |        RET     C                                               |IF cc true, PCl ← (SP), PCh ← (SP), SP ← SP + 2
+01b0: fe7b    |        CP      '{'                                             |Z ←  A = n
+01b2: d0      |        RET     NC                                              |IF cc true, PCl ← (SP), PCh ← (SP), SP ← SP + 2
+01b3: e65f    |        AND     5FH             ;convert it if found.           |A ← A & n
+01b5: c9      |        RET                                                     |PCl ← (SP), PCh ← (SP), SP ← SP + 2
+01b6:         |
+01b6:         |        ORG $200
 0200:         |
 0200: 01020304|buf:    DB 1,2,3,4,
 0204: 05060708|buf2:   DB 5,6,7,8,9,10
@@ -120,9 +122,9 @@ In mini.asm(82) E0114: Unable to finally evaluate expression IY+12 ! Skipping!
 0212: 2143    |        DEFW $4321
 0214:         |
 0214:         |buf3:    ; arithmetic test suite ... see http://benryves.com/bin/brass/manual.htm#labels
-In mini.asm(109) E0109: -1 cannot be evaluated as sequence of bytes! Skipping!
+In mini.asm(111) E0109: -1 cannot be evaluated as sequence of bytes! Skipping!
 0214:*????    |        DEFW    -1                      ; $ffff
-In mini.asm(110) E0109: -2 cannot be evaluated as sequence of bytes! Skipping!
+In mini.asm(112) E0109: -2 cannot be evaluated as sequence of bytes! Skipping!
 0216:*????    |        DEFW    -2                      ; $feff
 0218: 1600    |        DEFW    17+5                    ; $16
 021a: 0c00    |        DEFW    17-5                    ; $0c
@@ -134,7 +136,7 @@ In mini.asm(110) E0109: -2 cannot be evaluated as sequence of bytes! Skipping!
 0226: 0c00    |        DEFW    3^15                    ; $0c
 0228: 0000    |        DEFW    !1                      ; $00
 022a: 0100    |        DEFW    !0                      ; $01
-In mini.asm(121) E0109: ~1 cannot be evaluated as sequence of bytes! Skipping!
+In mini.asm(123) E0109: ~1 cannot be evaluated as sequence of bytes! Skipping!
 022c:*????    |        DEFW    ~1                      ; $feff
 022e: 0100    |        DEFW    1 && 1                  ; $01
 0230: 0000    |        DEFW    1 && 0                  ; $00
@@ -195,7 +197,7 @@ BUF5     = $2000 =  8192 is Equ         ; expr = 2000h
 ENTRY    = $0005 =     5 is Equ         ; expr = 5
 TFCA     = $005c =    92 is Equ         ; expr = 5CH
 TFCB     = $005d =    93 is Equ         ; expr = TFCA+1
-TFCC     = $0198 =   408 is Equ         ; expr = $
+TFCC     = $019b =   411 is Equ         ; expr = $
 TFCD     = $0014 =    20 is Equ         ; expr = $+20
 BUF      = $0200 =   512 is Label       
 BUF2     = $0204 =   516 is Label       
@@ -203,10 +205,10 @@ BUF3     = $0214 =   532 is Label
 BUF4     = $020a =   522 is Label       
 BUF6     = $020c =   524 is Label       
 HALLO    = $0100 =   256 is Label       
-HALLO2   = $0198 =   408 is Label       
+HALLO2   = $019b =   411 is Label       
 SPEND    = $0640 =  1600 is Label       
 SPSTRT   = $0600 =  1536 is Label       
-UPPER    = $01aa =   426 is Label       
+UPPER    = $01ad =   429 is Label       
 ||  Writing binary bytes to: mini.rom
 ||  Found minimal org pos to be $100 = 256, last byte to be $640 = 1600
 *MARK*

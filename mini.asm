@@ -10,6 +10,8 @@ hallo:  LD      A,42
         ADD     A,B             ; 84, kein Carry
         LD      C,230
         ADD     A,C             ; 84 + 230 -> 58, Carry!
+        LD      D,58
+        SUB     D               ; shall be 0, Sign
         NOP
         LD      IX,buf
         LD      C,(IX+1)
