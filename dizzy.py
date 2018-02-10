@@ -2508,9 +2508,7 @@ class SoftRegister:
             return v & 0x00ff
         elif byteIdx == 1:
             return (v & 0xff00) >> 8        
-        return v
-
-        
+        return v        
 
     def setFunction(self, function: SoftFunction):
         self.function = function
@@ -2695,8 +2693,14 @@ class SoftCPU:
 
             # ALU might also generate data for the dbus
 
+            elif op == "TMP.OE.ALU":
+                r['ALU'].latch(r['TMP'].value, latchIdx=1)
+
+            elif op == "ACT.OE":
+                r['ALU'].latch(r['ACT'].value, latchIdx=0)
+
             elif op == "ALU.OP.ADD":
-                pass
+                r['ALU'].setFunction(SoftFunction.ADD)
 
             elif op == "ALU.OE":
                 r['DBUS'].value = r['ALU'].value
@@ -2781,12 +2785,6 @@ class SoftCPU:
 
             elif op == "TMP.OE.DBUS":
                 r['DBUS'].value = r['TMP'].value
-
-            elif op == "TMP.OE.ALU":
-                r['ALU'].latch(r['TMP'].value, latchIdx=1)
-
-            elif op == "ACT.OE":
-                r['ALU'].latch(r['ACT'].value, latchIdx=0)
 
             elif op == "A.OE" or op == "A.OE.DBUS" or op == "AF.H.OE.DBUS":
                 r['DBUS'].value = r['A'].value

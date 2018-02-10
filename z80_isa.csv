@@ -183,7 +183,7 @@ CPD	CPD					0	1	1	1	0	1	1	0	1	ED	4	16 (4,4,3,5)	S,Z,H,P/V,N	A =?= (HL), HL ← H
 CPDR	CPDR					0	1	1	1	0	1	1	0	1	ED	5	21 (4,4,3,5,5)	S,Z,H,P/V,N	A =?= (HL), HL ← HL -1, BC ← BC-1																															
 						1	1	0	1	1	1	0	0	1	B9																																			
 																																																		
-ADD	ADD A,r	A	{r}	R	R	0	1	0	0	0	0	r	r	r		1	4	S,Z,H,P/V,N,C	A ← A + r		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	{r}.OE, TMP.L, A.OE, ACT.L.A	ALU.OP.ADD, ALU.OE, A.L																									
+ADD	ADD A,r	A	{r}	R	R	0	1	0	0	0	0	r	r	r		1	4	S,Z,H,P/V,N,C	A ← A + r		PC.OE, ABUF.L, INC2.P, INC2.L	INC2.P, INC2.OE, PC.L.INC2, DBUF.L.IN	DBUF.L.IN, INSTR.L	{r}.OE, TMP.L, A.OE, ACT.L.A	TMP.OE.ALU, ACT.OE, ALU.OP.ADD, ALU.OE, A.L																									
 																																																		
 ADD	ADD A,n	A	{n}	R	I	0	1	1	0	0	0	1	1	0	C6	2	7 (4,3)	S,Z,H,P/V,N,C	A ← A + n	Set for immediate??																														
 						1	n	n	n	n	n	n	n	n						No, only for ADD block like op codes																														
