@@ -12,6 +12,9 @@ hallo:  LD      A,42
         ADD     A,C             ; 84 + 230 -> 58, Carry!
         LD      D,58
         SUB     D               ; shall be 0, Sign
+        ADD     A,42            ; shall be 42 again
+        LD      HL,buf7
+        ADD     A,(HL)          ; 85
         NOP
         LD      IX,buf
         LD      C,(IX+1)
@@ -106,6 +109,8 @@ buf6:   DEFW $5aa5
         DEFW $a55a
         DEFW $1234
         DEFW $4321
+
+buf7:   DB      43
 
 buf3:    ; arithmetic test suite ... see http://benryves.com/bin/brass/manual.htm#labels
         DEFW    -1                      ; $ffff
