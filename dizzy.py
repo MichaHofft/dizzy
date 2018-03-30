@@ -251,7 +251,7 @@ class OpCodeDefList:
         self.opcodes.clear()
         # start reading files
         continueBitPattern = None
-        with open(fn) as tsvfile:
+        with open(fn, encoding='utf-8') as tsvfile:
             tsvreader = csv.reader(tsvfile, delimiter="\t")
             for line in tsvreader:
                 # make sure we have enough cols
