@@ -15,6 +15,8 @@ hallo:  LD      A,42
         ADD     A,42            ; shall be 42 again
         LD      HL,buf7
         ADD     A,(HL)          ; 85
+        LD      IX,buf7
+        ADD     A,(IX+2)        ; 85 + 45 = 130
         NOP
         LD      IX,buf
         LD      C,(IX+1)
@@ -111,6 +113,8 @@ buf6:   DEFW $5aa5
         DEFW $4321
 
 buf7:   DB      43
+        DB      44
+        DB      45
 
 buf3:    ; arithmetic test suite ... see http://benryves.com/bin/brass/manual.htm#labels
         DEFW    -1                      ; $ffff

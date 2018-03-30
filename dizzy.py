@@ -2498,9 +2498,11 @@ class SoftRegister:
             # binary
             if self.function == SoftFunction.NONE:
                 return self.theValue[0]
-            if self.function == SoftFunction.ADD:
+            if self.function == SoftFunction.ADD or self.function == SoftFunction.ADC:
                 # process values as unsigned positive bytes/ words
                 v = (self.theValue[0] & andMask) + (self.theValue[1] & andMask) 
+                if self.function == SoftFunction.ADC and TODO:
+                    v = v + 1
                 self.flags = SoftFlag.NONE
                 if v > 255:
                     self.flags = self.flags | SoftFlag.CARRY
