@@ -29,6 +29,7 @@ class OPTIONS:
     listStage1 = True
     listStage2 = True
     markAtLineNo = None
+    utf8 = False
 
     def __init__(self):
         """ Helper "global" class """
@@ -50,6 +51,7 @@ class OPTIONS:
         After, `beeprint` will pretty print `obj` """
         if level > OPTIONS.verbose:
             return
+        return
         print("||", '  ' * int(OPTIONS.indent), msg, end="")
         pp(obj)
 
@@ -251,7 +253,8 @@ class OpCodeDefList:
         self.opcodes.clear()
         # start reading files
         continueBitPattern = None
-        with open(fn, encoding='utf-8') as tsvfile:
+        encoding = 'utf-8' if OPTIONS.utf8 else None
+        with open(fn, encoding=encoding) as tsvfile:
             tsvreader = csv.reader(tsvfile, delimiter="\t")
             for line in tsvreader:
                 # make sure we have enough cols
@@ -2501,7 +2504,7 @@ class SoftRegister:
             if self.function == SoftFunction.ADD or self.function == SoftFunction.ADC:
                 # process values as unsigned positive bytes/ words
                 v = (self.theValue[0] & andMask) + (self.theValue[1] & andMask) 
-                if self.function == SoftFunction.ADC and TODO:
+                if self.function == SoftFunction.ADC and self.flags & SoftFlag.CARRY > 0:
                     v = v + 1
                 self.flags = SoftFlag.NONE
                 if v > 255:
@@ -2515,9 +2518,11 @@ class SoftRegister:
                 if v & 0x80 > 0:
                     self.flags = self.flags | SoftFlag.SIGN
                 return v & andMask
-            if self.function == SoftFunction.SUB:
+            if self.function == SoftFunction.SUB or self.function == SoftFunction.SBC:
                 # process values as unsigned positive bytes/ words
                 v = (self.theValue[0] & andMask) - (self.theValue[1] & andMask) 
+                if self.function == SoftFunction.SBC and self.flags & SoftFlag.CARRY > 0:
+                    v = v - 1
                 self.flags = SoftFlag.ADDSUB
                 if v < 0:
                     self.flags = self.flags | SoftFlag.CARRY
@@ -2525,6 +2530,16 @@ class SoftRegister:
                     self.flags = self.flags | SoftFlag.PARITYOVER
                 if v & 0x16 > 0:
                     self.flags = self.flags | SoftFlag.HALFCARRY
+                if v == 0:
+                    self.flags = self.flags | SoftFlag.ZERO
+                if v & 0x80 > 0:
+                    self.flags = self.flags | SoftFlag.SIGN
+                return v & andMask
+            if self.function == SoftFunction.OR or self.function == SoftFunction.AND:
+                # process values as bit patterns
+                v = (self.theValue[0] & andMask) | (self.theValue[1] & andMask) 
+                self.flags = 0
+                # overflow possible?? -> NO?!
                 if v == 0:
                     self.flags = self.flags | SoftFlag.ZERO
                 if v & 0x80 > 0:
@@ -2751,10 +2766,24 @@ class SoftCPU:
                 r['ALU'].latch(r['ACT'].value, latchIdx=0)
 
             elif op == "ALU.OP.ADD":
+                r['ALU'].flags = r['F'].value
                 r['ALU'].setFunction(SoftFunction.ADD)
 
+            elif op == "ALU.OP.ADC":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.ADC)
+
             elif op == "ALU.OP.SUB":
+                r['ALU'].flags = r['F'].value
                 r['ALU'].setFunction(SoftFunction.SUB)
+
+            elif op == "ALU.OP.SBC":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.SBC)
+
+            elif op == "ALU.OP.OR":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.OR)
 
             elif op == "ALU.OE":
                 r['DBUS'].value = r['ALU'].value
@@ -2827,6 +2856,12 @@ class SoftCPU:
 
             elif op == "R.L":
                 r['R'].value = r['DBUS'].value
+
+            elif op == "F.CY.SET":
+                r['F'].value = r['F'].value | SoftFlag.CARRY
+
+            elif op == "F.CY.INV":
+                r['F'].value = r['F'].value ^ SoftFlag.CARRY
 
             # data bus -> address bus .. later that the ...IOError
 
@@ -3325,6 +3360,7 @@ def dizzy():
     parser.add_argument("-v", "--verbose", help="increase verbosity", action="count")
     parser.add_argument("-s1", "--list-stage-1", help="list stage 1", action="store_true")
     parser.add_argument("-s2", "--list-stage-2", help="list stage 2", action="store_true")
+    parser.add_argument("-u8", "--utf-8", help="use utf-8 to decode text files", action="store_true")
     parser.add_argument("-ll", "--list-labels", help="list labels/ symbols", action="store_true")
     parser.add_argument("-se", "--skip-errors", help="skip encountered errors", action="store_true")
     parser.add_argument("-tw", "--tab-width", help="tab width for expanding lines", action="store")
@@ -3352,6 +3388,7 @@ def dizzy():
         OPTIONS.tabWidth = args.tab_width
     if args.mark_at_line and args.mark_at_line.isdigit():
         OPTIONS.markAtLineNo = int(args.mark_at_line)
+    OPTIONS.utf8 = args.utf_8
     OPTIONS.debug(1, "DiZZy v0.1, dead slow Z80 assembler tools, (c) 2017 Michael Hoffmeister")
 
     # clean tables

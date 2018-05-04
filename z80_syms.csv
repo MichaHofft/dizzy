@@ -1,4 +1,3 @@
-				
 	Registers for LD			
 r	A	111		
 r	B	000		
@@ -40,7 +39,7 @@ OO	DE	01
 OO	IY	10		
 OO	AF	11		
 				
-	Bits for BIT, SET			
+	"Bits for BIT, SET"			
 b	0	000		
 b	1	001		
 b	2	010		
