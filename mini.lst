@@ -1,0 +1,252 @@
+||  DiZZy v0.1, dead slow Z80 assembler tools, (c) 2017 Michael Hoffmeister
+||  Loading tables z80_isa.csv, z80_syms.csv..
+||  Assembling mini.asm..
+||  Starting assemble stage 1 for: mini.asm..
+In mini.asm(108) E0119: Jump target to far away for RELATIVE jump! Skipping!
+||  Stage 1 completed.
+||  Starting assemble stage 2 ..
+0000:         |;------------------------------
+0000:         |ENTRY   EQU     5               ;entry point for the cp/m bdos.
+0000:         |TFCA    EQU     5CH             ;default file control block.
+0000:         |TFCB    EQU     TFCA+1
+0000:         |;------------------------------
+0000:         |        ORG 100h
+0100:         |        ;
+0100:         |hallo:  ; OR
+0100: 3e55    |        LD      A, $55                                          |r ? n
+0102: 06aa    |        LD      B, $aa                                          |r ? n
+0104: b0      |        OR      B               ; shall be $ff                  |A ? A | r
+0105: 3e11    |        LD      A, $11                                          |r ? n
+0107: f688    |        OR      $88             ; shall be $99                  |A ? A | n
+0109:*210402  |        LD      HL,buf2         ; is 5                          |Register pair ? nn
+010c: b6      |        OR      (HL)            ; $99+5 = $a4                   |A ? A | (HL)
+010d: 37      |        SCF                     ; CY is 1                       |CY ? 1
+010e: b7      |        OR      A               ; still $a4, but CY is 0        |A ? A | r
+010f: 00      |        NOP                                                     |--
+0110:         |        ; ADD
+0110: 3e2a    |        LD      A,42                                            |r ? n
+0112: 47      |        LD      B,A                                             |r ? s
+0113: 80      |        ADD     A,B             ; 84, kein Carry                |A ? A + r
+0114: 0ee6    |        LD      C,230                                           |r ? n
+0116: 81      |        ADD     A,C             ; 84 + 230 -> 58, Carry!        |A ? A + r
+0117:         |        ; SUB
+0117: 3e3a    |        LD      A,58                                            |r ? n
+0119: 1637    |        LD      D,55                                            |r ? n
+011b: 92      |        SUB     D               ; shall be 3,                   |A ? A - r
+011c: d603    |        SUB     3               ; shall be 0, Sign              |A ? A - n
+011e:*dd210002|        LD      IX,buf          ; buf = 1,2,3,4..               |IX ? nn
+0122: dd9600  |        SUB     (IX+0)          ; A shall be $ff                |A ? A - (IX+d)
+0125:*fd210002|        LD      IY,buf                                          |IY ? nn
+0129: fd9601  |        SUB     (IY+1)          ; A shall be $fd                |A ? A + (IY+d)
+012c:         |        ; SBC (with Carry)
+012c: 3e3b    |        LD      A,59                                            |r ? n
+012e: 1637    |        LD      D,55                                            |r ? n
+0130: 37      |        SCF                     ; set CY                        |CY ? 1
+0131: 9a      |        SBC     A,D             ; shall be 3,                   |A ? A + r + CY
+0132: 37      |        SCF                     ; set CY                        |CY ? 1
+0133: de03    |        SBC     A,3             ; shall be ff, Carry (Borrow!)  |A ? A + n + CY
+0135:*dd210002|        LD      IX,buf          ; buf = 1,2,3,4..               |IX ? nn
+0139: dd9e00  |        SBC     A,(IX+0)        ; A shall be $ff                |A ? A + (IX+d) + CY
+013c:*fd210002|        LD      IY,buf                                          |IY ? nn
+0140: fd9e01  |        SBC     A,(IY+1)        ; A shall be $fd                |A ? A + (IY+d) + CY
+0143: c62a    |        ADD     A,42            ; shall be 42 again             |A ? A + n
+0145:*211402  |        LD      HL,buf7                                         |Register pair ? nn
+0148: 86      |        ADD     A,(HL)          ; 85                            |A ? A + (HL)
+0149:*dd211402|        LD      IX,buf7                                         |IX ? nn
+014d: dd8602  |        ADD     A,(IX+2)        ; 85 + 45 = 130                 |A ? A + (IX+d)
+0150: 00      |        NOP                                                     |--
+0151:*dd210002|        LD      IX,buf                                          |IX ? nn
+0155: dd4e01  |        LD      C,(IX+1)                                        |r ? (IX+d)
+0158:*210402  |        LD      HL,buf2                                         |Register pair ? nn
+015b: 71      |        LD      (HL),C                                          |(HL) ? r
+015c: 56      |        LD      D,(HL)                                          |r ? (HL)
+015d: dd72fe  |        LD      (IX+-2),D                                       |(IX+d) ? r
+0160: 365a    |        LD      (HL),$5a                                        |(HL) ? n
+0162: dd36fca5|        LD      (IX+-4),$a5                                     |(IX+d) ? n
+0166: 0a      |        LD      A,(BC)                                          |A ? (BC)
+0167: 3e0b    |        LD      A,11                                            |r ? n
+0169:*3a0702  |        LD      A,(buf2+3)                                      |A ? (nn)
+016c: 3e55    |        LD      A,$55                                           |r ? n
+016e:*010002  |        LD      BC,buf                                          |Register pair ? nn
+0171: 02      |        LD      (BC),A                                          |(BC) ? A
+0172: 3e77    |        LD      A,$77                                           |r ? n
+0174:*110002  |        LD      DE,buf                                          |Register pair ? nn
+0177: 12      |        LD      (DE),A                                          |(DE) ? A
+0178: 3e99    |        LD      A,$99                                           |r ? n
+017a:*320002  |        LD      (buf),A                                         |(nn) ? A
+017d: 3e32    |        LD      A,$32                                           |r ? n
+017f: ed47    |        LD      I,A                                             |Interrupt vector reg ? A
+0181: 3e43    |        LD      A,$43                                           |r ? n
+0183: ed4f    |        LD      R,A                                             |Memory refresh reg ? A
+0185: ed57    |        LD      A,I                     ; A to be $32           |A ? Interrupt vector reg
+0187: ed5f    |        LD      A,R                     ; A to be $43           |A ? Memory refresh reg
+0189:*dd210002|        LD      IX,buf                                          |IX ? nn
+018d: fd21aa55|        LD      IY,$55aa                                        |IY ? nn
+0191:*2a0a02  |        LD      HL,(buf4)               ; HL to be $200         |H ? (nn+1), L ? (nn)
+0194:*ed4b0002|        LD      BC,(buf)                ; BC to be $0201        |RRh ? (nn+1), RRl ? (nn)
+0198:*ed5b0102|        LD      DE,(buf+1)              ; DE to be $0302        |RRh ? (nn+1), RRl ? (nn)
+019c:*ed7b0202|        LD      SP,(buf+2)              ; SP to be $0403        |RRh ? (nn+1), RRl ? (nn)
+01a0:*dd2a0302|        LD      IX,(buf+3)              ; SP to be $0504        |IXh ? (nn+1), IXl ? (nn)
+01a4:*fd2a0402|        LD      IY,(buf+4)              ; SP to be $0605        |IYh ? (nn+1), IYl ? (nn)
+01a8:*220c02  |        LD      (buf6),HL                                       |(nn+1) ? H, (nn) ? L
+01ab:*ed430102|        LD      (buf+1),BC                                      |(nn+1) ? RRh, (nn) ?RRl
+01af:*ed530202|        LD      (buf+2),DE                                      |(nn+1) ? RRh, (nn) ?RRl
+01b3:*ed730302|        LD      (buf+3),SP                                      |(nn+1) ? RRh, (nn) ?RRl
+01b7:*dd220402|        LD      (buf+4),IX                                      |(nn+1) ? IXh, (nn) ?IXl
+01bb:*fd220502|        LD      (buf+5),IY                                      |(nn+1) ? IYh, (nn) ?IYl
+01bf: f9      |        LD      SP,HL                                           |SP ? HL
+01c0: ddf9    |        LD      SP,IX                                           |SP ? IX
+01c2: fdf9    |        LD      SP,IY                                           |SP ? IY
+01c4:*314006  |        LD      SP,spend                                        |Register pair ? nn
+01c7: c5      |        PUSH    BC                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
+01c8: d5      |        PUSH    DE                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
+01c9: e5      |        PUSH    HL                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
+01ca: f5      |        PUSH    AF                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
+01cb: dde5    |        PUSH    IX                                              |(SP-1) ? IXh, (SP-2) ? IXl, SP ? SP - 2
+01cd: fde5    |        PUSH    IY                                              |(SP-1) ? IYh, (SP-2) ? IYl, SP ? SP - 2
+01cf: c1      |        POP     BC                                              |QQl ? (SP), QQh ? (SP+1), SP ? SP + 2
+01d0: dde1    |        POP     IX                                              |IXl ? (SP), IXh ? (SP+2), SP ? SP + 2
+01d2: 00      |        NOP                                                     |--
+01d3: 23      |        INC HL                                                  |RR ? RR + 1
+01d4: cb16    |        RL (HL)                                                 |CY ? (HL)[0], (HL) ? ROR( (HL) ,1)
+01d6: 3e5d    |        LD A,TFCB                                               |r ? n
+01d8: 212312  |        LD HL,1223H                                             |Register pair ? nn
+01db:*010002  |        LD BC, buf                                              |Register pair ? nn
+In mini.asm(108) E0119: Jump target to far away for RELATIVE jump! Skipping!
+01de:         |        JR hallo                                                |PC ? PC + ee
+01de: c30001  |        JP hallo                                                |PC ? nn
+01e1:         |
+01e1:         |TFCC    EQU     $
+01e1:         |TFCD    EQU     $+20
+01e1:         |
+01e1:         |hallo2:
+01e1: 7e      |        LD A,(HL)                                               |r ? (HL)
+01e2: 02      |        LD (BC),A                                               |(BC) ? A
+01e3: 320500  |        LD (5),A                                                |(nn) ? A
+In mini.asm(118) E0114: Unable to finally evaluate expression IX+5h ! Skipping!
+01e6:*3a????  |        LD A,(IX+5h)                                            |A ? (nn)
+In mini.asm(119) E0114: Unable to finally evaluate expression IY+12 ! Skipping!
+01e9:*32????  |        LD (IY+12),A                                            |(nn) ? A
+01ec:*ed4b0002|        LD BC,(buf)                                             |RRh ? (nn+1), RRl ? (nn)
+01f0:*210402  |        LD HL,buf2                                              |Register pair ? nn
+01f3:         |;
+01f3:         |;   Routine to convert (A) into upper case ascii. Only letters
+01f3:         |; are affected.
+01f3:         |;
+01f3: fe61    |UPPER:  CP      'a'             ;check for letters in the range…|Z ?  A = n
+01f7:         |                                                  of 'a' to 'z'.
+01f5: d8      |        RET     C                                               |IF cc true, PCl ? (SP), PCh ? (SP), SP ? SP + 2
+01f6: fe7b    |        CP      '{'                                             |Z ?  A = n
+01f8: d0      |        RET     NC                                              |IF cc true, PCl ? (SP), PCh ? (SP), SP ? SP + 2
+01f9: e65f    |        AND     5FH             ;convert it if found.           |A ? A & n
+01fb: c9      |        RET                                                     |PCl ? (SP), PCh ? (SP), SP ? SP + 2
+01fc:         |
+01fc:         |        ORG $200
+0200:         |
+0200: 01020304|buf:    DB 1,2,3,4,
+0204: 05060708|buf2:   DB 5,6,7,8,9,10
+0208: 090a    |                                                                
+020a:         |
+020a: 0002    |buf4:   DEFW $200
+020c:         |
+020c: a55a    |buf6:   DEFW $5aa5
+020e: 5aa5    |        DEFW $a55a
+0210: 3412    |        DEFW $1234
+0212: 2143    |        DEFW $4321
+0214:         |
+0214: 2b      |buf7:   DB      43
+0215: 2c      |        DB      44
+0216: 2d      |        DB      45
+0217:         |
+0217:         |buf3:    ; arithmetic test suite ... see http://benryves.com/bin/brass/manual.htm#labels
+In mini.asm(150) E0109: -1 cannot be evaluated as sequence of bytes! Skipping!
+0217:*????    |        DEFW    -1                      ; $ffff
+In mini.asm(151) E0109: -2 cannot be evaluated as sequence of bytes! Skipping!
+0219:*????    |        DEFW    -2                      ; $feff
+021b: 1600    |        DEFW    17+5                    ; $16
+021d: 0c00    |        DEFW    17-5                    ; $0c
+021f: 5500    |        DEFW    17*5                    ; $55
+0221: 0300    |        DEFW    17/5                    ; $03
+0223: 0200    |        DEFW    17%5                    ; $02
+0225: 0700    |        DEFW    15&7                    ; $07
+0227: 0700    |        DEFW    4|3                     ; $07
+0229: 0c00    |        DEFW    3^15                    ; $0c
+022b: 0000    |        DEFW    !1                      ; $00
+022d: 0100    |        DEFW    !0                      ; $01
+In mini.asm(162) E0109: ~1 cannot be evaluated as sequence of bytes! Skipping!
+022f:*????    |        DEFW    ~1                      ; $feff
+0231: 0100    |        DEFW    1 && 1                  ; $01
+0233: 0000    |        DEFW    1 && 0                  ; $00
+0235: 0100    |        DEFW    1 || 0                  ; $01
+0237: 0001    |        DEFW    1 << 8                  ; $0001
+0239: 0200    |        DEFW    8 >> 2                  ; $02
+023b: 0600    |        DEFW    5 +  1                  ; $04
+023d: 0100    |        DEFW    8 == 4*2                ; $01
+023f: 0000    |        DEFW    1+2 != 2+1              ; $00
+0241: 0100    |        DEFW    7 < 15                  ; $01
+0243: 0000    |        DEFW    15 < 7                  ; $00
+0245: 0000    |        DEFW    7 > 15                  ; $00
+0247: 0100    |        DEFW    15 > -15                ; $01
+0249: 0100    |        DEFW    4 <= 4                  ; $01
+024b: 0100    |        DEFW    -4 <= -4                ; $01
+024d: 46      |        DEFB    33*2+4                  ; $46
+024e: 09      |        DEFB    2*(36-(2*2))/ 17 *3     ; $03
+024f: 01020304|        DEFB    1,2,3,4,5,6,7
+0253: 050607  |                                                                
+0256: 48616c6c|        DEFB    'Hallo \n\\\xaa\x55\r world!'
+025a: 6f200a5c|                                                                
+025e: aa550d20|                                                                
+0262: 776f726c|                                                                
+0266: 6421    |                                                                
+0268:         |
+0268:         |buf5:   EQU 2000h
+0268: 22564c6f|        DEFB    34,56h,"Long term evolution\0\0"
+026c: 6e672074|                                                                
+0270: 65726d20|                                                                
+0274: 65766f6c|                                                                
+0278: 7574696f|                                                                
+027c: 6e0000  |                                                                
+027f:         |
+027f:         |        ORG $600
+0600:         |
+0600: 00000000|spstrt: DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+0604: 00000000|                                                                
+0608: 00000000|                                                                
+060c: 00000000|                                                                
+0610: 00000000|        DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+0614: 00000000|                                                                
+0618: 00000000|                                                                
+061c: 00000000|                                                                
+0620: 00000000|        DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+0624: 00000000|                                                                
+0628: 00000000|                                                                
+062c: 00000000|                                                                
+0630: 00000000|        DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+0634: 00000000|                                                                
+0638: 00000000|                                                                
+063c: 00000000|                                                                
+0640: ff      |spend:  DEFB 255
+||  Stage 2 completed. 91 errors, 10 invalid bytes remaining!
+
+; +++ global symbols +++
+
+BUF5     = $2000 =  8192 is Equ         ; expr = 2000h
+ENTRY    = $0005 =     5 is Equ         ; expr = 5
+TFCA     = $005c =    92 is Equ         ; expr = 5CH
+TFCB     = $005d =    93 is Equ         ; expr = TFCA+1
+TFCC     = $01e1 =   481 is Equ         ; expr = $
+TFCD     = $0014 =    20 is Equ         ; expr = $+20
+BUF      = $0200 =   512 is Label       
+BUF2     = $0204 =   516 is Label       
+BUF3     = $0217 =   535 is Label       
+BUF4     = $020a =   522 is Label       
+BUF6     = $020c =   524 is Label       
+BUF7     = $0214 =   532 is Label       
+HALLO    = $0100 =   256 is Label       
+HALLO2   = $01e1 =   481 is Label       
+SPEND    = $0640 =  1600 is Label       
+SPSTRT   = $0600 =  1536 is Label       
+UPPER    = $01f3 =   499 is Label       
+||  Writing binary bytes to: mini.rom
+||  Found minimal org pos to be $100 = 256, last byte to be $640 = 1600
+||  Writing completed. 1345 bytes written

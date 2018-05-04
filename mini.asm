@@ -5,13 +5,43 @@ TFCB	EQU	TFCA+1
 ;------------------------------
         ORG 100h
         ;
-hallo:  LD      A,42
+hallo:  ; OR
+        LD      A, $55
+        LD      B, $aa
+        OR      B               ; shall be $ff
+        LD      A, $11
+        OR      $88             ; shall be $99
+        LD      HL,buf2         ; is 5
+        OR      (HL)            ; $99+5 = $9d
+        SCF                     ; CY is 1
+        OR      A               ; still $9d, but CY is 0
+        NOP
+        ; ADD
+        LD      A,42
         LD      B,A
         ADD     A,B             ; 84, kein Carry
         LD      C,230
         ADD     A,C             ; 84 + 230 -> 58, Carry!
-        LD      D,58
-        SUB     D               ; shall be 0, Sign
+        ; SUB        
+        LD      A,58
+        LD      D,55
+        SUB     D               ; shall be 3, 
+        SUB     3               ; shall be 0, Sign
+        LD      IX,buf          ; buf = 1,2,3,4..
+        SUB     (IX+0)          ; A shall be $ff
+        LD      IY,buf
+        SUB     (IY+1)          ; A shall be $fd
+        ; SBC (with Carry)
+        LD      A,59
+        LD      D,55
+        SCF                     ; set CY
+        SBC     A,D             ; shall be 3, 
+        SCF                     ; set CY
+        SBC     A,3             ; shall be ff, Carry (Borrow!)
+        LD      IX,buf          ; buf = 1,2,3,4..
+        SBC     A,(IX+0)        ; A shall be $ff
+        LD      IY,buf
+        SBC     A,(IY+1)        ; A shall be $fd
         ADD     A,42            ; shall be 42 again
         LD      HL,buf7
         ADD     A,(HL)          ; 85
