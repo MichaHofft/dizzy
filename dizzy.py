@@ -2535,9 +2535,15 @@ class SoftRegister:
                 if v & 0x80 > 0:
                     self.flags = self.flags | SoftFlag.SIGN
                 return v & andMask
-            if self.function == SoftFunction.OR or self.function == SoftFunction.AND:
+            if self.function == SoftFunction.OR or self.function == SoftFunction.AND \
+                    or self.function == SoftFunction.XOR:
                 # process values as bit patterns
-                v = (self.theValue[0] & andMask) | (self.theValue[1] & andMask) 
+                if self.function == SoftFunction.OR:
+                    v = (self.theValue[0] & andMask) | (self.theValue[1] & andMask) 
+                if self.function == SoftFunction.AND:
+                    v = (self.theValue[0] & andMask) & (self.theValue[1] & andMask) 
+                if self.function == SoftFunction.XOR:
+                    v = (self.theValue[0] & andMask) ^ (self.theValue[1] & andMask) 
                 self.flags = 0
                 # overflow possible?? -> NO?!
                 if v == 0:
@@ -2784,6 +2790,14 @@ class SoftCPU:
             elif op == "ALU.OP.OR":
                 r['ALU'].flags = r['F'].value
                 r['ALU'].setFunction(SoftFunction.OR)
+
+            elif op == "ALU.OP.AND":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.AND)
+
+            elif op == "ALU.OP.XOR":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.XOR)
 
             elif op == "ALU.OE":
                 r['DBUS'].value = r['ALU'].value
