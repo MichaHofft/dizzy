@@ -2,7 +2,8 @@
 ||  Loading tables z80_isa.csv, z80_syms.csv..
 ||  Assembling mini.asm..
 ||  Starting assemble stage 1 for: mini.asm..
-In mini.asm(108) E0119: Jump target to far away for RELATIVE jump! Skipping!
+In mini.asm(176) E0119: Jump target to far away for RELATIVE jump! Skipping!
+*MARK*
 ||  Stage 1 completed.
 ||  Starting assemble stage 2 ..
 0000:         |;------------------------------
@@ -12,136 +13,203 @@ In mini.asm(108) E0119: Jump target to far away for RELATIVE jump! Skipping!
 0000:         |;------------------------------
 0000:         |        ORG 100h
 0100:         |        ;
-0100:         |hallo:  ; OR
-0100: 3e55    |        LD      A, $55                                          |r ? n
-0102: 06aa    |        LD      B, $aa                                          |r ? n
-0104: b0      |        OR      B               ; shall be $ff                  |A ? A | r
-0105: 3e11    |        LD      A, $11                                          |r ? n
-0107: f688    |        OR      $88             ; shall be $99                  |A ? A | n
-0109:*210402  |        LD      HL,buf2         ; is 5                          |Register pair ? nn
-010c: b6      |        OR      (HL)            ; $99+5 = $a4                   |A ? A | (HL)
-010d: 37      |        SCF                     ; CY is 1                       |CY ? 1
-010e: b7      |        OR      A               ; still $a4, but CY is 0        |A ? A | r
-010f: 00      |        NOP                                                     |--
-0110:         |        ; ADD
-0110: 3e2a    |        LD      A,42                                            |r ? n
-0112: 47      |        LD      B,A                                             |r ? s
-0113: 80      |        ADD     A,B             ; 84, kein Carry                |A ? A + r
-0114: 0ee6    |        LD      C,230                                           |r ? n
-0116: 81      |        ADD     A,C             ; 84 + 230 -> 58, Carry!        |A ? A + r
-0117:         |        ; SUB
-0117: 3e3a    |        LD      A,58                                            |r ? n
-0119: 1637    |        LD      D,55                                            |r ? n
-011b: 92      |        SUB     D               ; shall be 3,                   |A ? A - r
-011c: d603    |        SUB     3               ; shall be 0, Sign              |A ? A - n
-011e:*dd210002|        LD      IX,buf          ; buf = 1,2,3,4..               |IX ? nn
-0122: dd9600  |        SUB     (IX+0)          ; A shall be $ff                |A ? A - (IX+d)
-0125:*fd210002|        LD      IY,buf                                          |IY ? nn
-0129: fd9601  |        SUB     (IY+1)          ; A shall be $fd                |A ? A + (IY+d)
-012c:         |        ; SBC (with Carry)
-012c: 3e3b    |        LD      A,59                                            |r ? n
-012e: 1637    |        LD      D,55                                            |r ? n
-0130: 37      |        SCF                     ; set CY                        |CY ? 1
-0131: 9a      |        SBC     A,D             ; shall be 3,                   |A ? A + r + CY
-0132: 37      |        SCF                     ; set CY                        |CY ? 1
-0133: de03    |        SBC     A,3             ; shall be ff, Carry (Borrow!)  |A ? A + n + CY
-0135:*dd210002|        LD      IX,buf          ; buf = 1,2,3,4..               |IX ? nn
-0139: dd9e00  |        SBC     A,(IX+0)        ; A shall be $ff                |A ? A + (IX+d) + CY
-013c:*fd210002|        LD      IY,buf                                          |IY ? nn
-0140: fd9e01  |        SBC     A,(IY+1)        ; A shall be $fd                |A ? A + (IY+d) + CY
-0143: c62a    |        ADD     A,42            ; shall be 42 again             |A ? A + n
-0145:*211402  |        LD      HL,buf7                                         |Register pair ? nn
-0148: 86      |        ADD     A,(HL)          ; 85                            |A ? A + (HL)
-0149:*dd211402|        LD      IX,buf7                                         |IX ? nn
-014d: dd8602  |        ADD     A,(IX+2)        ; 85 + 45 = 130                 |A ? A + (IX+d)
-0150: 00      |        NOP                                                     |--
-0151:*dd210002|        LD      IX,buf                                          |IX ? nn
-0155: dd4e01  |        LD      C,(IX+1)                                        |r ? (IX+d)
-0158:*210402  |        LD      HL,buf2                                         |Register pair ? nn
-015b: 71      |        LD      (HL),C                                          |(HL) ? r
-015c: 56      |        LD      D,(HL)                                          |r ? (HL)
-015d: dd72fe  |        LD      (IX+-2),D                                       |(IX+d) ? r
-0160: 365a    |        LD      (HL),$5a                                        |(HL) ? n
-0162: dd36fca5|        LD      (IX+-4),$a5                                     |(IX+d) ? n
-0166: 0a      |        LD      A,(BC)                                          |A ? (BC)
-0167: 3e0b    |        LD      A,11                                            |r ? n
-0169:*3a0702  |        LD      A,(buf2+3)                                      |A ? (nn)
-016c: 3e55    |        LD      A,$55                                           |r ? n
-016e:*010002  |        LD      BC,buf                                          |Register pair ? nn
-0171: 02      |        LD      (BC),A                                          |(BC) ? A
-0172: 3e77    |        LD      A,$77                                           |r ? n
-0174:*110002  |        LD      DE,buf                                          |Register pair ? nn
-0177: 12      |        LD      (DE),A                                          |(DE) ? A
-0178: 3e99    |        LD      A,$99                                           |r ? n
-017a:*320002  |        LD      (buf),A                                         |(nn) ? A
-017d: 3e32    |        LD      A,$32                                           |r ? n
-017f: ed47    |        LD      I,A                                             |Interrupt vector reg ? A
-0181: 3e43    |        LD      A,$43                                           |r ? n
-0183: ed4f    |        LD      R,A                                             |Memory refresh reg ? A
-0185: ed57    |        LD      A,I                     ; A to be $32           |A ? Interrupt vector reg
-0187: ed5f    |        LD      A,R                     ; A to be $43           |A ? Memory refresh reg
-0189:*dd210002|        LD      IX,buf                                          |IX ? nn
-018d: fd21aa55|        LD      IY,$55aa                                        |IY ? nn
-0191:*2a0a02  |        LD      HL,(buf4)               ; HL to be $200         |H ? (nn+1), L ? (nn)
-0194:*ed4b0002|        LD      BC,(buf)                ; BC to be $0201        |RRh ? (nn+1), RRl ? (nn)
-0198:*ed5b0102|        LD      DE,(buf+1)              ; DE to be $0302        |RRh ? (nn+1), RRl ? (nn)
-019c:*ed7b0202|        LD      SP,(buf+2)              ; SP to be $0403        |RRh ? (nn+1), RRl ? (nn)
-01a0:*dd2a0302|        LD      IX,(buf+3)              ; SP to be $0504        |IXh ? (nn+1), IXl ? (nn)
-01a4:*fd2a0402|        LD      IY,(buf+4)              ; SP to be $0605        |IYh ? (nn+1), IYl ? (nn)
-01a8:*220c02  |        LD      (buf6),HL                                       |(nn+1) ? H, (nn) ? L
-01ab:*ed430102|        LD      (buf+1),BC                                      |(nn+1) ? RRh, (nn) ?RRl
-01af:*ed530202|        LD      (buf+2),DE                                      |(nn+1) ? RRh, (nn) ?RRl
-01b3:*ed730302|        LD      (buf+3),SP                                      |(nn+1) ? RRh, (nn) ?RRl
-01b7:*dd220402|        LD      (buf+4),IX                                      |(nn+1) ? IXh, (nn) ?IXl
-01bb:*fd220502|        LD      (buf+5),IY                                      |(nn+1) ? IYh, (nn) ?IYl
-01bf: f9      |        LD      SP,HL                                           |SP ? HL
-01c0: ddf9    |        LD      SP,IX                                           |SP ? IX
-01c2: fdf9    |        LD      SP,IY                                           |SP ? IY
-01c4:*314006  |        LD      SP,spend                                        |Register pair ? nn
-01c7: c5      |        PUSH    BC                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
-01c8: d5      |        PUSH    DE                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
-01c9: e5      |        PUSH    HL                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
-01ca: f5      |        PUSH    AF                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
-01cb: dde5    |        PUSH    IX                                              |(SP-1) ? IXh, (SP-2) ? IXl, SP ? SP - 2
-01cd: fde5    |        PUSH    IY                                              |(SP-1) ? IYh, (SP-2) ? IYl, SP ? SP - 2
-01cf: c1      |        POP     BC                                              |QQl ? (SP), QQh ? (SP+1), SP ? SP + 2
-01d0: dde1    |        POP     IX                                              |IXl ? (SP), IXh ? (SP+2), SP ? SP + 2
-01d2: 00      |        NOP                                                     |--
-01d3: 23      |        INC HL                                                  |RR ? RR + 1
-01d4: cb16    |        RL (HL)                                                 |CY ? (HL)[0], (HL) ? ROR( (HL) ,1)
-01d6: 3e5d    |        LD A,TFCB                                               |r ? n
-01d8: 212312  |        LD HL,1223H                                             |Register pair ? nn
-01db:*010002  |        LD BC, buf                                              |Register pair ? nn
-In mini.asm(108) E0119: Jump target to far away for RELATIVE jump! Skipping!
-01de:         |        JR hallo                                                |PC ? PC + ee
-01de: c30001  |        JP hallo                                                |PC ? nn
-01e1:         |
-01e1:         |TFCC    EQU     $
-01e1:         |TFCD    EQU     $+20
-01e1:         |
-01e1:         |hallo2:
-01e1: 7e      |        LD A,(HL)                                               |r ? (HL)
-01e2: 02      |        LD (BC),A                                               |(BC) ? A
-01e3: 320500  |        LD (5),A                                                |(nn) ? A
-In mini.asm(118) E0114: Unable to finally evaluate expression IX+5h ! Skipping!
-01e6:*3a????  |        LD A,(IX+5h)                                            |A ? (nn)
-In mini.asm(119) E0114: Unable to finally evaluate expression IY+12 ! Skipping!
-01e9:*32????  |        LD (IY+12),A                                            |(nn) ? A
-01ec:*ed4b0002|        LD BC,(buf)                                             |RRh ? (nn+1), RRl ? (nn)
-01f0:*210402  |        LD HL,buf2                                              |Register pair ? nn
-01f3:         |;
-01f3:         |;   Routine to convert (A) into upper case ascii. Only letters
-01f3:         |; are affected.
-01f3:         |;
-01f3: fe61    |UPPER:  CP      'a'             ;check for letters in the range…|Z ?  A = n
-01f7:         |                                                  of 'a' to 'z'.
-01f5: d8      |        RET     C                                               |IF cc true, PCl ? (SP), PCh ? (SP), SP ? SP + 2
-01f6: fe7b    |        CP      '{'                                             |Z ?  A = n
-01f8: d0      |        RET     NC                                              |IF cc true, PCl ? (SP), PCh ? (SP), SP ? SP + 2
-01f9: e65f    |        AND     5FH             ;convert it if found.           |A ? A & n
-01fb: c9      |        RET                                                     |PCl ? (SP), PCh ? (SP), SP ? SP + 2
-01fc:         |
-01fc:         |        ORG $200
+0100:         |hallo:  ; RLC further
+0100:*fd210006|        LD      IY,buftmp       ; not a constant one            |IY ? nn
+0104: 3e8f    |        LD      A,10001111b                                     |r ? n
+0106: fd7704  |        LD      (IY+4),A                                        |(IY+d) ? r
+0109: fdcb0416|        RL      (IY+4)          ; shall by CY, $1e              |CY ? (IY+d)[0], (IY+d) ? ROR( (IY+d) ,1)
+010d: fd4602  |        LD      B,(IY+2)                                        |r ? (IY+d)
+0110: 00      |        NOP                                                     |--
+0111: 00      |        NOP                                                     |--
+0112: 0688    |        LD      B,10001000b                                     |r ? n
+0114: cb10    |        RL      B               ; shall be CY, %00010001 = $11  |CY ? r[0], r ? ROR(r,1)
+0116: 00      |        NOP                                                     |--
+0117:*210006  |        LD      HL,buftmp       ; not a constant one            |Register pair ? nn
+011a: 3ecc    |        LD      A,11001100b                                     |r ? n
+011c: 77      |        LD      (HL),A                                          |(HL) ? r
+011d: cb16    |        RL      (HL)            ; shall by CY, $99              |CY ? (HL)[0], (HL) ? ROR( (HL) ,1)
+011f: 7e      |        LD      A,(HL)                                          |r ? (HL)
+0120: 00      |        NOP                                                     |--
+0121:         |        ; RLC further
+0121:*fd210006|        LD      IY,buftmp       ; not a constant one            |IY ? nn
+0125: 3ecc    |        LD      A,11001100b                                     |r ? n
+0127: fd7704  |        LD      (IY+4),A                                        |(IY+d) ? r
+012a: fdcb0406|        RLC     (IY+4)          ; shall by CY, $99              |CY ? (IY+d)[7], (IY+d) ? ROL( (IY+d) ,1)
+012e: fd4602  |        LD      B,(IY+2)                                        |r ? (IY+d)
+0131: 00      |        NOP                                                     |--
+0132: 00      |        NOP                                                     |--
+0133: 0688    |        LD      B,10001000b                                     |r ? n
+0135: cb00    |        RLC     B               ; shall be CY, %00010001 = $11  |CY ? r[7], r ? ROL(r,1)
+0137: 00      |        NOP                                                     |--
+0138:*210006  |        LD      HL,buftmp       ; not a constant one            |Register pair ? nn
+013b: 3ecc    |        LD      A,11001100b                                     |r ? n
+013d: 77      |        LD      (HL),A                                          |(HL) ? r
+013e: cb06    |        RLC     (HL)            ; shall by CY, $99              |CY ? (HL)[7], (HL) ? ROL( (HL) ,1)
+0140: 7e      |        LD      A,(HL)                                          |r ? (HL)
+0141: 00      |        NOP                                                     |--
+0142:         |        ; RRA
+0142: 3ee1    |        LD      A,11100001b                                     |r ? n
+0144: b7      |        OR      A                                               |A ? A | r
+0145: 1f      |        RRA                     ; shall be CY, %01110000 = $70  |[A,CY] ? ROR([A,CY], 1)
+0146: 00      |        NOP                                                     |--
+0147:         |        ; RRCA
+0147: 3e11    |        LD      A,00010001b                                     |r ? n
+0149: 0f      |        RRCA                    ; shall be CY, %10001000 = $88  |CY ? A[0], A ? ROR(A,1)
+014a: 00      |        NOP                                                     |--
+014b:         |        ; RLA
+014b: 3e76    |        LD      A,01110110b                                     |r ? n
+014d: 37      |        SCF                                                     |CY ? 1
+014e: 17      |        RLA                     ; shall be no CY, %11101101 = $…|[CY,A] ? ROL([CY,A], 1)
+0152:         |                                                              ed
+014f: 00      |        NOP                                                     |--
+0150:         |        ; RLCA
+0150: 3e81    |        LD      A,10000001b                                     |r ? n
+0152: 07      |        RLCA                    ; shall be CY, %00000011 = $03  |CY ? A[7], A ? ROL(A,1)
+0153: 00      |        NOP                                                     |--
+0154:         |        ; XOR
+0154: 3e55    |        LD      A, $55                                          |r ? n
+0156: 06aa    |        LD      B, $aa                                          |r ? n
+0158: a8      |        XOR     B               ; shall be $ff                  |A ? A + r
+0159: ee01    |        XOR     $01             ; shall be $fe, Signed          |A ? A + n
+015b:*dd211402|        LD      IX,buf7         ; is 43, 44, 45, 255            |IX ? nn
+015f: ddae03  |        XOR     (IX+3)          ; $01                           |A ? A + (IX+d)
+0162: 00      |        NOP                                                     |--
+0163:         |        ; AND
+0163: 3eff    |        LD      A, $ff                                          |r ? n
+0165: 06aa    |        LD      B, $aa                                          |r ? n
+0167: a0      |        AND     B               ; shall be $aa                  |A ? A & r
+0168: e622    |        AND      $22            ; shall be $22                  |A ? A & n
+016a:*210402  |        LD      HL,buf2         ; is 5                          |Register pair ? nn
+016d: a6      |        AND      (HL)           ; $00, Zero                     |A ? A & (HL)
+016e: 00      |        NOP                                                     |--
+016f:         |        ; OR
+016f: 3e55    |        LD      A, $55                                          |r ? n
+0171: 06aa    |        LD      B, $aa                                          |r ? n
+0173: b0      |        OR      B               ; shall be $ff                  |A ? A | r
+0174: 3e11    |        LD      A, $11                                          |r ? n
+0176: f688    |        OR      $88             ; shall be $99                  |A ? A | n
+0178:*210402  |        LD      HL,buf2         ; is 5                          |Register pair ? nn
+017b: b6      |        OR      (HL)            ; $99+5 = $9d                   |A ? A | (HL)
+017c: 37      |        SCF                     ; CY is 1                       |CY ? 1
+017d: b7      |        OR      A               ; still $9d, but CY is 0        |A ? A | r
+017e: 00      |        NOP                                                     |--
+017f:         |        ; ADD
+017f: 3e2a    |        LD      A,42                                            |r ? n
+0181: 47      |        LD      B,A                                             |r ? s
+0182: 80      |        ADD     A,B             ; 84, kein Carry                |A ? A + r
+0183: 0ee6    |        LD      C,230                                           |r ? n
+0185: 81      |        ADD     A,C             ; 84 + 230 -> 58, Carry!        |A ? A + r
+0186:         |        ; SUB
+0186: 3e3a    |        LD      A,58                                            |r ? n
+0188: 1637    |        LD      D,55                                            |r ? n
+018a: 92      |        SUB     D               ; shall be 3,                   |A ? A - r
+018b: d603    |        SUB     3               ; shall be 0, Sign              |A ? A - n
+018d:*dd210002|        LD      IX,buf          ; buf = 1,2,3,4..               |IX ? nn
+0191: dd9600  |        SUB     (IX+0)          ; A shall be $ff                |A ? A - (IX+d)
+0194:*fd210002|        LD      IY,buf                                          |IY ? nn
+0198: fd9601  |        SUB     (IY+1)          ; A shall be $fd                |A ? A + (IY+d)
+019b:         |        ; SBC (with Carry)
+019b: 3e3b    |        LD      A,59                                            |r ? n
+019d: 1637    |        LD      D,55                                            |r ? n
+019f: 37      |        SCF                     ; set CY                        |CY ? 1
+01a0: 9a      |        SBC     A,D             ; shall be 3,                   |A ? A + r + CY
+01a1: 37      |        SCF                     ; set CY                        |CY ? 1
+01a2: de03    |        SBC     A,3             ; shall be ff, Carry (Borrow!)  |A ? A + n + CY
+01a4:*dd210002|        LD      IX,buf          ; buf = 1,2,3,4..               |IX ? nn
+01a8: dd9e00  |        SBC     A,(IX+0)        ; A shall be $ff                |A ? A + (IX+d) + CY
+01ab:*fd210002|        LD      IY,buf                                          |IY ? nn
+01af: fd9e01  |        SBC     A,(IY+1)        ; A shall be $fd                |A ? A + (IY+d) + CY
+01b2: c62a    |        ADD     A,42            ; shall be 42 again             |A ? A + n
+01b4:*211402  |        LD      HL,buf7                                         |Register pair ? nn
+01b7: 86      |        ADD     A,(HL)          ; 85                            |A ? A + (HL)
+01b8:*dd211402|        LD      IX,buf7                                         |IX ? nn
+01bc: dd8602  |        ADD     A,(IX+2)        ; 85 + 45 = 130                 |A ? A + (IX+d)
+01bf: 00      |        NOP                                                     |--
+01c0:*dd210002|        LD      IX,buf                                          |IX ? nn
+01c4: dd4e01  |        LD      C,(IX+1)                                        |r ? (IX+d)
+01c7:*210402  |        LD      HL,buf2                                         |Register pair ? nn
+01ca: 71      |        LD      (HL),C                                          |(HL) ? r
+01cb: 56      |        LD      D,(HL)                                          |r ? (HL)
+01cc: dd72fe  |        LD      (IX+-2),D                                       |(IX+d) ? r
+01cf: 365a    |        LD      (HL),$5a                                        |(HL) ? n
+01d1: dd36fca5|        LD      (IX+-4),$a5                                     |(IX+d) ? n
+01d5: 0a      |        LD      A,(BC)                                          |A ? (BC)
+01d6: 3e0b    |        LD      A,11                                            |r ? n
+01d8:*3a0702  |        LD      A,(buf2+3)                                      |A ? (nn)
+01db: 3e55    |        LD      A,$55                                           |r ? n
+01dd:*010002  |        LD      BC,buf                                          |Register pair ? nn
+01e0: 02      |        LD      (BC),A                                          |(BC) ? A
+01e1: 3e77    |        LD      A,$77                                           |r ? n
+01e3:*110002  |        LD      DE,buf                                          |Register pair ? nn
+01e6: 12      |        LD      (DE),A                                          |(DE) ? A
+01e7: 3e99    |        LD      A,$99                                           |r ? n
+01e9:*320002  |        LD      (buf),A                                         |(nn) ? A
+01ec: 3e32    |        LD      A,$32                                           |r ? n
+01ee: ed47    |        LD      I,A                                             |Interrupt vector reg ? A
+01f0: 3e43    |        LD      A,$43                                           |r ? n
+01f2: ed4f    |        LD      R,A                                             |Memory refresh reg ? A
+01f4: ed57    |        LD      A,I                     ; A to be $32           |A ? Interrupt vector reg
+01f6: ed5f    |        LD      A,R                     ; A to be $43           |A ? Memory refresh reg
+01f8:*dd210002|        LD      IX,buf                                          |IX ? nn
+01fc: fd21aa55|        LD      IY,$55aa                                        |IY ? nn
+0200:*2a0a02  |        LD      HL,(buf4)               ; HL to be $200         |H ? (nn+1), L ? (nn)
+0203:*ed4b0002|        LD      BC,(buf)                ; BC to be $0201        |RRh ? (nn+1), RRl ? (nn)
+0207:*ed5b0102|        LD      DE,(buf+1)              ; DE to be $0302        |RRh ? (nn+1), RRl ? (nn)
+020b:*ed7b0202|        LD      SP,(buf+2)              ; SP to be $0403        |RRh ? (nn+1), RRl ? (nn)
+020f:*dd2a0302|        LD      IX,(buf+3)              ; SP to be $0504        |IXh ? (nn+1), IXl ? (nn)
+0213:*fd2a0402|        LD      IY,(buf+4)              ; SP to be $0605        |IYh ? (nn+1), IYl ? (nn)
+0217:*220c02  |        LD      (buf6),HL                                       |(nn+1) ? H, (nn) ? L
+021a:*ed430102|        LD      (buf+1),BC                                      |(nn+1) ? RRh, (nn) ?RRl
+021e:*ed530202|        LD      (buf+2),DE                                      |(nn+1) ? RRh, (nn) ?RRl
+0222:*ed730302|        LD      (buf+3),SP                                      |(nn+1) ? RRh, (nn) ?RRl
+0226:*dd220402|        LD      (buf+4),IX                                      |(nn+1) ? IXh, (nn) ?IXl
+022a:*fd220502|        LD      (buf+5),IY                                      |(nn+1) ? IYh, (nn) ?IYl
+022e: f9      |        LD      SP,HL                                           |SP ? HL
+022f: ddf9    |        LD      SP,IX                                           |SP ? IX
+0231: fdf9    |        LD      SP,IY                                           |SP ? IY
+0233:*314406  |        LD      SP,spend                                        |Register pair ? nn
+0236: c5      |        PUSH    BC                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
+0237: d5      |        PUSH    DE                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
+0238: e5      |        PUSH    HL                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
+0239: f5      |        PUSH    AF                                              |(SP-1) ? QQh, (SP-2) ? QQl, SP ? SP - 2
+023a: dde5    |        PUSH    IX                                              |(SP-1) ? IXh, (SP-2) ? IXl, SP ? SP - 2
+023c: fde5    |        PUSH    IY                                              |(SP-1) ? IYh, (SP-2) ? IYl, SP ? SP - 2
+023e: c1      |        POP     BC                                              |QQl ? (SP), QQh ? (SP+1), SP ? SP + 2
+023f: dde1    |        POP     IX                                              |IXl ? (SP), IXh ? (SP+2), SP ? SP + 2
+0241: 00      |        NOP                                                     |--
+0242: 23      |        INC HL                                                  |RR ? RR + 1
+0243: cb16    |        RL (HL)                                                 |CY ? (HL)[0], (HL) ? ROR( (HL) ,1)
+0245: 3e5d    |        LD A,TFCB                                               |r ? n
+0247: 212312  |        LD HL,1223H                                             |Register pair ? nn
+024a:*010002  |        LD BC, buf                                              |Register pair ? nn
+In mini.asm(176) E0119: Jump target to far away for RELATIVE jump! Skipping!
+024d:         |        JR hallo                                                |PC ? PC + ee
+024d: c30001  |        JP hallo                                                |PC ? nn
+0250:         |
+0250:         |TFCC    EQU     $
+0250:         |TFCD    EQU     $+20
+0250:         |
+0250:         |hallo2:
+0250: 7e      |        LD A,(HL)                                               |r ? (HL)
+0251: 02      |        LD (BC),A                                               |(BC) ? A
+0252: 320500  |        LD (5),A                                                |(nn) ? A
+0255: dd7e05  |        LD A,(IX+5h)                                            |r ? (IX+d)
+0258: fd770c  |        LD (IY+12),A                                            |(IY+d) ? r
+025b:*ed4b0002|        LD BC,(buf)                                             |RRh ? (nn+1), RRl ? (nn)
+025f:*210402  |        LD HL,buf2                                              |Register pair ? nn
+0262:         |;
+0262:         |;   Routine to convert (A) into upper case ascii. Only letters
+0262:         |; are affected.
+0262:         |;
+0262: fe61    |UPPER:  CP      'a'             ;check for letters in the range…|Z ?  A = n
+0266:         |                                                  of 'a' to 'z'.
+0264: d8      |        RET     C                                               |IF cc true, PCl ? (SP), PCh ? (SP), SP ? SP + 2
+0265: fe7b    |        CP      '{'                                             |Z ?  A = n
+0267: d0      |        RET     NC                                              |IF cc true, PCl ? (SP), PCh ? (SP), SP ? SP + 2
+0268: e65f    |        AND     5FH             ;convert it if found.           |A ? A & n
+026a: c9      |        RET                                                     |PCl ? (SP), PCh ? (SP), SP ? SP + 2
+026b:         |
+026b:         |        ORG $200
 0200:         |
 0200: 01020304|buf:    DB 1,2,3,4,
 0204: 05060708|buf2:   DB 5,6,7,8,9,10
@@ -157,76 +225,80 @@ In mini.asm(119) E0114: Unable to finally evaluate expression IY+12 ! Skipping!
 0214: 2b      |buf7:   DB      43
 0215: 2c      |        DB      44
 0216: 2d      |        DB      45
-0217:         |
-0217:         |buf3:    ; arithmetic test suite ... see http://benryves.com/bin/brass/manual.htm#labels
-In mini.asm(150) E0109: -1 cannot be evaluated as sequence of bytes! Skipping!
-0217:*????    |        DEFW    -1                      ; $ffff
-In mini.asm(151) E0109: -2 cannot be evaluated as sequence of bytes! Skipping!
-0219:*????    |        DEFW    -2                      ; $feff
-021b: 1600    |        DEFW    17+5                    ; $16
-021d: 0c00    |        DEFW    17-5                    ; $0c
-021f: 5500    |        DEFW    17*5                    ; $55
-0221: 0300    |        DEFW    17/5                    ; $03
-0223: 0200    |        DEFW    17%5                    ; $02
-0225: 0700    |        DEFW    15&7                    ; $07
-0227: 0700    |        DEFW    4|3                     ; $07
-0229: 0c00    |        DEFW    3^15                    ; $0c
-022b: 0000    |        DEFW    !1                      ; $00
-022d: 0100    |        DEFW    !0                      ; $01
-In mini.asm(162) E0109: ~1 cannot be evaluated as sequence of bytes! Skipping!
-022f:*????    |        DEFW    ~1                      ; $feff
-0231: 0100    |        DEFW    1 && 1                  ; $01
-0233: 0000    |        DEFW    1 && 0                  ; $00
-0235: 0100    |        DEFW    1 || 0                  ; $01
-0237: 0001    |        DEFW    1 << 8                  ; $0001
-0239: 0200    |        DEFW    8 >> 2                  ; $02
-023b: 0600    |        DEFW    5 +  1                  ; $04
-023d: 0100    |        DEFW    8 == 4*2                ; $01
-023f: 0000    |        DEFW    1+2 != 2+1              ; $00
-0241: 0100    |        DEFW    7 < 15                  ; $01
-0243: 0000    |        DEFW    15 < 7                  ; $00
-0245: 0000    |        DEFW    7 > 15                  ; $00
-0247: 0100    |        DEFW    15 > -15                ; $01
-0249: 0100    |        DEFW    4 <= 4                  ; $01
-024b: 0100    |        DEFW    -4 <= -4                ; $01
-024d: 46      |        DEFB    33*2+4                  ; $46
-024e: 09      |        DEFB    2*(36-(2*2))/ 17 *3     ; $03
-024f: 01020304|        DEFB    1,2,3,4,5,6,7
-0253: 050607  |                                                                
-0256: 48616c6c|        DEFB    'Hallo \n\\\xaa\x55\r world!'
-025a: 6f200a5c|                                                                
-025e: aa550d20|                                                                
-0262: 776f726c|                                                                
-0266: 6421    |                                                                
-0268:         |
-0268:         |buf5:   EQU 2000h
-0268: 22564c6f|        DEFB    34,56h,"Long term evolution\0\0"
-026c: 6e672074|                                                                
-0270: 65726d20|                                                                
-0274: 65766f6c|                                                                
-0278: 7574696f|                                                                
-027c: 6e0000  |                                                                
-027f:         |
-027f:         |        ORG $600
+0217: ff      |        DB      255
+0218:         |
+0218:         |buf3:    ; arithmetic test suite ... see http://benryves.com/bin/brass/manual.htm#labels
+In mini.asm(219) E0109: -1 cannot be evaluated as sequence of bytes! Skipping!
+0218:*????    |        DEFW    -1                      ; $ffff
+In mini.asm(220) E0109: -2 cannot be evaluated as sequence of bytes! Skipping!
+021a:*????    |        DEFW    -2                      ; $feff
+021c: 1600    |        DEFW    17+5                    ; $16
+021e: 0c00    |        DEFW    17-5                    ; $0c
+0220: 5500    |        DEFW    17*5                    ; $55
+0222: 0300    |        DEFW    17/5                    ; $03
+0224: 0200    |        DEFW    17%5                    ; $02
+0226: 0700    |        DEFW    15&7                    ; $07
+*MARK*
+0228: 0700    |        DEFW    4|3                     ; $07
+022a: 0c00    |        DEFW    3^15                    ; $0c
+022c: 0000    |        DEFW    !1                      ; $00
+022e: 0100    |        DEFW    !0                      ; $01
+In mini.asm(231) E0109: ~1 cannot be evaluated as sequence of bytes! Skipping!
+0230:*????    |        DEFW    ~1                      ; $feff
+0232: 0100    |        DEFW    1 && 1                  ; $01
+0234: 0000    |        DEFW    1 && 0                  ; $00
+0236: 0100    |        DEFW    1 || 0                  ; $01
+0238: 0001    |        DEFW    1 << 8                  ; $0001
+023a: 0200    |        DEFW    8 >> 2                  ; $02
+023c: 0600    |        DEFW    5 +  1                  ; $04
+023e: 0100    |        DEFW    8 == 4*2                ; $01
+0240: 0000    |        DEFW    1+2 != 2+1              ; $00
+0242: 0100    |        DEFW    7 < 15                  ; $01
+0244: 0000    |        DEFW    15 < 7                  ; $00
+0246: 0000    |        DEFW    7 > 15                  ; $00
+0248: 0100    |        DEFW    15 > -15                ; $01
+024a: 0100    |        DEFW    4 <= 4                  ; $01
+024c: 0100    |        DEFW    -4 <= -4                ; $01
+024e: 46      |        DEFB    33*2+4                  ; $46
+024f: 09      |        DEFB    2*(36-(2*2))/ 17 *3     ; $03
+0250: 01020304|        DEFB    1,2,3,4,5,6,7
+0254: 050607  |                                                                
+0257: 48616c6c|        DEFB    'Hallo \n\\\xaa\x55\r world!'
+025b: 6f200a5c|                                                                
+025f: aa550d20|                                                                
+0263: 776f726c|                                                                
+0267: 6421    |                                                                
+0269:         |
+0269:         |buf5:   EQU 2000h
+0269: 22564c6f|        DEFB    34,56h,"Long term evolution\0\0"
+026d: 6e672074|                                                                
+0271: 65726d20|                                                                
+0275: 65766f6c|                                                                
+0279: 7574696f|                                                                
+027d: 6e0000  |                                                                
+0280:         |
+0280:         |        ORG $600
 0600:         |
-0600: 00000000|spstrt: DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-0604: 00000000|                                                                
+0600: 00000000|buftmp: DEFB    0,0,0,0
+0604:         |
+0604: 00000000|spstrt: DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 0608: 00000000|                                                                
 060c: 00000000|                                                                
-0610: 00000000|        DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-0614: 00000000|                                                                
+0610: 00000000|                                                                
+0614: 00000000|        DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 0618: 00000000|                                                                
 061c: 00000000|                                                                
-0620: 00000000|        DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-0624: 00000000|                                                                
+0620: 00000000|                                                                
+0624: 00000000|        DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 0628: 00000000|                                                                
 062c: 00000000|                                                                
-0630: 00000000|        DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-0634: 00000000|                                                                
+0630: 00000000|                                                                
+0634: 00000000|        DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 0638: 00000000|                                                                
 063c: 00000000|                                                                
-0640: ff      |spend:  DEFB 255
-||  Stage 2 completed. 91 errors, 10 invalid bytes remaining!
+0640: 00000000|                                                                
+0644: ff      |spend:  DEFB 255
+||  Stage 2 completed. 98 errors, 6 invalid bytes remaining!
 
 ; +++ global symbols +++
 
@@ -234,19 +306,21 @@ BUF5     = $2000 =  8192 is Equ         ; expr = 2000h
 ENTRY    = $0005 =     5 is Equ         ; expr = 5
 TFCA     = $005c =    92 is Equ         ; expr = 5CH
 TFCB     = $005d =    93 is Equ         ; expr = TFCA+1
-TFCC     = $01e1 =   481 is Equ         ; expr = $
+TFCC     = $0250 =   592 is Equ         ; expr = $
 TFCD     = $0014 =    20 is Equ         ; expr = $+20
 BUF      = $0200 =   512 is Label       
 BUF2     = $0204 =   516 is Label       
-BUF3     = $0217 =   535 is Label       
+BUF3     = $0218 =   536 is Label       
 BUF4     = $020a =   522 is Label       
 BUF6     = $020c =   524 is Label       
 BUF7     = $0214 =   532 is Label       
+BUFTMP   = $0600 =  1536 is Label       
 HALLO    = $0100 =   256 is Label       
-HALLO2   = $01e1 =   481 is Label       
-SPEND    = $0640 =  1600 is Label       
-SPSTRT   = $0600 =  1536 is Label       
-UPPER    = $01f3 =   499 is Label       
+HALLO2   = $0250 =   592 is Label       
+SPEND    = $0644 =  1604 is Label       
+SPSTRT   = $0604 =  1540 is Label       
+UPPER    = $0262 =   610 is Label       
 ||  Writing binary bytes to: mini.rom
-||  Found minimal org pos to be $100 = 256, last byte to be $640 = 1600
-||  Writing completed. 1345 bytes written
+||  Found minimal org pos to be $100 = 256, last byte to be $644 = 1604
+*MARK*
+||  Writing completed. 1349 bytes written

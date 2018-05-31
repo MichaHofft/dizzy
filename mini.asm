@@ -5,7 +5,75 @@ TFCB	EQU	TFCA+1
 ;------------------------------
         ORG 100h
         ;
-hallo:  ; OR
+hallo:  ; RLC further
+        LD      IY,buftmp       ; not a constant one
+        LD      A,10001111b
+        LD      (IY+4),A
+        RL      (IY+4)          ; shall by CY, $1e
+        LD      B,(IY+2)
+        NOP
+        NOP
+        LD      B,10001000b
+        RL      B               ; shall be CY, %00010001 = $11
+        NOP
+        LD      HL,buftmp       ; not a constant one
+        LD      A,11001100b
+        LD      (HL),A
+        RL      (HL)            ; shall by CY, $99
+        LD      A,(HL)
+        NOP
+        ; RLC further
+        LD      IY,buftmp       ; not a constant one
+        LD      A,11001100b
+        LD      (IY+4),A
+        RLC     (IY+4)          ; shall by CY, $99
+        LD      B,(IY+2)
+        NOP
+        NOP
+        LD      B,10001000b
+        RLC     B               ; shall be CY, %00010001 = $11
+        NOP
+        LD      HL,buftmp       ; not a constant one
+        LD      A,11001100b
+        LD      (HL),A
+        RLC     (HL)            ; shall by CY, $99
+        LD      A,(HL)
+        NOP
+        ; RRA
+        LD      A,11100001b
+        OR      A
+        RRA                     ; shall be CY, %01110000 = $70
+        NOP
+        ; RRCA
+        LD      A,00010001b
+        RRCA                    ; shall be CY, %10001000 = $88
+        NOP
+        ; RLA
+        LD      A,01110110b
+        SCF
+        RLA                     ; shall be no CY, %11101101 = $ed
+        NOP
+        ; RLCA
+        LD      A,10000001b
+        RLCA                    ; shall be CY, %00000011 = $03
+        NOP
+        ; XOR
+        LD      A, $55
+        LD      B, $aa
+        XOR     B               ; shall be $ff
+        XOR     $01             ; shall be $fe, Signed
+        LD      IX,buf7         ; is 43, 44, 45, 255
+        XOR     (IX+3)          ; $01
+        NOP
+        ; AND
+        LD      A, $ff
+        LD      B, $aa
+        AND     B               ; shall be $aa
+        AND      $22            ; shall be $22
+        LD      HL,buf2         ; is 5
+        AND      (HL)           ; $00, Zero
+        NOP
+        ; OR
         LD      A, $55
         LD      B, $aa
         OR      B               ; shall be $ff
@@ -145,6 +213,7 @@ buf6:   DEFW $5aa5
 buf7:   DB      43
         DB      44
         DB      45
+        DB      255
 
 buf3:    ; arithmetic test suite ... see http://benryves.com/bin/brass/manual.htm#labels
         DEFW    -1                      ; $ffff
@@ -183,6 +252,8 @@ buf5:   EQU 2000h
         DEFB    34,56h,"Long term evolution\0\0"
 
         ORG $600
+
+buftmp: DEFB    0,0,0,0
 
 spstrt: DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         DEFB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0

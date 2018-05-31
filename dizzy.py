@@ -1576,11 +1576,18 @@ class Assemble:
                 # number of instr bytes is very important
                 score = 100 * len(ocd.bitPattern)
                 # we favour less substitutions over more substituatios
+                ams = [ocd.am1, ocd.am2]
                 for i in (0,1):
-                    if results[i] is not True:
-                        # found a bit pattern tuple
-                        score += 10
-                # now, take the best
+                    if results[i] is not None and results[i] is not True:
+                        if results[i][1] == 'BP':
+                            # found a bit pattern tuple
+                            score += 10
+                        if results[i][1] == 'EX':
+                            # found an expression still to compete!
+                            score += 20
+                    if " E I EI ".find(ams[i].upper()) > 0:
+                            # we dont like immediated or extended addressing at all
+                            score += 50
                 if score < assyrec.score:
                     assyrec.score = score
                     assyrec.opcodedef = ocd
@@ -2288,6 +2295,7 @@ class SetOfRainbows:
 
         rootbytes = []
         ii = 0
+        opDataNdx = -1
 
         while True:
 
@@ -2296,7 +2304,8 @@ class SetOfRainbows:
             # take the rainbow belonging to the already found, valid rootbytes
             rb = self.get(rootbytes)
             if rb is None:
-                OPTIONS.debug(2, "  NO rainbow found .. quitting!")    
+                OPTIONS.debug(2, "  NO rainbow found .. quitting!")
+                return (0, None)
             OPTIONS.debug(2, "  rainbow %s" % rb.title)
 
             # try get an entry
@@ -2323,31 +2332,34 @@ class SetOfRainbows:
                 # looking at the addressing modes, conclude if to eat up more bytes
                 ams = [assyrec.opcodedef.am1, assyrec.opcodedef.am2]
                 databytes = 0
+                # if we haven't found a data index yet, it is AFTER the opcode bytes
+                if opDataNdx < 0:
+                    opDataNdx = ii+1
                 for am in ams:
                     if am == 'I' or am == 'EP':
                         # immediate or extended port, one byte
-                        assyrec.opdata.append(input[ii+1])
+                        assyrec.opdata.append(input[opDataNdx])
                         databytes = 1
                     if am == 'IE' or am == 'E' or am == 'EJ':
                         # immediate extended or extended, two bytes
-                        n = (input[ii+2] << 8) + input[ii+1]
+                        n = (input[ii+2] << 8) + input[opDataNdx]
                         assyrec.opdata.append(n)
                         databytes = 2
                     if am == 'L':
                         # relative, one byte displacement
-                        n = Helper.fromTwosComplement(input[ii+1], targetBits=8)
+                        n = Helper.fromTwosComplement(input[opDataNdx], targetBits=8)
                         assyrec.opdata.append(n)
                         databytes = 1
                     if am == 'X':
                         # indexed, one byte displacement
-                        n = Helper.fromTwosComplement(input[ii+1], targetBits=8)
+                        n = Helper.fromTwosComplement(input[opDataNdx], targetBits=8)
                         assyrec.opdata.append(n)             
                         databytes = 1
 
                 # advance last instr byte + its data
-                ii += 1 + databytes
+                opLen = max(ii + 1, opDataNdx + databytes)
 
-                return (ii, assyrec)
+                return (opLen, assyrec)
 
             # no :-(, may be advance further
             if isinstance(o, RainbowTable):
@@ -2357,6 +2369,15 @@ class SetOfRainbows:
                 # advance state depending on user data
                 rootbytes.append(input[ii])
                 ii += 1
+
+                # could be that we have to "fill up" rootbytes with 0x100, 0x200 indicators for interediate bytes
+                while ii < rb.rank and rb.rootbytes[ii] > 0xff:
+                    OPTIONS.debug(2, "  filling up rainbow root bytes!")
+                    if opDataNdx < 0:
+                        # save for later access
+                        opDataNdx = ii
+                    rootbytes.append(rb.rootbytes[ii])
+                    ii += 1
 
                 # this SHOULD fit to the rainbow table
                 if rb.rank != ii or tuple(rb.rootbytes) != tuple(rootbytes):
@@ -2487,6 +2508,7 @@ class SoftRegister:
 
     def performFunction(self):
         # binary mask
+        OPTIONS.debug(2, "--")
         andMask = (1 << self.bits) - 1
         # unary or binary?
         if self.latchNum <= 1:
@@ -2550,6 +2572,39 @@ class SoftRegister:
                     self.flags = self.flags | SoftFlag.ZERO
                 if v & 0x80 > 0:
                     self.flags = self.flags | SoftFlag.SIGN
+                return v & andMask
+            if self.function == SoftFunction.RLC or self.function == SoftFunction.RL or \
+                    self.function == SoftFunction.RRC or self.function == SoftFunction.RR:
+                # process values as bit patterns only of ACT input (latch index 0)
+                v = self.theValue[0] & andMask
+                if self.function == SoftFunction.RLC:
+                    cy = v & 0x80 > 0
+                    v = (v << 1) & andMask
+                    if cy:
+                        v = v | 1
+                if self.function == SoftFunction.RL:
+                    OPTIONS.debug(2, "flags = ", self.flags)
+                    cy = v & 0x80 > 0
+                    v = (v << 1) & andMask
+                    if self.flags & SoftFlag.CARRY:
+                        v = v | 1
+                if self.function == SoftFunction.RRC:
+                    cy = v & 0x01 > 0
+                    v = (v >> 1) & andMask
+                    if cy:
+                        v = v | 0x80
+                if self.function == SoftFunction.RR:
+                    cy = v & 0x01 > 0
+                    v = (v >> 1) & andMask
+                    if self.flags & SoftFlag.CARRY:
+                        v = v | 0x80
+                # only some flags affected
+                self.flags = self.flags & (~SoftFlag.HALFCARRY)
+                self.flags = self.flags & (~SoftFlag.ADDSUB)
+                if cy:
+                    self.flags = self.flags | SoftFlag.CARRY
+                else:
+                    self.flags = self.flags & (~SoftFlag.CARRY)
                 return v & andMask
             if self.function == SoftFunction.ADD_TWO_COMPL_OP2:
                 return self.theValue[0] + Helper.fromTwosComplement(self.theValue[1])
@@ -2798,6 +2853,22 @@ class SoftCPU:
             elif op == "ALU.OP.XOR":
                 r['ALU'].flags = r['F'].value
                 r['ALU'].setFunction(SoftFunction.XOR)
+
+            elif op == "ALU.OP.RLC":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RLC)
+
+            elif op == "ALU.OP.RL":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RL)
+
+            elif op == "ALU.OP.RRC":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RRC)
+
+            elif op == "ALU.OP.RR":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RR)
 
             elif op == "ALU.OE":
                 r['DBUS'].value = r['ALU'].value
