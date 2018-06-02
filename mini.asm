@@ -5,7 +5,7 @@ TFCB	EQU	TFCA+1
 ;------------------------------
         ORG 100h
         ;
-hallo:  ; RLC further
+hallo:  ; RL further
         LD      IY,buftmp       ; not a constant one
         LD      A,10001111b
         LD      (IY+4),A
