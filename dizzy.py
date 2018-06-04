@@ -2510,6 +2510,14 @@ class SoftRegister:
                 return
             self.theValue[latchIdx] = value
 
+    def setSingleOutFlag(self, mask: int, on: bool):
+        # just a shortcut
+        mask = mask & 0xff
+        if on:
+           self.outFlags = self.outFlags | mask
+        else:
+            self.outFlags = self.outFlags & (~mask)
+
     def performFunction(self):
         # binary mask
         andMask = (1 << self.bits) - 1
@@ -2533,35 +2541,27 @@ class SoftRegister:
                 v = (self.theValue[0] & andMask) + (self.theValue[1] & andMask) 
                 if self.function == SoftFunction.ADC and self.inFlags & SoftFlag.CARRY > 0:
                     v = v + 1
-                self.outFlags = SoftFlag.NONE
-                if v > 255:
-                    self.outFlags = self.outFlags | SoftFlag.CARRY
-                if v > 127 or v < -128:
-                    self.outFlags = self.outFlags | SoftFlag.PARITYOVER
-                if v & 0x16 > 0:
-                    self.outFlags = self.outFlags | SoftFlag.HALFCARRY
-                if v == 0:
-                    self.outFlags = self.outFlags | SoftFlag.ZERO
-                if v & 0x80 > 0:
-                    self.outFlags = self.outFlags | SoftFlag.SIGN
+                self.setSingleOutFlag( SoftFlag.ADDSUB,     False )
+                self.setSingleOutFlag( SoftFlag.CARRY,      v > 255 )
+                self.setSingleOutFlag( SoftFlag.PARITYOVER, v > 127 or v < -128 )
+                self.setSingleOutFlag( SoftFlag.HALFCARRY,  v & 0x16 > 0 )
+                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                self.setSingleOutFlag( SoftFlag.SIGN,       v & 0x80 > 0 )
                 return v & andMask
+            
             if self.function == SoftFunction.SUB or self.function == SoftFunction.SBC:
                 # process values as unsigned positive bytes/ words
                 v = (self.theValue[0] & andMask) - (self.theValue[1] & andMask) 
                 if self.function == SoftFunction.SBC and self.inFlags & SoftFlag.CARRY > 0:
                     v = v - 1
-                self.outFlags = SoftFlag.ADDSUB
-                if v < 0:
-                    self.outFlags = self.outFlags | SoftFlag.CARRY
-                if v > 127 or v < -128:
-                    self.outFlags = self.outFlags | SoftFlag.PARITYOVER
-                if v & 0x16 > 0:
-                    self.outFlags = self.outFlags | SoftFlag.HALFCARRY
-                if v == 0:
-                    self.outFlags = self.outFlags | SoftFlag.ZERO
-                if v & 0x80 > 0:
-                    self.outFlags = self.outFlags | SoftFlag.SIGN
+                self.setSingleOutFlag( SoftFlag.ADDSUB,     True )
+                self.setSingleOutFlag( SoftFlag.CARRY,      v < 0 )
+                self.setSingleOutFlag( SoftFlag.PARITYOVER, v > 127 or v < -128 )
+                self.setSingleOutFlag( SoftFlag.HALFCARRY,  v & 0x16 > 0 )
+                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                self.setSingleOutFlag( SoftFlag.SIGN,       v & 0x80 > 0 )
                 return v & andMask
+            
             if self.function == SoftFunction.OR or self.function == SoftFunction.AND \
                     or self.function == SoftFunction.XOR:
                 # process values as bit patterns
@@ -2571,13 +2571,12 @@ class SoftRegister:
                     v = (self.theValue[0] & andMask) & (self.theValue[1] & andMask) 
                 if self.function == SoftFunction.XOR:
                     v = (self.theValue[0] & andMask) ^ (self.theValue[1] & andMask) 
-                self.outFlags = 0
-                # overflow possible?? -> NO?!
-                if v == 0:
-                    self.outFlags = self.outFlags | SoftFlag.ZERO
-                if v & 0x80 > 0:
-                    self.outFlags = self.outFlags | SoftFlag.SIGN
+                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                self.setSingleOutFlag( SoftFlag.SIGN,       v & 0x80 > 0 )
+                # assumption according general flags chapter, described suspicous in the user manual?!
+                self.setSingleOutFlag( SoftFlag.PARITYOVER, v % 2 == 0 ) 
                 return v & andMask
+            
             if self.function == SoftFunction.RLCA or self.function == SoftFunction.RLA or \
                     self.function == SoftFunction.RRCA or self.function == SoftFunction.RRA or \
                     self.function == SoftFunction.RLC or self.function == SoftFunction.RL or \
@@ -2590,7 +2589,6 @@ class SoftRegister:
                     if cy:
                         v = v | 1
                 if self.function == SoftFunction.RLA or self.function == SoftFunction.RL:
-                    # OPTIONS.debug(2, "inflags = ", self.inFlags)
                     cy = v & 0x80 > 0
                     v = (v << 1) & andMask
                     if self.inFlags & SoftFlag.CARRY:
@@ -2606,25 +2604,17 @@ class SoftRegister:
                     if self.inFlags & SoftFlag.CARRY:
                         v = v | 0x80
                 # only some flags affected
-                self.outFlags = self.outFlags & (~SoftFlag.HALFCARRY)
-                self.outFlags = self.outFlags & (~SoftFlag.ADDSUB)
-                if cy:
-                    self.outFlags = self.outFlags | SoftFlag.CARRY
-                else:
-                    self.outFlags = self.outFlags & (~SoftFlag.CARRY)
+                self.setSingleOutFlag( SoftFlag.HALFCARRY,  False )
+                self.setSingleOutFlag( SoftFlag.ADDSUB,     False )
+                self.setSingleOutFlag( SoftFlag.CARRY,      cy )
                 # if not the "..A" functions, extended flag checks are made
                 if self.function == SoftFunction.RLC or self.function == SoftFunction.RL or \
                     self.function == SoftFunction.RRC or self.function == SoftFunction.RR:
-                    self.outFlags = self.outFlags & (~SoftFlag.PARITYOVER)
-                    self.outFlags = self.outFlags & (~SoftFlag.ZERO)
-                    self.outFlags = self.outFlags & (~SoftFlag.SIGN)
-                    if v > 127 or v < -128:
-                        self.outFlags = self.outFlags | SoftFlag.PARITYOVER
-                    if v % 2 == 0:
-                        self.outFlags = self.outFlags | SoftFlag.ZERO
-                    if v & 0x80 > 0:
-                        self.outFlags = self.outFlags | SoftFlag.SIGN
+                    self.setSingleOutFlag( SoftFlag.PARITYOVER, v > 127 or v < -128 )
+                    self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                    self.setSingleOutFlag( SoftFlag.SIGN,       v & 0x80 > 0 )
                 return v & andMask
+
             if self.function == SoftFunction.ADD_TWO_COMPL_OP2:
                 return self.theValue[0] + Helper.fromTwosComplement(self.theValue[1])
 
@@ -2880,6 +2870,22 @@ class SoftCPU:
             elif op == "ALU.OP.XOR":
                 r['ALU'].flags = r['F'].value
                 r['ALU'].setFunction(SoftFunction.XOR)
+
+            elif op == "ALU.OP.RLCA":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RLCA)
+
+            elif op == "ALU.OP.RLA":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RLA)
+
+            elif op == "ALU.OP.RRCA":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RRCA)
+
+            elif op == "ALU.OP.RRA":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RRA)
 
             elif op == "ALU.OP.RLC":
                 r['ALU'].flags = r['F'].value

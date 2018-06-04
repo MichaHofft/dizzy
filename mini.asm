@@ -5,7 +5,25 @@ TFCB	EQU	TFCA+1
 ;------------------------------
         ORG 100h
         ;
-hallo:  ; RL further
+hallo:  ; RRC further
+        LD      IX,buftmp       ; not a constant one
+        LD      A,00110001b
+        LD      (IX+3),A
+        OR      A               ; clears carry?
+        RRC     (IX+3)          ; shall by CY, $98
+        LD      B,(IX+3)
+        NOP
+        NOP
+        ; RR further
+        LD      HL,buftmp       ; not a constant one
+        LD      A,11011101b
+        LD      (HL),A
+        OR      A               ; clears carry?
+        RR      (HL)            ; shall by CY, $6e
+        LD      B,(HL)
+        NOP
+        NOP
+        ; RL further
         LD      IY,buftmp       ; not a constant one
         LD      A,10001111b
         LD      (IY+4),A
