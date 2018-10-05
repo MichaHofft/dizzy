@@ -1759,7 +1759,7 @@ class Assemble:
                 # MARK?
                 if OPTIONS.markAtLineNo is not None:
                     if OPTIONS.markAtLineNo == lineno:
-                        print("*MARK*")
+                        print("*MARK@STAGE1*")
 
                 # tab expansion
                 if OPTIONS.tabWidth > 0:
@@ -1884,7 +1884,7 @@ class Assemble:
             # MARK?
             if OPTIONS.markAtLineNo is not None:
                 if OPTIONS.markAtLineNo == assyrec.lineno:
-                    print("*MARK*")
+                    print("*MARK@STAGE2*")
 
             # any real action required
             proceed = True
@@ -2459,10 +2459,12 @@ class SoftFunction(Enum):
     RRC = 21
     SLA = 22
     SRA = 23
-    SLL = 24
-    SRL = 25
-    RRD = 26
-    ADD_TWO_COMPL_OP2 = 23
+    SRL = 24
+    RLD1 = 25        
+    RLD2 = 26
+    RRD1 = 27
+    RRD2 = 28
+    ADD_TWO_COMPL_OP2 = 29
 
 class SoftFlag:
     NONE = 0
@@ -2571,10 +2573,13 @@ class SoftRegister:
                     v = (self.theValue[0] & andMask) & (self.theValue[1] & andMask) 
                 if self.function == SoftFunction.XOR:
                     v = (self.theValue[0] & andMask) ^ (self.theValue[1] & andMask) 
-                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
                 self.setSingleOutFlag( SoftFlag.SIGN,       v & 0x80 > 0 )
+                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                self.setSingleOutFlag( SoftFlag.HALFCARRY,  False )
                 # assumption according general flags chapter, described suspicous in the user manual?!
                 self.setSingleOutFlag( SoftFlag.PARITYOVER, v % 2 == 0 ) 
+                self.setSingleOutFlag( SoftFlag.ADDSUB,  False )
+                self.setSingleOutFlag( SoftFlag.CARRY,  False )
                 return v & andMask
             
             if self.function == SoftFunction.RLCA or self.function == SoftFunction.RLA or \
@@ -2610,9 +2615,85 @@ class SoftRegister:
                 # if not the "..A" functions, extended flag checks are made
                 if self.function == SoftFunction.RLC or self.function == SoftFunction.RL or \
                     self.function == SoftFunction.RRC or self.function == SoftFunction.RR:
-                    self.setSingleOutFlag( SoftFlag.PARITYOVER, v > 127 or v < -128 )
+                    self.setSingleOutFlag( SoftFlag.PARITYOVER, v % 2 == 0 )
                     self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
-                    self.setSingleOutFlag( SoftFlag.SIGN,       v & 0x80 > 0 )
+                    self.setSingleOutFlag( SoftFlag.SIGN,       v > 127 or v < -128 )
+                return v & andMask
+
+            if self.function == SoftFunction.SLA or \
+                    self.function == SoftFunction.SRA or \
+                    self.function == SoftFunction.SRL:
+                # process values as bit patterns only of ACT input (latch index 0)
+                v = self.theValue[0] & andMask
+                if self.function == SoftFunction.SLA:
+                    cy = v & 0x80 > 0
+                    v = (v << 1) & andMask
+                if self.function == SoftFunction.SRA:
+                    msb = v & 0x80
+                    cy = v & 0x01 > 0
+                    v = (v >> 1) & andMask
+                    v = v | msb
+                if self.function == SoftFunction.SRL:
+                    cy = v & 0x01 > 0
+                    v = (v >> 1) & andMask
+
+                # only some flags affected
+                self.setSingleOutFlag( SoftFlag.HALFCARRY,  False )
+                self.setSingleOutFlag( SoftFlag.ADDSUB,     False )
+                self.setSingleOutFlag( SoftFlag.CARRY,      cy )
+                self.setSingleOutFlag( SoftFlag.PARITYOVER, v % 2 == 0 )
+                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                self.setSingleOutFlag( SoftFlag.SIGN,       v > 127 or v < -128 )
+                return v & andMask
+
+            if self.function == SoftFunction.RLD1:
+                # 1st half of the RLD operation
+                # (HL)[7..4] <- (HL)[3..0], (HL)[3..0] <- A[3..0]
+                # translated (HL -> TMP -> ALU2, A -> ACT - > ALU1)
+                # (ALU.OUT)[7..4] <- (ALU2)[3..0], (ALU.OUT)[3..0] <- (ALU1)[3..0]
+                v = ((self.theValue[1] & 0x0f) << 4) | (self.theValue[0] & 0x0f) 
+                
+                # flags to be done in 2nd half
+                return v & andMask
+
+            if self.function == SoftFunction.RLD2:
+                # 2nd half of the RLD operation
+                # A[7..4] <- A[7..4], A[3..0] <- (HL)[7..4]
+                # translated (HL -> TMP -> ALU2, A -> ACT - > ALU1)
+                # (ALU.OUT)[7..4] <- (ALU1)[7..4], (ALU.OUT)[3..0] <- (ALU2)[7..4]
+                v = (self.theValue[0] & 0xf0) | ((self.theValue[1] & 0xf0) >> 4)
+
+                # only some flags affected
+                self.setSingleOutFlag( SoftFlag.HALFCARRY,  False )
+                self.setSingleOutFlag( SoftFlag.ADDSUB,     False )
+                self.setSingleOutFlag( SoftFlag.PARITYOVER, v % 2 == 0 )
+                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                self.setSingleOutFlag( SoftFlag.SIGN,       v > 127 or v < -128 )
+                return v & andMask
+
+            if self.function == SoftFunction.RRD1:
+                # 1st half of the RRD operation
+                # (HL)[7..4] <- A[3..0], (HL)[3..0] <- (HL)[7..4]
+                # translated (HL -> TMP -> ALU2, A -> ACT - > ALU1)
+                # (ALU.OUT)[7..4] <- (ALU1)[3..0], (ALU.OUT)[3..0] <- (ALU2)[7..4]
+                v = ((self.theValue[0] & 0x0f) << 4) | ((self.theValue[1] & 0xf0) >> 4)
+                
+                # flags to be done in 2nd half
+                return v & andMask
+
+            if self.function == SoftFunction.RRD2:
+                # 2nd half of the RRD operation
+                # A[7..4] <- A[7..4], A[3..0] <- (HL)[3..0]
+                # translated (HL -> TMP -> ALU2, A -> ACT - > ALU1)
+                # (ALU.OUT)[7..4] <- (ALU1)[7..4], (ALU.OUT)[3..0] <- (ALU2)[3..0]
+                v = (self.theValue[0] & 0xf0) | (self.theValue[1] & 0x0f)
+
+                # only some flags affected
+                self.setSingleOutFlag( SoftFlag.HALFCARRY,  False )
+                self.setSingleOutFlag( SoftFlag.ADDSUB,     False )
+                self.setSingleOutFlag( SoftFlag.PARITYOVER, v % 2 == 0 )
+                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                self.setSingleOutFlag( SoftFlag.SIGN,       v > 127 or v < -128 )
                 return v & andMask
 
             if self.function == SoftFunction.ADD_TWO_COMPL_OP2:
@@ -2759,7 +2840,7 @@ class SoftCPU:
 
         if OPTIONS.markAtLineNo is not None:
             if self.totalCycleCount == OPTIONS.markAtLineNo:
-                print("*MARK*")
+                print("*MARK@SOFTCPU*")
 
         # split operations
         if isinstance(operations, str):
@@ -2902,6 +2983,34 @@ class SoftCPU:
             elif op == "ALU.OP.RR":
                 r['ALU'].flags = r['F'].value
                 r['ALU'].setFunction(SoftFunction.RR)
+
+            elif op == "ALU.OP.SLA":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.SLA)
+
+            elif op == "ALU.OP.SRA":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.SRA)
+
+            elif op == "ALU.OP.SRL":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.SRL)
+
+            elif op == "ALU.OP.RLD1":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RLD1)
+
+            elif op == "ALU.OP.RLD2":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RLD2)
+
+            elif op == "ALU.OP.RRD1":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RRD1)
+
+            elif op == "ALU.OP.RRD2":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.RRD2)
 
             elif op == "ALU.OE":
                 r['DBUS'].value = r['ALU'].value

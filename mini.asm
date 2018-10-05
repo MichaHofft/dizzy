@@ -5,13 +5,88 @@ TFCB	EQU	TFCA+1
 ;------------------------------
         ORG 100h
         ;
-hallo:  ; RRC further
-        LD      IX,buftmp       ; not a constant one
+hallo:  ; START
+        ; RRD
+        LD      HL,buftmp
+        LD      (HL),00100000b
+        LD      A,10000100b
+        RRD
+        LD      B,(HL)          ; ASSERT B = $42
+        LD      C,A             ; ASSERT C = $80
+        ; RLD
+        LD      HL,buftmp
+        LD      (HL),00110001b
+        LD      A,01111010b
+        RLD
+        LD      B,(HL)          ; ASSERT B = $1a
+        LD      C,A             ; ASSERT C = $73
+        ; SRL in multiple ways
+        OR      A               ; clear carry
+        LD      A,10001111b
+        SRL     A
+        LD      B,A
+        NOP                     ; ASSERT B = $47, Cy set
+        OR      A               ; clear carry
+        LD      A,10001111b
+        LD      HL,buftmp       ; not a constant one
+        LD      (HL),A
+        SRL     (HL)
+        LD      C,(HL)
+        NOP                     ; ASSERT C = $47, Cy set
+        OR      A               ; clear carry
+        LD      A,10001111b
+        LD      IY,buftmp       ; not a constant one
+        LD      (IY+1),A
+        SRL     (IY+1)
+        LD      D,(IY+1)
+        NOP                     ; ASSERT D = $47, Cy set
+        ; SRA in multiple ways
+        OR      A               ; clear carry
+        LD      A,10111000b
+        SRA     A
+        LD      B,A
+        NOP                     ; ASSERT B = $dc, Cy cleared
+        OR      A               ; clear carry
+        LD      A,10111000b
+        LD      HL,buftmp       ; not a constant one
+        LD      (HL),A
+        SRA     (HL)
+        LD      C,(HL)
+        NOP                     ; ASSERT C = $dc, Cy cleared
+        OR      A               ; clear carry
+        LD      A,10111000b
+        LD      IY,buftmp       ; not a constant one
+        LD      (IY+1),A
+        SRA     (IY+1)
+        LD      D,(IY+1)
+        NOP                     ; ASSERT D = $dc, Cy cleared
+        ; SLA in multiple ways
+        OR      A               ; clear carry
+        LD      A,10110001b
+        SLA     A
+        LD      B,A
+        NOP                     ; ASSERT B = $62, Cy set
+        OR      A               ; clear carry
+        LD      A,10110001b
+        LD      HL,buftmp       ; not a constant one
+        LD      (HL),A
+        SLA     (HL)
+        LD      C,(HL)
+        NOP                     ; ASSERT C = $62, Cy set
+        OR      A               ; clear carry
+        LD      A,10110001b
+        LD      IY,buftmp       ; not a constant one
+        LD      (IY+1),A
+        SLA     (IY+1)
+        LD      D,(IY+1)
+        NOP                     ; ASSERT D = $62, Cy set
+        ; RRC further
+        LD      IY,buftmp       ; not a constant one
         LD      A,00110001b
-        LD      (IX+3),A
+        LD      (IY+3),A
         OR      A               ; clears carry?
-        RRC     (IX+3)          ; shall by CY, $98
-        LD      B,(IX+3)
+        RRC     (IY+3)          ; shall by CY, $98
+        LD      C,(IY+3)
         NOP
         NOP
         ; RR further

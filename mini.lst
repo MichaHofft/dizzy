@@ -2,8 +2,8 @@
 ||  Loading tables z80_isa.csv, z80_syms.csv..
 ||  Assembling mini.asm..
 ||  Starting assemble stage 1 for: mini.asm..
-In mini.asm(194) E0119: Jump target to far away for RELATIVE jump! Skipping!
-*MARK*
+*MARK@STAGE1*
+In mini.asm(269) E0119: Jump target to far away for RELATIVE jump! Skipping!
 ||  Stage 1 completed.
 ||  Starting assemble stage 2 ..
 0000:         |;------------------------------
@@ -13,221 +13,297 @@ In mini.asm(194) E0119: Jump target to far away for RELATIVE jump! Skipping!
 0000:         |;------------------------------
 0000:         |        ORG 100h
 0100:         |        ;
-0100:         |hallo:  ; RRC further
-0100:*dd210006|        LD      IX,buftmp       ; not a constant one            |IX <- nn
-0104: 3e31    |        LD      A,00110001b                                     |r <- n
-0106: dd7703  |        LD      (IX+3),A                                        |(IX+d) <- r
-0109: b7      |        OR      A               ; clears carry?                 |A <- A | r
-010a: ddcb030e|        RRC     (IX+3)          ; shall by CY, $98              |[CY,(IX+d)] <- ROL([CY,(IX+d)], 1)
-010e: dd4603  |        LD      B,(IX+3)                                        |r <- (IX+d)
-0111: 00      |        NOP                                                     |--
-0112: 00      |        NOP                                                     |--
-0113:         |        ; RR further
-0113:*210006  |        LD      HL,buftmp       ; not a constant one            |Register pair <- nn
-0116: 3edd    |        LD      A,11011101b                                     |r <- n
-0118: 77      |        LD      (HL),A                                          |(HL) <- r
-0119: b7      |        OR      A               ; clears carry?                 |A <- A | r
-011a: cb1e    |        RR      (HL)            ; shall by CY, $6e              |[(HL),CY] <- ROR([(HL),CY], 1)
-011c: 46      |        LD      B,(HL)                                          |r <- (HL)
-011d: 00      |        NOP                                                     |--
-011e: 00      |        NOP                                                     |--
-011f:         |        ; RL further
-011f:*fd210006|        LD      IY,buftmp       ; not a constant one            |IY <- nn
-0123: 3e8f    |        LD      A,10001111b                                     |r <- n
-0125: fd7704  |        LD      (IY+4),A                                        |(IY+d) <- r
-0128: fdcb0416|        RL      (IY+4)          ; shall by CY, $1e              |CY <- (IY+d)[0], (IY+d) <- ROR( (IY+d) ,1)
-012c: fd4602  |        LD      B,(IY+2)                                        |r <- (IY+d)
-012f: 00      |        NOP                                                     |--
-0130: 00      |        NOP                                                     |--
-0131: 0688    |        LD      B,10001000b                                     |r <- n
-0133: cb10    |        RL      B               ; shall be CY, %00010001 = $11  |CY <- r[0], r <- ROR(r,1)
-0135: 00      |        NOP                                                     |--
-0136:*210006  |        LD      HL,buftmp       ; not a constant one            |Register pair <- nn
-0139: 3ecc    |        LD      A,11001100b                                     |r <- n
-013b: 77      |        LD      (HL),A                                          |(HL) <- r
-013c: cb16    |        RL      (HL)            ; shall by CY, $99              |CY <- (HL)[0], (HL) <- ROR( (HL) ,1)
-013e: 7e      |        LD      A,(HL)                                          |r <- (HL)
-013f: 00      |        NOP                                                     |--
-0140:         |        ; RLC further
-0140:*fd210006|        LD      IY,buftmp       ; not a constant one            |IY <- nn
-0144: 3ecc    |        LD      A,11001100b                                     |r <- n
-0146: fd7704  |        LD      (IY+4),A                                        |(IY+d) <- r
-0149: fdcb0406|        RLC     (IY+4)          ; shall by CY, $99              |CY <- (IY+d)[7], (IY+d) <- ROL( (IY+d) ,1)
-014d: fd4602  |        LD      B,(IY+2)                                        |r <- (IY+d)
-0150: 00      |        NOP                                                     |--
-0151: 00      |        NOP                                                     |--
-0152: 0688    |        LD      B,10001000b                                     |r <- n
-0154: cb00    |        RLC     B               ; shall be CY, %00010001 = $11  |CY <- r[7], r <- ROL(r,1)
-0156: 00      |        NOP                                                     |--
-0157:*210006  |        LD      HL,buftmp       ; not a constant one            |Register pair <- nn
-015a: 3ecc    |        LD      A,11001100b                                     |r <- n
-015c: 77      |        LD      (HL),A                                          |(HL) <- r
-015d: cb06    |        RLC     (HL)            ; shall by CY, $99              |CY <- (HL)[7], (HL) <- ROL( (HL) ,1)
-015f: 7e      |        LD      A,(HL)                                          |r <- (HL)
-0160: 00      |        NOP                                                     |--
-0161:         |        ; RRA
-0161: 3ee1    |        LD      A,11100001b                                     |r <- n
-0163: b7      |        OR      A                                               |A <- A | r
-0164: 1f      |        RRA                     ; shall be CY, %01110000 = $70  |[A,CY] <- ROR([A,CY], 1)
-0165: 00      |        NOP                                                     |--
-0166:         |        ; RRCA
-0166: 3e11    |        LD      A,00010001b                                     |r <- n
-0168: 0f      |        RRCA                    ; shall be CY, %10001000 = $88  |CY <- A[0], A <- ROR(A,1)
-0169: 00      |        NOP                                                     |--
-016a:         |        ; RLA
-016a: 3e76    |        LD      A,01110110b                                     |r <- n
-016c: 37      |        SCF                                                     |CY <- 1
-016d: 17      |        RLA                     ; shall be no CY, %11101101 = $…|[CY,A] <- ROL([CY,A], 1)
-0171:         |                                                              ed
-016e: 00      |        NOP                                                     |--
-016f:         |        ; RLCA
-016f: 3e81    |        LD      A,10000001b                                     |r <- n
-0171: 07      |        RLCA                    ; shall be CY, %00000011 = $03  |CY <- A[7], A <- ROL(A,1)
-0172: 00      |        NOP                                                     |--
-0173:         |        ; XOR
-0173: 3e55    |        LD      A, $55                                          |r <- n
-0175: 06aa    |        LD      B, $aa                                          |r <- n
-0177: a8      |        XOR     B               ; shall be $ff                  |A <- A + r
-0178: ee01    |        XOR     $01             ; shall be $fe, Signed          |A <- A + n
-017a:*dd211402|        LD      IX,buf7         ; is 43, 44, 45, 255            |IX <- nn
-017e: ddae03  |        XOR     (IX+3)          ; $01                           |A <- A + (IX+d)
-0181: 00      |        NOP                                                     |--
-0182:         |        ; AND
-0182: 3eff    |        LD      A, $ff                                          |r <- n
-0184: 06aa    |        LD      B, $aa                                          |r <- n
-0186: a0      |        AND     B               ; shall be $aa                  |A <- A & r
-0187: e622    |        AND      $22            ; shall be $22                  |A <- A & n
-0189:*210402  |        LD      HL,buf2         ; is 5                          |Register pair <- nn
-018c: a6      |        AND      (HL)           ; $00, Zero                     |A <- A & (HL)
-018d: 00      |        NOP                                                     |--
-018e:         |        ; OR
-018e: 3e55    |        LD      A, $55                                          |r <- n
-0190: 06aa    |        LD      B, $aa                                          |r <- n
-0192: b0      |        OR      B               ; shall be $ff                  |A <- A | r
-0193: 3e11    |        LD      A, $11                                          |r <- n
-0195: f688    |        OR      $88             ; shall be $99                  |A <- A | n
-0197:*210402  |        LD      HL,buf2         ; is 5                          |Register pair <- nn
-019a: b6      |        OR      (HL)            ; $99+5 = $9d                   |A <- A | (HL)
-019b: 37      |        SCF                     ; CY is 1                       |CY <- 1
-019c: b7      |        OR      A               ; still $9d, but CY is 0        |A <- A | r
-019d: 00      |        NOP                                                     |--
-019e:         |        ; ADD
-019e: 3e2a    |        LD      A,42                                            |r <- n
-01a0: 47      |        LD      B,A                                             |r <- s
-01a1: 80      |        ADD     A,B             ; 84, kein Carry                |A <- A + r
-01a2: 0ee6    |        LD      C,230                                           |r <- n
-01a4: 81      |        ADD     A,C             ; 84 + 230 -> 58, Carry!        |A <- A + r
-01a5:         |        ; SUB
-01a5: 3e3a    |        LD      A,58                                            |r <- n
-01a7: 1637    |        LD      D,55                                            |r <- n
-01a9: 92      |        SUB     D               ; shall be 3,                   |A <- A - r
-01aa: d603    |        SUB     3               ; shall be 0, Sign              |A <- A - n
-01ac:*dd210002|        LD      IX,buf          ; buf = 1,2,3,4..               |IX <- nn
-01b0: dd9600  |        SUB     (IX+0)          ; A shall be $ff                |A <- A - (IX+d)
-01b3:*fd210002|        LD      IY,buf                                          |IY <- nn
-01b7: fd9601  |        SUB     (IY+1)          ; A shall be $fd                |A <- A + (IY+d)
-01ba:         |        ; SBC (with Carry)
-01ba: 3e3b    |        LD      A,59                                            |r <- n
-01bc: 1637    |        LD      D,55                                            |r <- n
-01be: 37      |        SCF                     ; set CY                        |CY <- 1
-01bf: 9a      |        SBC     A,D             ; shall be 3,                   |A <- A + r + CY
-01c0: 37      |        SCF                     ; set CY                        |CY <- 1
-01c1: de03    |        SBC     A,3             ; shall be ff, Carry (Borrow!)  |A <- A + n + CY
-01c3:*dd210002|        LD      IX,buf          ; buf = 1,2,3,4..               |IX <- nn
-01c7: dd9e00  |        SBC     A,(IX+0)        ; A shall be $ff                |A <- A + (IX+d) + CY
-01ca:*fd210002|        LD      IY,buf                                          |IY <- nn
-01ce: fd9e01  |        SBC     A,(IY+1)        ; A shall be $fd                |A <- A + (IY+d) + CY
-01d1: c62a    |        ADD     A,42            ; shall be 42 again             |A <- A + n
-01d3:*211402  |        LD      HL,buf7                                         |Register pair <- nn
-01d6: 86      |        ADD     A,(HL)          ; 85                            |A <- A + (HL)
-01d7:*dd211402|        LD      IX,buf7                                         |IX <- nn
-01db: dd8602  |        ADD     A,(IX+2)        ; 85 + 45 = 130                 |A <- A + (IX+d)
-01de: 00      |        NOP                                                     |--
-01df:*dd210002|        LD      IX,buf                                          |IX <- nn
-01e3: dd4e01  |        LD      C,(IX+1)                                        |r <- (IX+d)
-01e6:*210402  |        LD      HL,buf2                                         |Register pair <- nn
-01e9: 71      |        LD      (HL),C                                          |(HL) <- r
-01ea: 56      |        LD      D,(HL)                                          |r <- (HL)
-01eb: dd72fe  |        LD      (IX+-2),D                                       |(IX+d) <- r
-01ee: 365a    |        LD      (HL),$5a                                        |(HL) <- n
-01f0: dd36fca5|        LD      (IX+-4),$a5                                     |(IX+d) <- n
-01f4: 0a      |        LD      A,(BC)                                          |A <- (BC)
-01f5: 3e0b    |        LD      A,11                                            |r <- n
-01f7:*3a0702  |        LD      A,(buf2+3)                                      |A <- (nn)
-01fa: 3e55    |        LD      A,$55                                           |r <- n
-01fc:*010002  |        LD      BC,buf                                          |Register pair <- nn
-01ff: 02      |        LD      (BC),A                                          |(BC) <- A
-0200: 3e77    |        LD      A,$77                                           |r <- n
-0202:*110002  |        LD      DE,buf                                          |Register pair <- nn
-0205: 12      |        LD      (DE),A                                          |(DE) <- A
-0206: 3e99    |        LD      A,$99                                           |r <- n
-0208:*320002  |        LD      (buf),A                                         |(nn) <- A
-020b: 3e32    |        LD      A,$32                                           |r <- n
-020d: ed47    |        LD      I,A                                             |Interrupt vector reg <- A
-020f: 3e43    |        LD      A,$43                                           |r <- n
-0211: ed4f    |        LD      R,A                                             |Memory refresh reg <- A
-0213: ed57    |        LD      A,I                     ; A to be $32           |A <- Interrupt vector reg
-0215: ed5f    |        LD      A,R                     ; A to be $43           |A <- Memory refresh reg
-0217:*dd210002|        LD      IX,buf                                          |IX <- nn
-021b: fd21aa55|        LD      IY,$55aa                                        |IY <- nn
-021f:*2a0a02  |        LD      HL,(buf4)               ; HL to be $200         |H <- (nn+1), L <- (nn)
-0222:*ed4b0002|        LD      BC,(buf)                ; BC to be $0201        |RRh <- (nn+1), RRl <- (nn)
-0226:*ed5b0102|        LD      DE,(buf+1)              ; DE to be $0302        |RRh <- (nn+1), RRl <- (nn)
-022a:*ed7b0202|        LD      SP,(buf+2)              ; SP to be $0403        |RRh <- (nn+1), RRl <- (nn)
-022e:*dd2a0302|        LD      IX,(buf+3)              ; SP to be $0504        |IXh <- (nn+1), IXl <- (nn)
-0232:*fd2a0402|        LD      IY,(buf+4)              ; SP to be $0605        |IYh <- (nn+1), IYl <- (nn)
-0236:*220c02  |        LD      (buf6),HL                                       |(nn+1) <- H, (nn) <- L
-0239:*ed430102|        LD      (buf+1),BC                                      |(nn+1) <- RRh, (nn) <-RRl
-023d:*ed530202|        LD      (buf+2),DE                                      |(nn+1) <- RRh, (nn) <-RRl
-0241:*ed730302|        LD      (buf+3),SP                                      |(nn+1) <- RRh, (nn) <-RRl
-0245:*dd220402|        LD      (buf+4),IX                                      |(nn+1) <- IXh, (nn) <-IXl
-0249:*fd220502|        LD      (buf+5),IY                                      |(nn+1) <- IYh, (nn) <-IYl
-024d: f9      |        LD      SP,HL                                           |SP <- HL
-024e: ddf9    |        LD      SP,IX                                           |SP <- IX
-0250: fdf9    |        LD      SP,IY                                           |SP <- IY
-0252:*314406  |        LD      SP,spend                                        |Register pair <- nn
-0255: c5      |        PUSH    BC                                              |(SP-1) <- QQh, (SP-2) <- QQl, SP <- SP - 2
-0256: d5      |        PUSH    DE                                              |(SP-1) <- QQh, (SP-2) <- QQl, SP <- SP - 2
-0257: e5      |        PUSH    HL                                              |(SP-1) <- QQh, (SP-2) <- QQl, SP <- SP - 2
-0258: f5      |        PUSH    AF                                              |(SP-1) <- QQh, (SP-2) <- QQl, SP <- SP - 2
-0259: dde5    |        PUSH    IX                                              |(SP-1) <- IXh, (SP-2) <- IXl, SP <- SP - 2
-025b: fde5    |        PUSH    IY                                              |(SP-1) <- IYh, (SP-2) <- IYl, SP <- SP - 2
-025d: c1      |        POP     BC                                              |QQl <- (SP), QQh <- (SP+1), SP <- SP + 2
-025e: dde1    |        POP     IX                                              |IXl <- (SP), IXh <- (SP+2), SP <- SP + 2
+0100:         |hallo:  ; START
+0100:         |        ; RRD
+0100:*210006  |        LD      HL,buftmp                                       |Register pair <- nn
+0103: 3620    |        LD      (HL),00100000b                                  |(HL) <- n
+0105: 3e84    |        LD      A,10000100b                                     |r <- n
+0107: ed67    |        RRD                                                     |[ A, (HL) ] <- [ A[7..4], (HL)[3..0], A[3..0], (HL)[7.4] ]
+0109: 46      |        LD      B,(HL)          ; ASSERT B = $42                |r <- (HL)
+010a: 4f      |        LD      C,A             ; ASSERT C = $80                |r <- s
+010b:         |        ; RLD
+010b:*210006  |        LD      HL,buftmp                                       |Register pair <- nn
+010e: 3631    |        LD      (HL),00110001b                                  |(HL) <- n
+0110: 3e7a    |        LD      A,01111010b                                     |r <- n
+0112: ed6f    |        RLD                                                     |[ A, (HL) ] <- [ A[7..4], (HL)[7..4], (HL)[3..0], A[3..0] ]
+0114: 46      |        LD      B,(HL)          ; ASSERT B = $1a                |r <- (HL)
+0115: 4f      |        LD      C,A             ; ASSERT C = $73                |r <- s
+0116:         |        ; SRL in multiple ways
+0116: b7      |        OR      A               ; clear carry                   |A <- A | r
+0117: 3e8f    |        LD      A,10001111b                                     |r <- n
+0119: cb3f    |        SRL     A                                               |[r,CY] <- SHR([0,r], 1)
+011b: 47      |        LD      B,A                                             |r <- s
+011c: 00      |        NOP                     ; ASSERT B = $47, Cy set        |--
+011d: b7      |        OR      A               ; clear carry                   |A <- A | r
+011e: 3e8f    |        LD      A,10001111b                                     |r <- n
+0120:*210006  |        LD      HL,buftmp       ; not a constant one            |Register pair <- nn
+0123: 77      |        LD      (HL),A                                          |(HL) <- r
+0124: cb3e    |        SRL     (HL)                                            |[ (HL) ,CY] <- SHR([0, (HL) ], 1)
+0126: 4e      |        LD      C,(HL)                                          |r <- (HL)
+0127: 00      |        NOP                     ; ASSERT C = $47, Cy set        |--
+0128: b7      |        OR      A               ; clear carry                   |A <- A | r
+0129: 3e8f    |        LD      A,10001111b                                     |r <- n
+012b:*fd210006|        LD      IY,buftmp       ; not a constant one            |IY <- nn
+012f: fd7701  |        LD      (IY+1),A                                        |(IY+d) <- r
+0132: fdcb013e|        SRL     (IY+1)                                          |[ (IY+d) ,CY] <- SHR([0, (IY+d) ], 1)
+0136: fd5601  |        LD      D,(IY+1)                                        |r <- (IY+d)
+0139: 00      |        NOP                     ; ASSERT D = $47, Cy set        |--
+013a:         |        ; SRA in multiple ways
+013a: b7      |        OR      A               ; clear carry                   |A <- A | r
+013b: 3eb8    |        LD      A,10111000b                                     |r <- n
+013d: cb2f    |        SRA     A                                               |[r,CY] <- SHR([r[7],r], 1)
+013f: 47      |        LD      B,A                                             |r <- s
+0140: 00      |        NOP                     ; ASSERT B = $dc, Cy cleared    |--
+0141: b7      |        OR      A               ; clear carry                   |A <- A | r
+0142: 3eb8    |        LD      A,10111000b                                     |r <- n
+0144:*210006  |        LD      HL,buftmp       ; not a constant one            |Register pair <- nn
+0147: 77      |        LD      (HL),A                                          |(HL) <- r
+0148: cb2e    |        SRA     (HL)                                            |[ (HL) ,CY] <- SHR([ (HL)[7], (HL) ], 1)
+014a: 4e      |        LD      C,(HL)                                          |r <- (HL)
+014b: 00      |        NOP                     ; ASSERT C = $dc, Cy cleared    |--
+014c: b7      |        OR      A               ; clear carry                   |A <- A | r
+014d: 3eb8    |        LD      A,10111000b                                     |r <- n
+014f:*fd210006|        LD      IY,buftmp       ; not a constant one            |IY <- nn
+0153: fd7701  |        LD      (IY+1),A                                        |(IY+d) <- r
+0156: fdcb012e|        SRA     (IY+1)                                          |[ (IY+d) ,CY] <- SHR([ (IY+d)[7], (IY+d) ], 1)
+015a: fd5601  |        LD      D,(IY+1)                                        |r <- (IY+d)
+015d: 00      |        NOP                     ; ASSERT D = $dc, Cy cleared    |--
+015e:         |        ; SLA in multiple ways
+015e: b7      |        OR      A               ; clear carry                   |A <- A | r
+015f: 3eb1    |        LD      A,10110001b                                     |r <- n
+0161: cb27    |        SLA     A                                               |[CY,r] <- SHL([r,0], 1)
+0163: 47      |        LD      B,A                                             |r <- s
+0164: 00      |        NOP                     ; ASSERT B = $62, Cy set        |--
+0165: b7      |        OR      A               ; clear carry                   |A <- A | r
+0166: 3eb1    |        LD      A,10110001b                                     |r <- n
+0168:*210006  |        LD      HL,buftmp       ; not a constant one            |Register pair <- nn
+016b: 77      |        LD      (HL),A                                          |(HL) <- r
+016c: cb26    |        SLA     (HL)                                            |[CY, (HL) ] <- SHL([ (HL) ,0], 1)
+016e: 4e      |        LD      C,(HL)                                          |r <- (HL)
+016f: 00      |        NOP                     ; ASSERT C = $62, Cy set        |--
+0170: b7      |        OR      A               ; clear carry                   |A <- A | r
+0171: 3eb1    |        LD      A,10110001b                                     |r <- n
+0173:*fd210006|        LD      IY,buftmp       ; not a constant one            |IY <- nn
+0177: fd7701  |        LD      (IY+1),A                                        |(IY+d) <- r
+017a: fdcb0126|        SLA     (IY+1)                                          |[CY, (IY+d) ] <- SHL([ (IY+d) ,0], 1)
+017e: fd5601  |        LD      D,(IY+1)                                        |r <- (IY+d)
+0181: 00      |        NOP                     ; ASSERT D = $62, Cy set        |--
+0182:         |        ; RRC further
+0182:*fd210006|        LD      IY,buftmp       ; not a constant one            |IY <- nn
+0186: 3e31    |        LD      A,00110001b                                     |r <- n
+0188: fd7703  |        LD      (IY+3),A                                        |(IY+d) <- r
+018b: b7      |        OR      A               ; clears carry?                 |A <- A | r
+018c: fdcb030e|        RRC     (IY+3)          ; shall by CY, $98              |[CY,(IY+d)] <- ROL([CY,(IY+d)], 1)
+0190: fd4e03  |        LD      C,(IY+3)                                        |r <- (IY+d)
+0193: 00      |        NOP                                                     |--
+0194: 00      |        NOP                                                     |--
+0195:         |        ; RR further
+0195:*210006  |        LD      HL,buftmp       ; not a constant one            |Register pair <- nn
+0198: 3edd    |        LD      A,11011101b                                     |r <- n
+019a: 77      |        LD      (HL),A                                          |(HL) <- r
+019b: b7      |        OR      A               ; clears carry?                 |A <- A | r
+019c: cb1e    |        RR      (HL)            ; shall by CY, $6e              |[(HL),CY] <- ROR([(HL),CY], 1)
+019e: 46      |        LD      B,(HL)                                          |r <- (HL)
+019f: 00      |        NOP                                                     |--
+01a0: 00      |        NOP                                                     |--
+01a1:         |        ; RL further
+01a1:*fd210006|        LD      IY,buftmp       ; not a constant one            |IY <- nn
+01a5: 3e8f    |        LD      A,10001111b                                     |r <- n
+01a7: fd7704  |        LD      (IY+4),A                                        |(IY+d) <- r
+01aa: fdcb0416|        RL      (IY+4)          ; shall by CY, $1e              |CY <- (IY+d)[0], (IY+d) <- ROR( (IY+d) ,1)
+01ae: fd4602  |        LD      B,(IY+2)                                        |r <- (IY+d)
+01b1: 00      |        NOP                                                     |--
+01b2: 00      |        NOP                                                     |--
+01b3: 0688    |        LD      B,10001000b                                     |r <- n
+01b5: cb10    |        RL      B               ; shall be CY, %00010001 = $11  |CY <- r[0], r <- ROR(r,1)
+01b7: 00      |        NOP                                                     |--
+01b8:*210006  |        LD      HL,buftmp       ; not a constant one            |Register pair <- nn
+01bb: 3ecc    |        LD      A,11001100b                                     |r <- n
+01bd: 77      |        LD      (HL),A                                          |(HL) <- r
+01be: cb16    |        RL      (HL)            ; shall by CY, $99              |CY <- (HL)[0], (HL) <- ROR( (HL) ,1)
+01c0: 7e      |        LD      A,(HL)                                          |r <- (HL)
+01c1: 00      |        NOP                                                     |--
+01c2:         |        ; RLC further
+01c2:*fd210006|        LD      IY,buftmp       ; not a constant one            |IY <- nn
+01c6: 3ecc    |        LD      A,11001100b                                     |r <- n
+01c8: fd7704  |        LD      (IY+4),A                                        |(IY+d) <- r
+01cb: fdcb0406|        RLC     (IY+4)          ; shall by CY, $99              |CY <- (IY+d)[7], (IY+d) <- ROL( (IY+d) ,1)
+01cf: fd4602  |        LD      B,(IY+2)                                        |r <- (IY+d)
+01d2: 00      |        NOP                                                     |--
+01d3: 00      |        NOP                                                     |--
+01d4: 0688    |        LD      B,10001000b                                     |r <- n
+01d6: cb00    |        RLC     B               ; shall be CY, %00010001 = $11  |CY <- r[7], r <- ROL(r,1)
+01d8: 00      |        NOP                                                     |--
+01d9:*210006  |        LD      HL,buftmp       ; not a constant one            |Register pair <- nn
+01dc: 3ecc    |        LD      A,11001100b                                     |r <- n
+01de: 77      |        LD      (HL),A                                          |(HL) <- r
+01df: cb06    |        RLC     (HL)            ; shall by CY, $99              |CY <- (HL)[7], (HL) <- ROL( (HL) ,1)
+01e1: 7e      |        LD      A,(HL)                                          |r <- (HL)
+01e2: 00      |        NOP                                                     |--
+01e3:         |        ; RRA
+01e3: 3ee1    |        LD      A,11100001b                                     |r <- n
+01e5: b7      |        OR      A                                               |A <- A | r
+01e6: 1f      |        RRA                     ; shall be CY, %01110000 = $70  |[A,CY] <- ROR([A,CY], 1)
+01e7: 00      |        NOP                                                     |--
+01e8:         |        ; RRCA
+01e8: 3e11    |        LD      A,00010001b                                     |r <- n
+01ea: 0f      |        RRCA                    ; shall be CY, %10001000 = $88  |CY <- A[0], A <- ROR(A,1)
+01eb: 00      |        NOP                                                     |--
+01ec:         |        ; RLA
+01ec: 3e76    |        LD      A,01110110b                                     |r <- n
+01ee: 37      |        SCF                                                     |CY <- 1
+01ef: 17      |        RLA                     ; shall be no CY, %11101101 = $…|[CY,A] <- ROL([CY,A], 1)
+01f3:         |                                                              ed
+01f0: 00      |        NOP                                                     |--
+01f1:         |        ; RLCA
+01f1: 3e81    |        LD      A,10000001b                                     |r <- n
+01f3: 07      |        RLCA                    ; shall be CY, %00000011 = $03  |CY <- A[7], A <- ROL(A,1)
+01f4: 00      |        NOP                                                     |--
+01f5:         |        ; XOR
+01f5: 3e55    |        LD      A, $55                                          |r <- n
+01f7: 06aa    |        LD      B, $aa                                          |r <- n
+01f9: a8      |        XOR     B               ; shall be $ff                  |A <- A + r
+01fa: ee01    |        XOR     $01             ; shall be $fe, Signed          |A <- A + n
+01fc:*dd211402|        LD      IX,buf7         ; is 43, 44, 45, 255            |IX <- nn
+0200: ddae03  |        XOR     (IX+3)          ; $01                           |A <- A + (IX+d)
+0203: 00      |        NOP                                                     |--
+0204:         |        ; AND
+0204: 3eff    |        LD      A, $ff                                          |r <- n
+0206: 06aa    |        LD      B, $aa                                          |r <- n
+0208: a0      |        AND     B               ; shall be $aa                  |A <- A & r
+0209: e622    |        AND      $22            ; shall be $22                  |A <- A & n
+020b:*210402  |        LD      HL,buf2         ; is 5                          |Register pair <- nn
+020e: a6      |        AND      (HL)           ; $00, Zero                     |A <- A & (HL)
+020f: 00      |        NOP                                                     |--
+0210:         |        ; OR
+0210: 3e55    |        LD      A, $55                                          |r <- n
+0212: 06aa    |        LD      B, $aa                                          |r <- n
+0214: b0      |        OR      B               ; shall be $ff                  |A <- A | r
+0215: 3e11    |        LD      A, $11                                          |r <- n
+0217: f688    |        OR      $88             ; shall be $99                  |A <- A | n
+0219:*210402  |        LD      HL,buf2         ; is 5                          |Register pair <- nn
+021c: b6      |        OR      (HL)            ; $99+5 = $9d                   |A <- A | (HL)
+021d: 37      |        SCF                     ; CY is 1                       |CY <- 1
+021e: b7      |        OR      A               ; still $9d, but CY is 0        |A <- A | r
+021f: 00      |        NOP                                                     |--
+0220:         |        ; ADD
+0220: 3e2a    |        LD      A,42                                            |r <- n
+0222: 47      |        LD      B,A                                             |r <- s
+0223: 80      |        ADD     A,B             ; 84, kein Carry                |A <- A + r
+0224: 0ee6    |        LD      C,230                                           |r <- n
+0226: 81      |        ADD     A,C             ; 84 + 230 -> 58, Carry!        |A <- A + r
+0227:         |        ; SUB
+0227: 3e3a    |        LD      A,58                                            |r <- n
+0229: 1637    |        LD      D,55                                            |r <- n
+022b: 92      |        SUB     D               ; shall be 3,                   |A <- A - r
+022c: d603    |        SUB     3               ; shall be 0, Sign              |A <- A - n
+022e:*dd210002|        LD      IX,buf          ; buf = 1,2,3,4..               |IX <- nn
+0232: dd9600  |        SUB     (IX+0)          ; A shall be $ff                |A <- A - (IX+d)
+0235:*fd210002|        LD      IY,buf                                          |IY <- nn
+0239: fd9601  |        SUB     (IY+1)          ; A shall be $fd                |A <- A + (IY+d)
+023c:         |        ; SBC (with Carry)
+023c: 3e3b    |        LD      A,59                                            |r <- n
+023e: 1637    |        LD      D,55                                            |r <- n
+0240: 37      |        SCF                     ; set CY                        |CY <- 1
+0241: 9a      |        SBC     A,D             ; shall be 3,                   |A <- A + r + CY
+0242: 37      |        SCF                     ; set CY                        |CY <- 1
+0243: de03    |        SBC     A,3             ; shall be ff, Carry (Borrow!)  |A <- A + n + CY
+0245:*dd210002|        LD      IX,buf          ; buf = 1,2,3,4..               |IX <- nn
+0249: dd9e00  |        SBC     A,(IX+0)        ; A shall be $ff                |A <- A + (IX+d) + CY
+024c:*fd210002|        LD      IY,buf                                          |IY <- nn
+0250: fd9e01  |        SBC     A,(IY+1)        ; A shall be $fd                |A <- A + (IY+d) + CY
+0253: c62a    |        ADD     A,42            ; shall be 42 again             |A <- A + n
+0255:*211402  |        LD      HL,buf7                                         |Register pair <- nn
+0258: 86      |        ADD     A,(HL)          ; 85                            |A <- A + (HL)
+0259:*dd211402|        LD      IX,buf7                                         |IX <- nn
+025d: dd8602  |        ADD     A,(IX+2)        ; 85 + 45 = 130                 |A <- A + (IX+d)
 0260: 00      |        NOP                                                     |--
-0261: 23      |        INC HL                                                  |RR <- RR + 1
-0262: cb16    |        RL (HL)                                                 |CY <- (HL)[0], (HL) <- ROR( (HL) ,1)
-0264: 3e5d    |        LD A,TFCB                                               |r <- n
-0266: 212312  |        LD HL,1223H                                             |Register pair <- nn
-0269:*010002  |        LD BC, buf                                              |Register pair <- nn
-In mini.asm(194) E0119: Jump target to far away for RELATIVE jump! Skipping!
-026c:         |        JR hallo                                                |PC <- PC + ee
-026c: c30001  |        JP hallo                                                |PC <- nn
-026f:         |
-026f:         |TFCC    EQU     $
-026f:         |TFCD    EQU     $+20
-026f:         |
-026f:         |hallo2:
-026f: 7e      |        LD A,(HL)                                               |r <- (HL)
-0270: 02      |        LD (BC),A                                               |(BC) <- A
-0271: 320500  |        LD (5),A                                                |(nn) <- A
-0274: dd7e05  |        LD A,(IX+5h)                                            |r <- (IX+d)
-0277: fd770c  |        LD (IY+12),A                                            |(IY+d) <- r
-027a:*ed4b0002|        LD BC,(buf)                                             |RRh <- (nn+1), RRl <- (nn)
-027e:*210402  |        LD HL,buf2                                              |Register pair <- nn
-0281:         |;
-0281:         |;   Routine to convert (A) into upper case ascii. Only letters
-0281:         |; are affected.
-0281:         |;
-0281: fe61    |UPPER:  CP      'a'             ;check for letters in the range…|Z <-  A = n
-0285:         |                                                  of 'a' to 'z'.
-0283: d8      |        RET     C                                               |IF cc true, PCl <- (SP), PCh <- (SP), SP <- SP + 2
-0284: fe7b    |        CP      '{'                                             |Z <-  A = n
-0286: d0      |        RET     NC                                              |IF cc true, PCl <- (SP), PCh <- (SP), SP <- SP + 2
-0287: e65f    |        AND     5FH             ;convert it if found.           |A <- A & n
-0289: c9      |        RET                                                     |PCl <- (SP), PCh <- (SP), SP <- SP + 2
-028a:         |
-028a:         |        ORG $200
+0261:*dd210002|        LD      IX,buf                                          |IX <- nn
+0265: dd4e01  |        LD      C,(IX+1)                                        |r <- (IX+d)
+0268:*210402  |        LD      HL,buf2                                         |Register pair <- nn
+026b: 71      |        LD      (HL),C                                          |(HL) <- r
+026c: 56      |        LD      D,(HL)                                          |r <- (HL)
+026d: dd72fe  |        LD      (IX+-2),D                                       |(IX+d) <- r
+0270: 365a    |        LD      (HL),$5a                                        |(HL) <- n
+0272: dd36fca5|        LD      (IX+-4),$a5                                     |(IX+d) <- n
+0276: 0a      |        LD      A,(BC)                                          |A <- (BC)
+0277: 3e0b    |        LD      A,11                                            |r <- n
+0279:*3a0702  |        LD      A,(buf2+3)                                      |A <- (nn)
+027c: 3e55    |        LD      A,$55                                           |r <- n
+027e:*010002  |        LD      BC,buf                                          |Register pair <- nn
+0281: 02      |        LD      (BC),A                                          |(BC) <- A
+0282: 3e77    |        LD      A,$77                                           |r <- n
+*MARK@STAGE2*
+0284:*110002  |        LD      DE,buf                                          |Register pair <- nn
+0287: 12      |        LD      (DE),A                                          |(DE) <- A
+0288: 3e99    |        LD      A,$99                                           |r <- n
+028a:*320002  |        LD      (buf),A                                         |(nn) <- A
+028d: 3e32    |        LD      A,$32                                           |r <- n
+028f: ed47    |        LD      I,A                                             |Interrupt vector reg <- A
+0291: 3e43    |        LD      A,$43                                           |r <- n
+0293: ed4f    |        LD      R,A                                             |Memory refresh reg <- A
+0295: ed57    |        LD      A,I                     ; A to be $32           |A <- Interrupt vector reg
+0297: ed5f    |        LD      A,R                     ; A to be $43           |A <- Memory refresh reg
+0299:*dd210002|        LD      IX,buf                                          |IX <- nn
+029d: fd21aa55|        LD      IY,$55aa                                        |IY <- nn
+02a1:*2a0a02  |        LD      HL,(buf4)               ; HL to be $200         |H <- (nn+1), L <- (nn)
+02a4:*ed4b0002|        LD      BC,(buf)                ; BC to be $0201        |RRh <- (nn+1), RRl <- (nn)
+02a8:*ed5b0102|        LD      DE,(buf+1)              ; DE to be $0302        |RRh <- (nn+1), RRl <- (nn)
+02ac:*ed7b0202|        LD      SP,(buf+2)              ; SP to be $0403        |RRh <- (nn+1), RRl <- (nn)
+02b0:*dd2a0302|        LD      IX,(buf+3)              ; SP to be $0504        |IXh <- (nn+1), IXl <- (nn)
+02b4:*fd2a0402|        LD      IY,(buf+4)              ; SP to be $0605        |IYh <- (nn+1), IYl <- (nn)
+02b8:*220c02  |        LD      (buf6),HL                                       |(nn+1) <- H, (nn) <- L
+02bb:*ed430102|        LD      (buf+1),BC                                      |(nn+1) <- RRh, (nn) <-RRl
+02bf:*ed530202|        LD      (buf+2),DE                                      |(nn+1) <- RRh, (nn) <-RRl
+02c3:*ed730302|        LD      (buf+3),SP                                      |(nn+1) <- RRh, (nn) <-RRl
+02c7:*dd220402|        LD      (buf+4),IX                                      |(nn+1) <- IXh, (nn) <-IXl
+02cb:*fd220502|        LD      (buf+5),IY                                      |(nn+1) <- IYh, (nn) <-IYl
+02cf: f9      |        LD      SP,HL                                           |SP <- HL
+02d0: ddf9    |        LD      SP,IX                                           |SP <- IX
+02d2: fdf9    |        LD      SP,IY                                           |SP <- IY
+02d4:*314406  |        LD      SP,spend                                        |Register pair <- nn
+02d7: c5      |        PUSH    BC                                              |(SP-1) <- QQh, (SP-2) <- QQl, SP <- SP - 2
+02d8: d5      |        PUSH    DE                                              |(SP-1) <- QQh, (SP-2) <- QQl, SP <- SP - 2
+02d9: e5      |        PUSH    HL                                              |(SP-1) <- QQh, (SP-2) <- QQl, SP <- SP - 2
+02da: f5      |        PUSH    AF                                              |(SP-1) <- QQh, (SP-2) <- QQl, SP <- SP - 2
+02db: dde5    |        PUSH    IX                                              |(SP-1) <- IXh, (SP-2) <- IXl, SP <- SP - 2
+02dd: fde5    |        PUSH    IY                                              |(SP-1) <- IYh, (SP-2) <- IYl, SP <- SP - 2
+02df: c1      |        POP     BC                                              |QQl <- (SP), QQh <- (SP+1), SP <- SP + 2
+02e0: dde1    |        POP     IX                                              |IXl <- (SP), IXh <- (SP+2), SP <- SP + 2
+02e2: 00      |        NOP                                                     |--
+02e3: 23      |        INC HL                                                  |RR <- RR + 1
+02e4: cb16    |        RL (HL)                                                 |CY <- (HL)[0], (HL) <- ROR( (HL) ,1)
+02e6: 3e5d    |        LD A,TFCB                                               |r <- n
+02e8: 212312  |        LD HL,1223H                                             |Register pair <- nn
+02eb:*010002  |        LD BC, buf                                              |Register pair <- nn
+In mini.asm(269) E0119: Jump target to far away for RELATIVE jump! Skipping!
+02ee:         |        JR hallo                                                |PC <- PC + ee
+02ee: c30001  |        JP hallo                                                |PC <- nn
+02f1:         |
+02f1:         |TFCC    EQU     $
+02f1:         |TFCD    EQU     $+20
+02f1:         |
+02f1:         |hallo2:
+02f1: 7e      |        LD A,(HL)                                               |r <- (HL)
+02f2: 02      |        LD (BC),A                                               |(BC) <- A
+02f3: 320500  |        LD (5),A                                                |(nn) <- A
+02f6: dd7e05  |        LD A,(IX+5h)                                            |r <- (IX+d)
+02f9: fd770c  |        LD (IY+12),A                                            |(IY+d) <- r
+02fc:*ed4b0002|        LD BC,(buf)                                             |RRh <- (nn+1), RRl <- (nn)
+0300:*210402  |        LD HL,buf2                                              |Register pair <- nn
+0303:         |;
+0303:         |;   Routine to convert (A) into upper case ascii. Only letters
+0303:         |; are affected.
+0303:         |;
+0303: fe61    |UPPER:  CP      'a'             ;check for letters in the range…|Z <-  A = n
+0307:         |                                                  of 'a' to 'z'.
+0305: d8      |        RET     C                                               |IF cc true, PCl <- (SP), PCh <- (SP), SP <- SP + 2
+0306: fe7b    |        CP      '{'                                             |Z <-  A = n
+0308: d0      |        RET     NC                                              |IF cc true, PCl <- (SP), PCh <- (SP), SP <- SP + 2
+0309: e65f    |        AND     5FH             ;convert it if found.           |A <- A & n
+030b: c9      |        RET                                                     |PCl <- (SP), PCh <- (SP), SP <- SP + 2
+030c:         |
+030c:         |        ORG $200
 0200:         |
 0200: 01020304|buf:    DB 1,2,3,4,
 0204: 05060708|buf2:   DB 5,6,7,8,9,10
@@ -236,7 +312,6 @@ In mini.asm(194) E0119: Jump target to far away for RELATIVE jump! Skipping!
 020a: 0002    |buf4:   DEFW $200
 020c:         |
 020c: a55a    |buf6:   DEFW $5aa5
-*MARK*
 020e: 5aa5    |        DEFW $a55a
 0210: 3412    |        DEFW $1234
 0212: 2143    |        DEFW $4321
@@ -247,9 +322,9 @@ In mini.asm(194) E0119: Jump target to far away for RELATIVE jump! Skipping!
 0217: ff      |        DB      255
 0218:         |
 0218:         |buf3:    ; arithmetic test suite ... see http://benryves.com/bin/brass/manual.htm#labels
-In mini.asm(237) E0109: -1 cannot be evaluated as sequence of bytes! Skipping!
+In mini.asm(312) E0109: -1 cannot be evaluated as sequence of bytes! Skipping!
 0218:*????    |        DEFW    -1                      ; $ffff
-In mini.asm(238) E0109: -2 cannot be evaluated as sequence of bytes! Skipping!
+In mini.asm(313) E0109: -2 cannot be evaluated as sequence of bytes! Skipping!
 021a:*????    |        DEFW    -2                      ; $feff
 021c: 1600    |        DEFW    17+5                    ; $16
 021e: 0c00    |        DEFW    17-5                    ; $0c
@@ -261,7 +336,7 @@ In mini.asm(238) E0109: -2 cannot be evaluated as sequence of bytes! Skipping!
 022a: 0c00    |        DEFW    3^15                    ; $0c
 022c: 0000    |        DEFW    !1                      ; $00
 022e: 0100    |        DEFW    !0                      ; $01
-In mini.asm(249) E0109: ~1 cannot be evaluated as sequence of bytes! Skipping!
+In mini.asm(324) E0109: ~1 cannot be evaluated as sequence of bytes! Skipping!
 0230:*????    |        DEFW    ~1                      ; $feff
 0232: 0100    |        DEFW    1 && 1                  ; $01
 0234: 0000    |        DEFW    1 && 0                  ; $00
@@ -316,7 +391,7 @@ In mini.asm(249) E0109: ~1 cannot be evaluated as sequence of bytes! Skipping!
 063c: 00000000|                                                                
 0640: 00000000|                                                                
 0644: ff      |spend:  DEFB 255
-||  Stage 2 completed. 100 errors, 6 invalid bytes remaining!
+||  Stage 2 completed. 106 errors, 6 invalid bytes remaining!
 
 ; +++ global symbols +++
 
@@ -324,7 +399,7 @@ BUF5     = $2000 =  8192 is Equ         ; expr = 2000h
 ENTRY    = $0005 =     5 is Equ         ; expr = 5
 TFCA     = $005c =    92 is Equ         ; expr = 5CH
 TFCB     = $005d =    93 is Equ         ; expr = TFCA+1
-TFCC     = $026f =   623 is Equ         ; expr = $
+TFCC     = $02f1 =   753 is Equ         ; expr = $
 TFCD     = $0014 =    20 is Equ         ; expr = $+20
 BUF      = $0200 =   512 is Label       
 BUF2     = $0204 =   516 is Label       
@@ -334,10 +409,10 @@ BUF6     = $020c =   524 is Label
 BUF7     = $0214 =   532 is Label       
 BUFTMP   = $0600 =  1536 is Label       
 HALLO    = $0100 =   256 is Label       
-HALLO2   = $026f =   623 is Label       
+HALLO2   = $02f1 =   753 is Label       
 SPEND    = $0644 =  1604 is Label       
 SPSTRT   = $0604 =  1540 is Label       
-UPPER    = $0281 =   641 is Label       
+UPPER    = $0303 =   771 is Label       
 ||  Writing binary bytes to: mini.rom
 ||  Found minimal org pos to be $100 = 256, last byte to be $644 = 1604
 *MARK*
