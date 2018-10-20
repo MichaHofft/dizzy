@@ -6,6 +6,34 @@ TFCB	EQU	TFCA+1
         ORG 100h
         ;
 hallo:  ; START
+        ; EXX
+        LD      BC,$445a
+        LD      DE,$3da2
+        LD      HL,$8859
+        EXX
+        NOP                     ; ASSERT B = $00, C = $00, D = $00, E = $00, H = $00, L = $00
+        LD      BC,$0988
+        LD      DE,$9300
+        LD      HL,$00e7
+        EXX
+        NOP                     ; ASSERT B = $44, C = $5a, D = $3d, E = $a2, H = $88, L = $59
+        EXX
+        NOP                     ; ASSERT B = $09, C = $88, D = $93, E = $00, H = $00, L = $e7
+        ; EX AF,AF'
+        LD      A,$55
+        SCF
+        EX      AF,AF'
+        NOP                     ; ASSERT A = $00, CY clear
+        LD      A,$aa
+        EX      AF,AF'
+        NOP                     ; ASSERT A = $55, CY set
+        EX      AF,AF'
+        NOP                     ; ASSERT A = $aa, CY clear
+        ; EX DE.HL
+        LD      DE,$1234
+        LD      HL,$5678
+        EX      DE,HL
+        NOP                     ; ASSERT D = $56, E = $78, H = $12, L = $34
         ; RRD
         LD      HL,buftmp
         LD      (HL),00100000b

@@ -2483,6 +2483,7 @@ class SoftRegister:
         self.name = name
         self.latchNum = latchNum
         self.theValue = 0
+        self.exValue = 0
         if self.latchNum > 1:
             self.theValue = list(map(lambda k: 0, range(latchNum)))
         self.function = function
@@ -2491,6 +2492,16 @@ class SoftRegister:
         self.bits = bits 
         self.inFlags = SoftFlag.NONE
         self.outFlags = SoftFlag.NONE
+
+    def exchangeWith(self, reg):
+        """ Exchange value with other register. Does work only on non-composed registers. """        
+        if not isinstance(reg, SoftRegister):
+            raise TypeError()
+        self.theValue, reg.theValue = reg.theValue, self.theValue
+
+    def exchange(self):
+        """ Exchange with local dash contents. Does work only on non-composed registers. """
+        self.theValue, self.exValue = self.exValue, self.theValue
 
     def latch(self, value: int, latchIdx=0, byteIdx=-1):
         if self.latchNum <= 1:
@@ -2772,13 +2783,23 @@ class SoftCPU:
         # endianness: https://stackoverflow.com/questions/21639597/z80-register-endianness
         self.registers = {}
         self.addRegister(SoftRegister('A'))
+        self.addRegister(SoftRegister("A'"))
         self.addRegister(SoftRegister('F'))
+        self.addRegister(SoftRegister("F'"))
         self.addRegister(SoftRegister('B'))
         self.addRegister(SoftRegister('C'))
         self.addRegister(SoftRegister('D'))
         self.addRegister(SoftRegister('E'))
+        self.addRegister(SoftRegister('E'))
         self.addRegister(SoftRegister('H'))
         self.addRegister(SoftRegister('L'))
+        self.addRegister(SoftRegister("B'"))
+        self.addRegister(SoftRegister("C'"))
+        self.addRegister(SoftRegister("D'"))
+        self.addRegister(SoftRegister("E'"))
+        self.addRegister(SoftRegister("E'"))
+        self.addRegister(SoftRegister("H'"))
+        self.addRegister(SoftRegister("L'"))
         self.addRegister(SoftRegister('BC', self.registers['C'], self.registers['B'], bits=16))
         self.addRegister(SoftRegister('DE', self.registers['E'], self.registers['D'], bits=16))
         self.addRegister(SoftRegister('HL', self.registers['L'], self.registers['H'], bits=16))
@@ -3089,6 +3110,22 @@ class SoftCPU:
 
             elif op == "F.CY.INV":
                 r['F'].value = r['F'].value ^ SoftFlag.CARRY
+
+            elif op == "DE.HL.EX":
+                r['D'].exchangeWith(r['H'])
+                r['E'].exchangeWith(r['L'])
+
+            elif op == "AF.AF.EX":
+                r['A'].exchange()
+                r['F'].exchange()
+
+            elif op == "BCDEHL.EX":
+                r['B'].exchange()
+                r['C'].exchange()
+                r['D'].exchange()
+                r['E'].exchange()
+                r['H'].exchange()
+                r['L'].exchange()
 
             # data bus -> address bus .. later that the ...IOError
 
