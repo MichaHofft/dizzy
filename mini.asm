@@ -6,6 +6,15 @@ TFCB	EQU	TFCA+1
         ORG 100h
         ;
 hallo:  ; START
+        ; EX (SP),HL
+        LD	    BC,$1234
+        PUSH	BC
+        POP	    DE	            ; SP shall be reset again
+        LD	    HL,$55aa
+        EX (SP),HL
+        NOP	                    ; ASSERT H = $12, L = $34
+        EX (SP),HL
+        NOP	                    ; ASSERT H = $55, L = $aa
         ; EXX
         LD      BC,$445a
         LD      DE,$3da2
