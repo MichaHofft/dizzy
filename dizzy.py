@@ -2338,22 +2338,22 @@ class SetOfRainbows:
                     if am == 'I' or am == 'EP':
                         # immediate or extended port, one byte
                         assyrec.opdata.append(input[opDataNdx])
-                        databytes = 1
+                        databytes = databytes + 1 # change on 28 DEC 18
                     if am == 'IE' or am == 'E' or am == 'EJ':
                         # immediate extended or extended, two bytes
                         n = (input[ii+2] << 8) + input[opDataNdx]
                         assyrec.opdata.append(n)
-                        databytes = 2
+                        databytes = databytes + 2 # change on 28 DEC 18
                     if am == 'L':
                         # relative, one byte displacement
                         n = Helper.fromTwosComplement(input[opDataNdx], targetBits=8)
                         assyrec.opdata.append(n)
-                        databytes = 1
+                        databytes = databytes + 1 # change on 28 DEC 18
                     if am == 'X':
                         # indexed, one byte displacement
                         n = Helper.fromTwosComplement(input[opDataNdx], targetBits=8)
                         assyrec.opdata.append(n)             
-                        databytes = 1
+                        databytes = databytes + 1 # change on 28 DEC 18
 
                 # advance last instr byte + its data
                 opLen = max(ii + 1, opDataNdx + databytes)
@@ -2534,6 +2534,7 @@ class SoftRegister:
     def performFunction(self):
         # binary mask
         andMask = (1 << self.bits) - 1
+        msbMask = 1 << (self.bits - 1)
         # take over flags by default
         self.outFlags = self.inFlags
         # unary or binary?
@@ -2574,7 +2575,36 @@ class SoftRegister:
                 self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
                 self.setSingleOutFlag( SoftFlag.SIGN,       v & 0x80 > 0 )
                 return v & andMask
-            
+
+            if self.function == SoftFunction.CP:
+                # pass back ACT / latch[0]
+                # zaks: "operand is substracted from the accumulator"
+                v = (self.theValue[0] & andMask) - (self.theValue[1] & andMask) 
+                self.setSingleOutFlag( SoftFlag.ADDSUB,     True )
+                self.setSingleOutFlag( SoftFlag.CARRY,      v < 0 )
+                self.setSingleOutFlag( SoftFlag.PARITYOVER, v > 127 or v < -128 )
+                self.setSingleOutFlag( SoftFlag.HALFCARRY,  v & 0x16 > 0 )
+                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                self.setSingleOutFlag( SoftFlag.SIGN,       v & 0x80 > 0 )
+                return self.theValue[0]
+
+            if self.function == SoftFunction.INC or self.function == SoftFunction.DEC:
+                # works on the TMP side of the ALU!! -> latch[1]?!
+                # manual: eval before operation!
+                self.setSingleOutFlag( SoftFlag.PARITYOVER, self.theValue[1] == 0x7f )
+                # now diverge
+                if self.function == SoftFunction.INC:
+                    v = (self.theValue[1] + 1) & andMask
+                    self.setSingleOutFlag( SoftFlag.ADDSUB,     False )
+                    self.setSingleOutFlag( SoftFlag.HALFCARRY,  v & 0x16 > 0 )
+                else:
+                    v = (self.theValue[1] - 1) & andMask
+                    self.setSingleOutFlag( SoftFlag.ADDSUB,     True )
+                    self.setSingleOutFlag( SoftFlag.HALFCARRY,  v & 0x16 > 0 ) # TODO??
+                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                self.setSingleOutFlag( SoftFlag.SIGN,       v & msbMask > 0 )
+                return v & andMask
+
             if self.function == SoftFunction.OR or self.function == SoftFunction.AND \
                     or self.function == SoftFunction.XOR:
                 # process values as bit patterns
@@ -2960,6 +2990,18 @@ class SoftCPU:
             elif op == "ALU.OP.SBC":
                 r['ALU'].flags = r['F'].value
                 r['ALU'].setFunction(SoftFunction.SBC)
+
+            elif op == "ALU.OP.CP":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.CP)
+
+            elif op == "ALU.OP.INC":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.INC)
+
+            elif op == "ALU.OP.DEC":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.DEC)
 
             elif op == "ALU.OP.OR":
                 r['ALU'].flags = r['F'].value
@@ -3800,7 +3842,6 @@ def dizzy():
         # cpu.performCycle("B.OE, TMP.L")
         # cpu.performCycle("TMP.OE.DBUS, C.L")
         d.softExecuteBinary(args.soft_execute, orgstart, orgend, cpu)
-
 
 if __name__ == "__main__":
 
