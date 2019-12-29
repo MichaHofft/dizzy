@@ -6,12 +6,102 @@ TFCB	EQU	TFCA+1
         ORG 100h
         ;
 hallo:  ; START
-        ; EX (SP),HL
+        ; BIT TEST
+        LD      HL,buf
+        LD      (HL),$55
+        BIT     3,(HL)
+        BIT     2,(HL)
+        NOP
+        ;
+        LD      A,$aa
+        BIT     2,A
+        BIT     3,A
+        BIT     0,A
+        LD      B,A
+        BIT     1,B
+        ; INC RR
+        LD      IY,$aa55
+        INC     IY
+        DEC     IY
+        ; --
+        NOP 
+        ; INC/ DEC
+        LD      IY,buf
+        LD      (IY+2),$55
+        INC     (IY+2)
+        DEC     (IY+2)
+        NOP
+        LD      IX,buf
+        LD      (IX+2),$55
+        INC     (IX+2)
+        DEC     (IX+2)
+        NOP
+        LD      HL,buf
+        LD      (HL),$aa
+        INC     (HL)
+        DEC     (HL)
+        NOP
+        LD      B,$00
+        INC     B
+        DEC     B
+        DEC     B
+        NOP
+        ; CP
+        LD      A,$70
+        LD      B,$70
+        CP      B               ; compare A with B, shall have Z set
+        LD      B,$91
+        CP      B
+        CP      $70
+        CP      $90
+        ;
+        LD      IX,buf
+        LD      (IX+2),$70
+        CP      (IX+2)
+        LD      (IX+2),$90
+        CP      (IX+2)
+        ;
+        LD      IY,buf
+        LD      (IY+4),$70
+        CP      (IY+4)
+        LD      (IY+4),$90
+        CP      (IY+4)
+        ;
+        LD      HL,buf
+        LD      (HL),$70
+        CP      (HL)
+        LD      (HL),$90
+        CP      (HL)
+        ; EX (SP),IY
+        LD      SP,10           ; SP is 0x0a
         LD	    BC,$1234
-        PUSH	BC
-        POP	    DE	            ; SP shall be reset again
+        PUSH	BC              ; SP is 0x08 (0x09 is $12, 0x08 is $34)
+        POP	    DE	            ; SP shall be reset again to 0x0a
+        PUSH    BC              ; SP is 0x08
+        LD	    IY,$55aa
+        EX (SP),IY              ; reads 0x08, 0x09, will end up 0x0a
+        NOP	                    ; ASSERT H = $12, L = $34
+        EX (SP),IY
+        NOP	                    ; ASSERT H = $55, L = $aa
+        ; EX (SP),IX
+        LD      SP,10           ; SP is 0x0a
+        LD	    BC,$1234
+        PUSH	BC              ; SP is 0x08 (0x09 is $12, 0x08 is $34)
+        POP	    DE	            ; SP shall be reset again to 0x0a
+        PUSH    BC              ; SP is 0x08
+        LD	    IX,$55aa
+        EX (SP),IX              ; reads 0x08, 0x09, will end up 0x0a
+        NOP	                    ; ASSERT H = $12, L = $34
+        EX (SP),IX
+        NOP	                    ; ASSERT H = $55, L = $aa
+        ; EX (SP),HL
+        LD      SP,10           ; SP is 0x0a
+        LD	    BC,$1234
+        PUSH	BC              ; SP is 0x08 (0x09 is $12, 0x08 is $34)
+        POP	    DE	            ; SP shall be reset again to 0x0a
+        PUSH    BC              ; SP is 0x08
         LD	    HL,$55aa
-        EX (SP),HL
+        EX (SP),HL              ; reads 0x08, 0x09, will end up 0x0a
         NOP	                    ; ASSERT H = $12, L = $34
         EX (SP),HL
         NOP	                    ; ASSERT H = $55, L = $aa
@@ -328,7 +418,7 @@ UPPER:	CP	'a'		;check for letters in the range of 'a' to 'z'.
 	AND	5FH		;convert it if found.
 	RET	
 
-        ORG $200
+        ORG $400
 
 buf:    DB 1,2,3,4,
 buf2:   DB 5,6,7,8,9,10

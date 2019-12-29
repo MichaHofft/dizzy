@@ -2465,15 +2465,18 @@ class SoftFunction(Enum):
     RRD1 = 27
     RRD2 = 28
     ADD_TWO_COMPL_OP2 = 29
+    BIT = 30
+    SET = 31
+    RES = 32
 
 class SoftFlag:
     NONE = 0
-    CARRY = 1
-    ADDSUB = 2
-    PARITYOVER = 4
-    HALFCARRY = 8
-    ZERO = 16
-    SIGN = 32
+    CARRY = 1           # C
+    ADDSUB = 2          # N
+    PARITYOVER = 4      # P/V
+    HALFCARRY = 8       # H
+    ZERO = 16           # Z
+    SIGN = 32           # S
 
 class SoftRegister:
     """ Approach: have a iterable register bank with minimal OO features
@@ -2740,6 +2743,20 @@ class SoftRegister:
             if self.function == SoftFunction.ADD_TWO_COMPL_OP2:
                 return self.theValue[0] + Helper.fromTwosComplement(self.theValue[1])
 
+            if self.function == SoftFunction.BIT:
+                # pass back noting
+                v1 = ((self.theValue[0] & andMask) & 0x38) >> 3 
+                v2 = 1 << (v1 & 0x03)
+                v = (self.theValue[1] & andMask) & v2
+                self.setSingleOutFlag( SoftFlag.ADDSUB,     False )
+                # self.setSingleOutFlag( SoftFlag.CARRY,      v < 0 )
+                # self.setSingleOutFlag( SoftFlag.PARITYOVER, v > 127 or v < -128 )
+                self.setSingleOutFlag( SoftFlag.HALFCARRY,  True )
+                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                # self.setSingleOutFlag( SoftFlag.SIGN,       v & 0x80 > 0 )
+                return self.theValue[0]
+
+
     def output(self, byteIdx=-1):
         # calculation and HI/LO are mutually exclusive
         if self.function == SoftFunction.NONE:
@@ -2927,6 +2944,12 @@ class SoftCPU:
             elif op == "SP.OE":
                 r['ABUS'].value = r['SP'].value
 
+            elif op == "IX.OE":
+                r['ABUS'].value = r['IX'].value
+
+            elif op == "IY.OE":
+                r['ABUS'].value = r['IY'].value
+
             elif op == "INC2.P":
                 r['INC2'].setFunction(SoftFunction.PURE_INC)
 
@@ -3075,6 +3098,10 @@ class SoftCPU:
                 r['ALU'].flags = r['F'].value
                 r['ALU'].setFunction(SoftFunction.RRD2)
 
+            elif op == "ALU.OP.BIT":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.BIT)
+
             elif op == "ALU.OE":
                 r['DBUS'].value = r['ALU'].value
                 r['F'].value = r['ALU'].flags
@@ -3133,13 +3160,7 @@ class SoftCPU:
                 r['SP'].latch(r['DBUS'].value, byteIdx=1)
 
             elif op == "PC.L.DBUS":
-                r['PC'].value = r['INC2'].value
-
-            elif op == "PC.L.INC2":
-                r['PC'].value = r['INC2'].value
-
-            elif op == "SP.L.INC2":
-                r['SP'].value = r['INC2'].value
+                r['PC'].value = r['DBUS'].value
 
             elif op == "I.L":
                 r['I'].value = r['DBUS'].value
@@ -3176,6 +3197,29 @@ class SoftCPU:
 
             elif op == "ABUS.H.L.DBUS":
                 r['ABUS'].latch(r['DBUS'].value, byteIdx=1)
+
+            # load from INC2
+
+            elif op == "PC.L.INC2":
+                r['PC'].value = r['INC2'].value
+
+            elif op == "BC.L.INC2":
+                r['BC'].value = r['INC2'].value
+
+            elif op == "DE.L.INC2":
+                r['DE'].value = r['INC2'].value
+
+            elif op == "HL.L.INC2":
+                r['HL'].value = r['INC2'].value
+
+            elif op == "IX.L.INC2":
+                r['IX'].value = r['INC2'].value
+
+            elif op == "IY.L.INC2":
+                r['IY'].value = r['INC2'].value
+
+            elif op == "SP.L.INC2":
+                r['SP'].value = r['INC2'].value
 
             # data bus out
 

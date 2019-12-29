@@ -8,9 +8,10 @@ cp dizzy.py save/dizzy.ba24; chmod a-w save/*
 
 
 git pull
-git commit
+git commit -a
 pit push .. michahofft .. enter123
 
 findings
 * (IX) geht nicht
 * ORG $600, ld buf geht nicht
+
