@@ -2756,6 +2756,24 @@ class SoftRegister:
                 # self.setSingleOutFlag( SoftFlag.SIGN,       v & 0x80 > 0 )
                 return self.theValue[0]
 
+            if self.function == SoftFunction.BIT:
+                # pass back noting
+                v1 = ((self.theValue[0] & andMask) & 0x38) >> 3 
+                v2 = 1 << (v1 & 0x03)
+                v = (self.theValue[1] & andMask) & v2
+                self.setSingleOutFlag( SoftFlag.ADDSUB,     False )
+                # self.setSingleOutFlag( SoftFlag.CARRY,      v < 0 )
+                # self.setSingleOutFlag( SoftFlag.PARITYOVER, v > 127 or v < -128 )
+                self.setSingleOutFlag( SoftFlag.HALFCARRY,  True )
+                self.setSingleOutFlag( SoftFlag.ZERO,       v == 0 )
+                # self.setSingleOutFlag( SoftFlag.SIGN,       v & 0x80 > 0 )
+                return self.theValue[0]
+
+            if self.function == SoftFunction.SET:
+                v1 = ((self.theValue[0] & andMask) & 0x38) >> 3 
+                v2 = 1 << (v1 & 0x03)
+                v = (self.theValue[1] & andMask) | v2
+                return v
 
     def output(self, byteIdx=-1):
         # calculation and HI/LO are mutually exclusive
@@ -3101,6 +3119,10 @@ class SoftCPU:
             elif op == "ALU.OP.BIT":
                 r['ALU'].flags = r['F'].value
                 r['ALU'].setFunction(SoftFunction.BIT)
+
+            elif op == "ALU.OP.SET":
+                r['ALU'].flags = r['F'].value
+                r['ALU'].setFunction(SoftFunction.SET)
 
             elif op == "ALU.OE":
                 r['DBUS'].value = r['ALU'].value

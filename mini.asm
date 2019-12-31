@@ -6,6 +6,22 @@ TFCB	EQU	TFCA+1
         ORG 100h
         ;
 hallo:  ; START
+        LD      A,$00
+        LD      B,$aa
+        SET     0,B
+        SET     7,A
+        ;
+        LD      IY,buf
+        LD      (IY+2),$aa
+        BIT     3,(IY+2)
+        BIT     2,(IY+2)
+        NOP
+        ;
+        LD      IX,buf
+        LD      (IX+2),$55
+        BIT     3,(IX+2)
+        BIT     2,(IX+2)
+        NOP
         ; BIT TEST
         LD      HL,buf
         LD      (HL),$55
